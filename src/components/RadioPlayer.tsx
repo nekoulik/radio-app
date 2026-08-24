@@ -501,48 +501,41 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Новые полезные ссылки вместо истории */}
+                {/* Блок ссылок и поддержки */}
                 <Separator />
-                <Group header={<Subhead style={{ padding: '12px 16px' }}>🔗 Полезные ссылки</Subhead>}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 16px 16px' }}>
-
-                        {/* 1. Подписка / Канал */}
-                        <Cell
+                <Group header={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
+                        <Subhead>🔗 Ссылки</Subhead>
+                        {/* Кнопка техподдержки справа вверху */}
+                        <Button
+                            size="s"
+                            mode="tertiary"
                             Component="a"
-                            href="https://t.me/ВАШ_КАНАЛ" // <-- Замените на вашу ссылку
+                            href="https://vk.com/im?sel=-239834224" // <-- Ссылка на диалог
                             target="_blank"
-                            before={<div style={{ fontSize: '24px' }}>📢</div>}
-                            subtitle="Новости, обновления и промокоды"
-                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                            style={{ color: '#99A2AD' }}
                         >
-                            Подписаться на канал
-                        </Cell>
-
-                        {/* 2. Техподдержка */}
-                        <Cell
-                            Component="a"
-                            href="https://vk.com/im?sel=-239834224" // <-- Замените на ссылку на диалог или группу
-                            target="_blank"
-                            before={<div style={{ fontSize: '24px' }}>🛠️</div>}
-                            subtitle="Нашли баг? Напишите нам!"
-                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
-                        >
-                            Техническая поддержка
-                        </Cell>
-
-                        {/* 3. Сообщество */}
-                        <Cell
-                            Component="a"
-                            href="https://vk.ru/ani__wave" // <-- Замените на ссылку на группу
-                            target="_blank"
-                            before={<div style={{ fontSize: '24px' }}></div>}
-                            subtitle="Общайтесь с другими слушателями"
-                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
-                        >
-                            Наше сообщество
-                        </Cell>
-
+                            ️ Поддержка
+                        </Button>
                     </div>
+                }>
+                    {/* Большая кнопка сообщества */}
+                    <Cell
+                        Component="a"
+                        href="https://vk.ru/ani__wave" // <-- Ссылка на группу
+                        target="_blank"
+                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
+                        subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
+                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
+                        style={{
+                            background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)',
+                            borderRadius: '8px',
+                            margin: '8px 16px',
+                            border: '1px solid rgba(255, 102, 179, 0.2)'
+                        }}
+                    >
+                        <Subhead weight="2" style={{ color: '#ffffff' }}>Наше сообщество</Subhead>
+                    </Cell>
                 </Group>
 
                 <Separator />
