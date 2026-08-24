@@ -106,7 +106,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                     console.log('Prev station');
                                 }}
                             >
-
+                                ⏮
                             </Button>
 
                             {/* Кнопка Play/Pause (Центральная) */}
