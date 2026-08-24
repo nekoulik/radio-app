@@ -155,11 +155,20 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    const openShareModal = () => {
-        const text = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
-        setShareText(text);
-        setCopySuccess(false);
-        setIsShareModalOpen(true);
+    // Нативное окно отправки приложения ВК
+    const handleShare = async () => {
+        try {
+            // @ts-ignore - VK Bridge метод
+            await bridge.send('VKWebAppShare', {
+                link: 'https://vk.com/app54729099',
+            });
+        } catch (err) {
+            console.log('VKWebAppShare не сработал, открываем fallback');
+            const text = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
+            setShareText(text);
+            setCopySuccess(false);
+            setIsShareModalOpen(true);
+        }
     };
 
     const copyShareText = async () => {
@@ -188,6 +197,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     return (
         <Panel id={id}>
+            {/* Fallback модальное окно копирования */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
@@ -232,6 +242,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* Баннер */}
             <div style={{
                 background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
                 padding: '20px 16px',
@@ -414,8 +425,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 <Cell
                     before={<Icon28CopyOutline />}
-                    onClick={openShareModal}
-                    subtitle="Открыть текст для копирования и отправки друзьям"
+                    onClick={handleShare}
+                    subtitle="Отправить приложение другу в сообщении"
                 >
                     Поделиться
                 </Cell>
