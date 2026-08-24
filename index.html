@@ -1,16 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-    />
-    <title>VK Mini App Boilerplate</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- НОВЫЕ ИКОНКИ -->
+  <!-- Favicon для вкладок браузера (32x32 или 64x64) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/icons/icon-64.png" />
+
+  <!-- Иконки для мобильных устройств и PWA -->
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- SEO и описание для каталога ВК -->
+  <title>AniWave Radio — Аниме музыка 24/7</title>
+  <meta name="description"
+    content="Слушайте лучшее аниме радио: J-Pop, Lo-Fi, OST и City Pop. 15+ станций, таймер сна и избранное." />
+
+  <!-- Open Graph для красивых превью при шеринге в ВК -->
+  <meta property="og:title" content="AniWave Radio" />
+  <meta property="og:description" content="Лучшее аниме радио с J-Pop, Lo-Fi и OST. Слушай бесплатно!" />
+  <meta property="og:image" content="/background.png" />
+  <meta property="og:type" content="website" />
+
+  <!-- Цвет темы браузера на мобильных (совпадает с фоном плеера) -->
+  <meta name="theme-color" content="#1a0a2e" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
