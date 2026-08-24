@@ -11,12 +11,16 @@ import {
     Subhead,
     Caption,
     Separator,
-    Alert,
+    ModalRoot,
+    ModalPage,
+    ModalPageHeader,
+    Textarea,
 } from '@vkontakte/vkui';
 import {
     Icon28PlayOutline,
     Icon28PauseOutline,
     Icon28CopyOutline,
+    Icon24Dismiss,
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
@@ -40,7 +44,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [error, setError] = useState<string | null>(null);
     const [sleepTimeMinutes, setSleepTimeMinutes] = useState<number | null>(null);
     const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
-    const [showCopyAlert, setShowCopyAlert] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [shareText, setShareText] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -61,7 +67,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setIsLoading(false);
             setError(null);
         });
-
         audio.addEventListener('pause', () => setIsPlaying(false));
         audio.addEventListener('waiting', () => setIsLoading(true));
         audio.addEventListener('error', () => {
@@ -71,7 +76,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         });
 
         audioRef.current = audio;
-
         return () => {
             audio.pause();
             audio.src = '';
@@ -86,14 +90,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined;
-
         if (sleepTimeMinutes !== null && timeLeftSeconds !== null && timeLeftSeconds > 0) {
             timer = setInterval(() => {
                 setTimeLeftSeconds((prev) => {
                     if (prev !== null && prev <= 1) {
-                        if (audioRef.current) {
-                            audioRef.current.pause();
-                        }
+                        if (audioRef.current) audioRef.current.pause();
                         setIsPlaying(false);
                         setSleepTimeMinutes(null);
                         return 0;
@@ -102,15 +103,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 });
             }, 1000);
         }
-
-        return () => {
-            if (timer) clearInterval(timer);
-        };
+        return () => { if (timer) clearInterval(timer); };
     }, [sleepTimeMinutes, timeLeftSeconds]);
 
     const togglePlay = async () => {
         if (!audioRef.current) return;
-
         try {
             if (isPlaying) {
                 await audioRef.current.pause();
@@ -125,9 +122,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    const handleVolumeChange = (value: number) => {
-        setVolume(value / 100);
-    };
+    const handleVolumeChange = (value: number) => setVolume(value / 100);
 
     const handleSleepTimer = (minutes: number | null) => {
         setSleepTimeMinutes(minutes);
@@ -151,40 +146,92 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setError(null);
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
-
             setTimeout(() => {
                 if (audioRef.current) {
                     setIsLoading(true);
-                    audioRef.current.play().catch((e) => {
-                        console.error('Autoplay error:', e);
-                        setIsLoading(false);
-                    });
+                    audioRef.current.play().catch(() => setIsLoading(false));
                 }
             }, 300);
         }
     };
 
-    const handleShare = async () => {
-        const shareText = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
+    const openShareModal = () => {
+        const text = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
+        setShareText(text);
+        setCopySuccess(false);
+        setIsShareModalOpen(true);
+    };
+
+    const copyShareText = async () => {
+        try {
+            await navigator.clipboard.writeText(shareText);
+            setCopySuccess(true);
+            return;
+        } catch (err) {
+            console.log('Clipboard API не сработал');
+        }
 
         try {
-            // @ts-ignore
-            await bridge.send('VKWebAppCopyText', { text: shareText });
-            setShowCopyAlert(true);
+            const textarea = document.createElement('textarea');
+            textarea.value = shareText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            setCopySuccess(true);
         } catch (err) {
-            try {
-                await navigator.clipboard.writeText(shareText);
-                setShowCopyAlert(true);
-            } catch (clipboardErr) {
-                console.error('Ошибка копирования:', clipboardErr);
-                setError('Не удалось скопировать ссылку');
-            }
+            console.error('Ошибка копирования:', err);
         }
     };
 
     return (
         <Panel id={id}>
-            {/* Баннер */}
+            <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
+                <ModalPage
+                    id="share"
+                    header={
+                        <ModalPageHeader
+                            before={
+                                <Button
+                                    mode="tertiary"
+                                    onClick={() => setIsShareModalOpen(false)}
+                                >
+                                    <Icon24Dismiss />
+                                </Button>
+                            }
+                        >
+                            Поделиться
+                        </ModalPageHeader>
+                    }
+                    onClose={() => setIsShareModalOpen(false)}
+                >
+                    <Div style={{ padding: '16px' }}>
+                        <Caption style={{ color: '#99A2AD', marginBottom: '12px', display: 'block' }}>
+                            Скопируйте текст и отправьте друзьям:
+                        </Caption>
+                        <Textarea
+                            value={shareText}
+                            onChange={(e) => setShareText(e.target.value)}
+                            rows={6}
+                            style={{ marginBottom: '16px', fontFamily: 'monospace' }}
+                        />
+                        <Button
+                            size="l"
+                            mode={(copySuccess ? 'positive' : 'primary') as any}
+                            style={{ width: '100%' }}
+                            onClick={copyShareText}
+                        >
+                            {copySuccess ? '✅ Скопировано!' : '📋 Копировать текст'}
+                        </Button>
+                        <Caption style={{ color: '#99A2AD', marginTop: '12px', display: 'block', textAlign: 'center' }}>
+                            Теперь вставьте текст в сообщение другу
+                        </Caption>
+                    </Div>
+                </ModalPage>
+            </ModalRoot>
+
             <div style={{
                 background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
                 padding: '20px 16px',
@@ -210,7 +257,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     borderRadius: '50%',
                     background: 'rgba(255, 255, 255, 0.1)',
                 }} />
-
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{
                         fontSize: '32px',
@@ -232,7 +278,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </div>
 
             <Group>
-                {/* Основной блок плеера */}
                 <Div style={{
                     textAlign: 'center',
                     padding: '32px 16px',
@@ -369,30 +414,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 <Cell
                     before={<Icon28CopyOutline />}
-                    onClick={handleShare}
-                    subtitle="Скопировать ссылку и текст для друзей"
+                    onClick={openShareModal}
+                    subtitle="Открыть текст для копирования и отправки друзьям"
                 >
                     Поделиться
                 </Cell>
 
-                {showCopyAlert && (
-                    <Alert
-                        header="Скопировано!"
-                        text="Ссылка и текст скопированы в буфер обмена."
-                        onClose={() => setShowCopyAlert(false)}
-                        actions={[{
-                            title: 'Отлично',
-                            mode: 'cancel',
-                            onClick: () => setShowCopyAlert(false),
-                        }]}
-                    />
-                )}
-
                 {error && (
-                    <Placeholder
-                        stretched
-                        description={error}
-                    >
+                    // @ts-ignore - Placeholder принимает description как строку
+                    <Placeholder stretched description={error}>
                         <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Ошибка воспроизведения</div>
                         <Button size="m" mode="secondary" onClick={togglePlay}>
                             Попробовать снова
