@@ -241,46 +241,69 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
-            {/* Баннер */}
+            {/* Анимированный градиентный баннер с плавающими частицами */}
             <div style={{
-                background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
-                padding: '20px 16px',
+                padding: '30px 16px',
                 textAlign: 'center',
                 position: 'relative',
                 overflow: 'hidden',
+                minHeight: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)',
+                backgroundSize: '400% 400%',
+                animation: 'gradientShift 8s ease infinite',
             }}>
+                {/* Плавающие круги */}
                 <div style={{
                     position: 'absolute',
-                    top: '-20px',
-                    left: '-20px',
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                }} />
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-30px',
-                    right: '-30px',
+                    top: '-30px',
+                    left: '-30px',
                     width: '120px',
                     height: '120px',
                     borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.1)',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    animation: 'float 6s ease-in-out infinite',
                 }} />
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-40px',
+                    right: '-40px',
+                    width: '150px',
+                    height: '150px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    animation: 'float 8s ease-in-out infinite reverse',
+                }} />
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '10%',
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    animation: 'float 5s ease-in-out infinite',
+                }} />
+
+                {/* Контент */}
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{
-                        fontSize: '32px',
+                        fontSize: '36px',
                         fontWeight: 'bold',
                         color: '#ffffff',
-                        textShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                        marginBottom: '4px',
+                        textShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                        marginBottom: '6px',
+                        letterSpacing: '1px',
                     }}>
                         🌸 AniWave Radio
                     </div>
                     <div style={{
-                        fontSize: '14px',
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        textShadow: '0 1px 4px rgba(0,0,0,0.2)',
+                        fontSize: '15px',
+                        color: 'rgba(255, 255, 255, 0.95)',
+                        textShadow: '0 1px 6px rgba(0,0,0,0.3)',
+                        fontWeight: '500',
                     }}>
                         Anime • J-Pop • Lo-Fi • OST
                     </div>
@@ -486,7 +509,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
                     <Cell multiline>
                         <Caption style={{ color: '#99A2AD' }}>
-                            🚧 Функция истории треков временно недоступна. Мы работаем над её возвращением!
+                            Функция истории треков временно недоступна. Мы работаем над её возвращением!
                         </Caption>
                     </Cell>
                 </Group>
@@ -516,6 +539,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
+                }
+                @keyframes gradientShift {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
                 }
             `}</style>
         </Panel>
