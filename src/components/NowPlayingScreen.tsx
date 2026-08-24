@@ -37,7 +37,10 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                     </ModalPageHeader>
                 }
                 onClose={onClose}
-                style={{ background: '#0a0a1a' }}
+                style={{
+                    background: '#0a0a1a', // Темный фон
+                    color: '#ffffff' // Белый текст по умолчанию
+                }}
             >
                 <Div style={{
                     display: 'flex',
@@ -46,7 +49,8 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                     justifyContent: 'center',
                     height: '100%',
                     padding: '32px 16px',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    color: '#ffffff' // Явно задаем белый цвет для всего контента
                 }}>
                     {/* Большая визуализация */}
                     <div style={{
@@ -58,29 +62,48 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: `0 20px 60px rgba(255, 102, 179, 0.4)`,
+                        boxShadow: '0 20px 60px rgba(255, 102, 179, 0.4)',
                         animation: isPlaying ? 'pulse-large 3s ease-in-out infinite' : 'none'
                     }}>
                         <Visualizer
                             isPlaying={isPlaying}
-                            color="rgba(255,255,255,0.8)"
+                            color="rgba(255,255,255,0.9)"
                         />
                     </div>
 
                     {/* Информация о станции */}
-                    <Subhead style={{ color: '#fff', fontSize: '24px', fontWeight: 'bold', marginBottom: '8px' }}>
+                    <Subhead style={{
+                        color: '#ffffff',
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        marginBottom: '8px'
+                    }}>
                         {station.name}
                     </Subhead>
-                    <Caption style={{ color: '#99A2AD', fontSize: '16px', marginBottom: '40px' }}>
+                    <Caption style={{
+                        color: '#99A2AD',
+                        fontSize: '16px',
+                        marginBottom: '40px'
+                    }}>
                         {station.genre}
                     </Caption>
 
                     {/* Крупные кнопки управления */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-                        <Button size="l" mode="tertiary" style={{ color: '#fff', fontSize: '32px' }}>
-                            ⏮
+                        {/* Кнопка "Предыдущий" - декоративная */}
+                        <Button
+                            size="l"
+                            mode="tertiary"
+                            style={{
+                                color: '#ffffff', // <-- Явный белый цвет
+                                fontSize: '32px',
+                                minWidth: '60px'
+                            }}
+                        >
+
                         </Button>
 
+                        {/* Кнопка Play/Pause */}
                         <Button
                             size="l"
                             mode="primary"
@@ -90,18 +113,30 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 height: '80px',
                                 borderRadius: '50%',
                                 background: station.color,
-                                border: 'none'
+                                border: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}
                         >
                             {isPlaying ? (
-                                <span style={{ fontSize: '40px' }}>⏸</span>
+                                <span style={{ fontSize: '40px', color: '#ffffff' }}>⏸</span>
                             ) : (
-                                <span style={{ fontSize: '40px', marginLeft: '4px' }}>▶</span>
+                                <span style={{ fontSize: '40px', color: '#ffffff', marginLeft: '4px' }}>▶</span>
                             )}
                         </Button>
 
-                        <Button size="l" mode="tertiary" style={{ color: '#fff', fontSize: '32px' }}>
-
+                        {/* Кнопка "Следующий" - декоративная */}
+                        <Button
+                            size="l"
+                            mode="tertiary"
+                            style={{
+                                color: '#ffffff', // <-- Явный белый цвет
+                                fontSize: '32px',
+                                minWidth: '60px'
+                            }}
+                        >
+                            ⏭
                         </Button>
                     </div>
                 </Div>
