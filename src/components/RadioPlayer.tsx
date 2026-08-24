@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
     Panel,
-    PanelHeader,
     Button,
     Group,
     Cell,
@@ -12,11 +11,12 @@ import {
     Subhead,
     Caption,
     Separator,
+    Alert,
 } from '@vkontakte/vkui';
 import {
     Icon28PlayOutline,
     Icon28PauseOutline,
-    Icon28ShareOutline,
+    Icon28CopyOutline,
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
@@ -38,18 +38,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [volume, setVolume] = useState(0.8);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Состояния для таймера сна
     const [sleepTimeMinutes, setSleepTimeMinutes] = useState<number | null>(null);
     const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
+    const [showCopyAlert, setShowCopyAlert] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
 
-    // Инициализация аудио при смене станции
     useEffect(() => {
         if (!currentStation) return;
-
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current = null;
@@ -65,14 +62,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setError(null);
         });
 
-        audio.addEventListener('pause', () => {
-            setIsPlaying(false);
-        });
-
-        audio.addEventListener('waiting', () => {
-            setIsLoading(true);
-        });
-
+        audio.addEventListener('pause', () => setIsPlaying(false));
+        audio.addEventListener('waiting', () => setIsLoading(true));
         audio.addEventListener('error', () => {
             setError('Ошибка воспроизведения потока');
             setIsLoading(false);
@@ -87,14 +78,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         };
     }, [currentStationId]);
 
-    // Обновление громкости
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume;
         }
     }, [volume]);
 
-    // Логика таймера сна
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined;
 
@@ -102,7 +91,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             timer = setInterval(() => {
                 setTimeLeftSeconds((prev) => {
                     if (prev !== null && prev <= 1) {
-                        // Время вышло: останавливаем музыку
                         if (audioRef.current) {
                             audioRef.current.pause();
                         }
@@ -112,7 +100,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     }
                     return prev !== null ? prev - 1 : null;
                 });
-            }, 1000); // Обновляем каждую секунду
+            }, 1000);
         }
 
         return () => {
@@ -161,7 +149,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setIsPlaying(false);
             setIsLoading(false);
             setError(null);
-            // Сбрасываем таймер при смене станции (опционально)
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
 
@@ -178,62 +165,104 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     const handleShare = async () => {
+        const shareText = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
+
         try {
-            // @ts-ignore - VK Bridge метод может принимать разные параметры
-            await bridge.send('VKWebAppShowShareBox', {
-                link: 'https://vk.com/app54729099',
-                title: 'AniWave - Anime Radio',
-                comment: `Слушаю ${currentStation?.name} на AniWave! 🎵`,
-            });
+            // @ts-ignore
+            await bridge.send('VKWebAppCopyText', { text: shareText });
+            setShowCopyAlert(true);
         } catch (err) {
-            console.error('Ошибка при попытке поделиться:', err);
+            try {
+                await navigator.clipboard.writeText(shareText);
+                setShowCopyAlert(true);
+            } catch (clipboardErr) {
+                console.error('Ошибка копирования:', clipboardErr);
+                setError('Не удалось скопировать ссылку');
+            }
         }
     };
 
     return (
         <Panel id={id}>
-            <PanelHeader>AniWave Radio</PanelHeader>
+            {/* Баннер */}
+            <div style={{
+                background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
+                padding: '20px 16px',
+                textAlign: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: '-20px',
+                    left: '-20px',
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                }} />
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-30px',
+                    right: '-30px',
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                }} />
+
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    <div style={{
+                        fontSize: '32px',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                        marginBottom: '4px',
+                    }}>
+                        🌸 AniWave Radio
+                    </div>
+                    <div style={{
+                        fontSize: '14px',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        textShadow: '0 1px 4px rgba(0,0,0,0.2)',
+                    }}>
+                        Anime • J-Pop • Lo-Fi • OST
+                    </div>
+                </div>
+            </div>
 
             <Group>
                 {/* Основной блок плеера */}
-                <Div
-                    style={{
-                        textAlign: 'center',
-                        padding: '32px 16px',
-                        background: 'linear-gradient(135deg, #1a0a2e 0%, #0a0a1a 100%)',
-                        borderRadius: '12px',
-                        margin: '12px 0',
-                    }}
-                >
-                    {/* Логотип */}
+                <Div style={{
+                    textAlign: 'center',
+                    padding: '32px 16px',
+                    background: 'linear-gradient(135deg, #1a0a2e 0%, #0a0a1a 100%)',
+                    borderRadius: '12px',
+                    margin: '12px 0',
+                }}>
                     <Div style={{ marginBottom: '24px' }}>
-                        <div
-                            style={{
-                                width: '120px',
-                                height: '120px',
-                                margin: '0 auto',
-                                borderRadius: '50%',
-                                background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: '0 0 40px rgba(255, 102, 179, 0.5)',
-                                animation: isPlaying ? 'pulse 2s ease-in-out infinite' : 'none',
-                            }}
-                        >
+                        <div style={{
+                            width: '120px',
+                            height: '120px',
+                            margin: '0 auto',
+                            borderRadius: '50%',
+                            background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 0 40px rgba(255, 102, 179, 0.5)',
+                            animation: isPlaying ? 'pulse 2s ease-in-out infinite' : 'none',
+                        }}>
                             <span style={{ fontSize: '64px' }}>🎵</span>
                         </div>
                     </Div>
 
-                    {/* Название станции */}
-                    <Subhead
-                        style={{
-                            color: '#ffffff',
-                            marginBottom: '8px',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <Subhead style={{
+                        color: '#ffffff',
+                        marginBottom: '8px',
+                        fontSize: '18px',
+                        fontWeight: '600',
+                    }}>
                         {currentStation?.name || 'AniWave Radio'}
                     </Subhead>
 
@@ -241,7 +270,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         {currentStation?.genre || 'Anime Radio • J-Pop • Lo-Fi • OST'}
                     </Caption>
 
-                    {/* Кнопка Play/Pause */}
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                         <Button
                             size="l"
@@ -261,16 +289,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <div
-                                    style={{
-                                        width: '32px',
-                                        height: '32px',
-                                        border: '3px solid rgba(255, 255, 255, 0.3)',
-                                        borderTop: '3px solid #ffffff',
-                                        borderRadius: '50%',
-                                        animation: 'spin 1s linear infinite',
-                                    }}
-                                />
+                                <div style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    border: '3px solid rgba(255, 255, 255, 0.3)',
+                                    borderTop: '3px solid #ffffff',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite',
+                                }} />
                             ) : isPlaying ? (
                                 <Icon28PauseOutline width={40} height={40} />
                             ) : (
@@ -279,16 +305,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
                     </div>
 
-                    {/* Громкость */}
                     <Div style={{ maxWidth: '280px', margin: '0 auto' }}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '12px',
-                                marginBottom: '8px',
-                            }}
-                        >
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            marginBottom: '8px',
+                        }}>
                             <Slider
                                 value={volume * 100}
                                 onChange={handleVolumeChange}
@@ -296,19 +319,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 max={100}
                                 style={{ flex: 1 }}
                             />
-                            <span
-                                style={{
-                                    color: '#99A2AD',
-                                    fontSize: '12px',
-                                    minWidth: '40px',
-                                }}
-                            >
+                            <span style={{
+                                color: '#99A2AD',
+                                fontSize: '12px',
+                                minWidth: '40px',
+                            }}>
                                 {Math.round(volume * 100)}%
                             </span>
                         </div>
                     </Div>
 
-                    {/* Таймер сна */}
                     <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
                         <Caption style={{ color: '#99A2AD', marginBottom: '12px', display: 'block', textAlign: 'center' }}>
                             Таймер сна {timeLeftSeconds !== null && timeLeftSeconds > 0 ? `• Осталось: ${formatTime(timeLeftSeconds)}` : 'выключен'}
@@ -347,36 +367,40 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Div>
                 </Div>
 
-                {/* Кнопка Поделиться */}
                 <Cell
-                    before={<Icon28ShareOutline />}
+                    before={<Icon28CopyOutline />}
                     onClick={handleShare}
-                    subtitle="Пригласите друзей слушать вместе"
+                    subtitle="Скопировать ссылку и текст для друзей"
                 >
                     Поделиться
                 </Cell>
 
-                {/* Ошибка */}
+                {showCopyAlert && (
+                    <Alert
+                        header="Скопировано!"
+                        text="Ссылка и текст скопированы в буфер обмена."
+                        onClose={() => setShowCopyAlert(false)}
+                        actions={[{
+                            title: 'Отлично',
+                            mode: 'cancel',
+                            onClick: () => setShowCopyAlert(false),
+                        }]}
+                    />
+                )}
+
                 {error && (
                     <Placeholder
                         stretched
-                        header="Ошибка воспроизведения"
                         description={error}
                     >
+                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Ошибка воспроизведения</div>
                         <Button size="m" mode="secondary" onClick={togglePlay}>
                             Попробовать снова
                         </Button>
                     </Placeholder>
                 )}
 
-                {/* Список станций */}
-                <Group
-                    header={
-                        <Subhead style={{ padding: '12px 16px' }}>
-                            📻 Радиостанции
-                        </Subhead>
-                    }
-                >
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
                     <StationList
                         stations={radioStations}
                         currentStationId={currentStationId}
@@ -385,15 +409,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* О радио */}
                 <Separator />
-                <Group
-                    header={
-                        <Subhead style={{ padding: '12px 16px' }}>
-                            О радио
-                        </Subhead>
-                    }
-                >
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>О радио</Subhead>}>
                     <Cell multiline>
                         <Text>
                             AniWave — это лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST из
@@ -403,7 +420,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </Group>
             </Group>
 
-            {/* CSS анимации */}
             <style>{`
                 @keyframes pulse {
                     0%, 100% {
