@@ -32,7 +32,6 @@ import {
 } from '../data/radioStations';
 import { StationList } from './StationList';
 import { Visualizer } from './Visualizer';
-import { TrackHistory } from './TrackHistory'; // <-- Новый импорт
 
 interface RadioPlayerProps {
     id: string;
@@ -49,10 +48,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
-
-    // Новые состояния для истории треков
-    const [trackHistory, setTrackHistory] = useState<string[]>([]);
-    const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -111,28 +106,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
         return () => { if (timer) clearInterval(timer); };
     }, [sleepTimeMinutes, timeLeftSeconds]);
-
-    // Загрузка истории треков при смене станции
-    useEffect(() => {
-        const fetchHistory = async () => {
-            setIsHistoryLoading(true);
-            try {
-                const response = await fetch(`https://api.laut.fm/station/${currentStationId}/history?limit=5`);
-                if (!response.ok) throw new Error('Failed to fetch');
-                const data = await response.json();
-
-                const historyTitles = data.slice(0, 5).map((item: any) => item.title || 'Неизвестный трек');
-                setTrackHistory(historyTitles);
-            } catch (error) {
-                console.error('Ошибка загрузки истории треков:', error);
-                setTrackHistory([]);
-            } finally {
-                setIsHistoryLoading(false);
-            }
-        };
-
-        fetchHistory();
-    }, [currentStationId]);
 
     const togglePlay = async () => {
         if (!audioRef.current) return;
@@ -465,10 +438,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Новый блок: История треков */}
+                {/* Заглушка вместо истории треков (API laut.fm не работает) */}
                 <Separator />
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
-                    <TrackHistory tracks={trackHistory} isLoading={isHistoryLoading} />
+                    <Cell multiline>
+                        <Caption style={{ color: '#99A2AD' }}>
+                            Функция истории треков временно недоступна.
+                            Мы работаем над её возвращением!
+                        </Caption>
+                    </Cell>
                 </Group>
 
                 <Separator />
