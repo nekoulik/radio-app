@@ -42,8 +42,8 @@ export const radioStations: RadioStation[] = [
     },
     {
         id: 'chill',
-        name: 'Top Radio',
-        streamUrl: 'https://stream.laut.fm/topradio',
+        name: 'Radiodreamtiger',
+        streamUrl: 'https://stream.laut.fm/radiodreamtiger',
         genre: 'Chill • Ambient • Electronic',
         description: 'Атмосферная электронная музыка',
         color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',

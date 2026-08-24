@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { View, SplitLayout, SplitCol, AppRoot } from '@vkontakte/vkui';
 import { useActiveVkuiLocation } from '@vkontakte/vk-mini-apps-router';
@@ -10,13 +10,13 @@ export const App = () => {
   const { panel: activePanel = DEFAULT_VIEW_PANELS.RADIO } = useActiveVkuiLocation();
 
   useEffect(() => {
-    // Инициализируем VK Bridge
     bridge.send('VKWebAppInit');
 
-    // Устанавливаем цвета шапки
     bridge.send('VKWebAppSetViewSettings', {
       status_bar_style: 'light',
       action_bar_behavior: 'none',
+    } as any).catch(() => {
+      // Игнорируем ошибку
     });
   }, []);
 

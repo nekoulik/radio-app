@@ -26,7 +26,6 @@ export const StationList: React.FC<StationListProps> = ({
                         before={
                             <Avatar
                                 size={48}
-                                mode="shadow"
                                 style={{
                                     background: station.color,
                                     display: 'flex',

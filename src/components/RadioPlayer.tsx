@@ -133,10 +133,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const handleShare = async () => {
         try {
+            // @ts-ignore - VK Bridge метод может принимать разные параметры
             await bridge.send('VKWebAppShowShareBox', {
                 link: 'https://vk.com/app54729099',
                 title: 'AniWave - Anime Radio',
-                comment: `Слушаю ${currentStation?.name} на AniWave! 🎵🌸`,
+                comment: `Слушаю ${currentStation?.name} на AniWave! 🎵`,
             });
         } catch (err) {
             console.error('Ошибка при попытке поделиться:', err);
@@ -197,7 +198,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     {/* Кнопка Play/Pause (теперь точно по центру) */}
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                         <Button
-                            size="xl"
+                            size="l"
                             mode="primary"
                             style={{
                                 background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
@@ -271,7 +272,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     Поделиться
                 </Cell>
 
-                {/* Ошибка */}
                 {error && (
                     <Placeholder
                         stretched
