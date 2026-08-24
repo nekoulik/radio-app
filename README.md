@@ -85,6 +85,4 @@ Pull Request'ы приветствуются! Если у вас есть иде
 4.Откройте Pull Request.
 📄 Лицензия
 Этот проект распространяется под лицензией MIT. Подробнее в файле LICENSE.
-<div align="center">
-Made with ❤️ and ☕ by <b>Nekoulik</b>
-</div>
+Made with ❤️ and ☕ by Nekoulik
