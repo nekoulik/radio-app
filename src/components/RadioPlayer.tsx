@@ -30,9 +30,10 @@ import {
     getStationById,
     RadioStation,
 } from '../data/radioStations';
-import { StationSearch } from './StationSearch'; // <-- Обновлённый импорт
+import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
+import { NowPlayingScreen } from './NowPlayingScreen'; // <-- Новый импорт
 
 interface RadioPlayerProps {
     id: string;
@@ -49,6 +50,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
+    const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false); // <-- Новое состояние
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -198,8 +200,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
+    const openNowPlaying = () => setIsNowPlayingOpen(true); // <-- Функция открытия
+
     return (
         <Panel id={id}>
+            {/* Модальное окно "Поделиться" */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
@@ -244,7 +249,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
-            {/* Анимированный градиентный баннер с плавающими частицами */}
+            {/* Полноэкранный режим "Сейчас играет" */}
+            <NowPlayingScreen
+                isOpen={isNowPlayingOpen}
+                onClose={() => setIsNowPlayingOpen(false)}
+                station={currentStation}
+                isPlaying={isPlaying}
+                onTogglePlay={togglePlay}
+            />
+
+            {/* Анимированный градиентный баннер */}
             <div style={{
                 padding: '30px 16px',
                 textAlign: 'center',
@@ -312,16 +326,20 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </div>
 
             <Group>
-                {/* Основной блок плеера с фоновой картинкой */}
-                <Div style={{
-                    textAlign: 'center',
-                    padding: '32px 16px',
-                    borderRadius: '12px',
-                    margin: '12px 0',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    minHeight: '450px',
-                }}>
+                {/* Основной блок плеера (кликабельный для открытия Now Playing) */}
+                <Div
+                    style={{
+                        textAlign: 'center',
+                        padding: '32px 16px',
+                        borderRadius: '12px',
+                        margin: '12px 0',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        minHeight: '450px',
+                        cursor: 'pointer', // <-- Курсор руки
+                    }}
+                    onClick={openNowPlaying} // <-- Открытие экрана
+                >
                     <div style={{
                         position: 'absolute',
                         top: 0,
@@ -377,7 +395,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                 }}
-                                onClick={togglePlay}
+                                onClick={(e) => {
+                                    e.stopPropagation(); // <-- Чтобы не открывался экран при клике на Play
+                                    togglePlay();
+                                }}
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
@@ -406,7 +427,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             }}>
                                 <Slider
                                     value={volume * 100}
-                                    onChange={handleVolumeChange}
+                                    onChange={(value) => {
+                                        // Slider в VKUI передает просто число, а не событие
+                                        handleVolumeChange(value);
+                                    }}
                                     min={0}
                                     max={100}
                                     style={{ flex: 1 }}
@@ -446,7 +470,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             backdropFilter: 'blur(10px)',
                                             textShadow: '0 1px 2px rgba(0,0,0,0.8)',
                                         }}
-                                        onClick={() => handleSleepTimer(min)}
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // <-- Чтобы не открывался экран
+                                            handleSleepTimer(min);
+                                        }}
                                     >
                                         {min} мин
                                     </Button>
@@ -462,7 +489,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         backdropFilter: 'blur(10px)',
                                         textShadow: '0 1px 2px rgba(0,0,0,0.8)',
                                     }}
-                                    onClick={() => handleSleepTimer(null)}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // <-- Чтобы не открывался экран
+                                        handleSleepTimer(null);
+                                    }}
                                 >
                                     Выкл
                                 </Button>
@@ -489,7 +519,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Placeholder>
                 )}
 
-                {/* Компактный список станций с поиском и скроллом */}
+                {/* Компактный список станций с поиском */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
                     <StationSearch
                         stations={radioStations}
@@ -506,27 +536,25 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Group header={
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
                         <Subhead>🔗 Ссылки</Subhead>
-                        {/* Кнопка техподдержки справа вверху */}
                         <Button
                             size="s"
                             mode="tertiary"
                             Component="a"
-                            href="https://vk.com/im?sel=-239834224" // <-- Ссылка на диалог
+                            href="https://vk.com/im?sel=-239834224"
                             target="_blank"
                             style={{ color: '#99A2AD' }}
                         >
-                            ️ Поддержка
+                            🛠️ Поддержка
                         </Button>
                     </div>
                 }>
-                    {/* Большая кнопка сообщества */}
                     <Cell
                         Component="a"
-                        href="https://vk.ru/ani__wave" // <-- Ссылка на группу
+                        href="https://vk.ru/ani__wave"
                         target="_blank"
-                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
+                        before={<div style={{ fontSize: '28px' }}></div>}
                         subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
-                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
+                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}></div>}
                         style={{
                             background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)',
                             borderRadius: '8px',
@@ -551,14 +579,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             <style>{`
                 @keyframes pulse {
-                    0%, 100% {
-                        transform: scale(1);
-                        box-shadow: 0 0 40px rgba(255, 102, 179, 0.5);
-                    }
-                    50% {
-                        transform: scale(1.05);
-                        box-shadow: 0 0 60px rgba(255, 102, 179, 0.7);
-                    }
+                    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(255, 102, 179, 0.5); }
+                    50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(255, 102, 179, 0.7); }
                 }
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
