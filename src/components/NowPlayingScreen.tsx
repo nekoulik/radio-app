@@ -23,123 +23,114 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
 
     return (
         <ModalRoot activeModal={isOpen ? 'now-playing' : undefined}>
+            {/* Добавляем класс dark-theme для принудительного темного фона */}
             <ModalPage
                 id="now-playing"
+                className="now-playing-modal"
                 header={
                     <ModalPageHeader
                         before={
                             <Button mode="tertiary" onClick={onClose}>
-                                <Icon24Dismiss />
+                                <Icon24Dismiss style={{ color: '#fff' }} />
                             </Button>
                         }
+                        // Делаем заголовок прозрачным или темным
+                        style={{ background: 'transparent', color: '#fff' }}
                     >
-                        Сейчас играет
+                        <span style={{ color: '#ffffff' }}>Сейчас играет</span>
                     </ModalPageHeader>
                 }
                 onClose={onClose}
-                style={{
-                    background: '#0a0a1a', // Темный фон
-                    color: '#ffffff' // Белый текст по умолчанию
-                }}
             >
-                <Div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
-                    padding: '32px 16px',
-                    textAlign: 'center',
-                    color: '#ffffff' // Явно задаем белый цвет для всего контента
-                }}>
-                    {/* Большая визуализация */}
-                    <div style={{
-                        width: '280px',
-                        height: '280px',
-                        marginBottom: '40px',
-                        borderRadius: '24px',
-                        background: station.color,
+                {/* Контейнер с темным фоном на всю высоту */}
+                <div className="now-playing-content">
+                    <Div style={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 20px 60px rgba(255, 102, 179, 0.4)',
-                        animation: isPlaying ? 'pulse-large 3s ease-in-out infinite' : 'none'
+                        height: '100%',
+                        padding: '32px 16px',
+                        textAlign: 'center'
                     }}>
-                        <Visualizer
-                            isPlaying={isPlaying}
-                            color="rgba(255,255,255,0.9)"
-                        />
-                    </div>
+                        {/* Большая визуализация */}
+                        <div style={{
+                            width: '260px',
+                            height: '260px',
+                            marginBottom: '32px',
+                            borderRadius: '24px',
+                            background: station.color,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                        }}>
+                            <Visualizer
+                                isPlaying={isPlaying}
+                                color="rgba(255,255,255,0.9)"
+                            />
+                        </div>
 
-                    {/* Информация о станции */}
-                    <Subhead style={{
-                        color: '#ffffff',
-                        fontSize: '24px',
-                        fontWeight: 'bold',
-                        marginBottom: '8px'
-                    }}>
-                        {station.name}
-                    </Subhead>
-                    <Caption style={{
-                        color: '#99A2AD',
-                        fontSize: '16px',
-                        marginBottom: '40px'
-                    }}>
-                        {station.genre}
-                    </Caption>
+                        {/* Информация о станции - ЯВНЫЙ БЕЛЫЙ ЦВЕТ */}
+                        <Subhead style={{
+                            color: '#ffffff !important',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                            marginBottom: '8px'
+                        }}>
+                            {station.name}
+                        </Subhead>
+                        <Caption style={{
+                            color: '#99A2AD !important',
+                            fontSize: '16px',
+                            marginBottom: '40px'
+                        }}>
+                            {station.genre}
+                        </Caption>
 
-                    {/* Крупные кнопки управления */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-                        {/* Кнопка "Предыдущий" - декоративная */}
-                        <Button
-                            size="l"
-                            mode="tertiary"
-                            style={{
-                                color: '#ffffff', // <-- Явный белый цвет
-                                fontSize: '32px',
-                                minWidth: '60px'
-                            }}
-                        >
+                        {/* Крупные кнопки управления */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                            <Button
+                                size="l"
+                                mode="tertiary"
+                                style={{ color: '#ffffff', minWidth: '48px' }}
+                            >
+                                ⏮
+                            </Button>
 
-                        </Button>
+                            <Button
+                                size="l"
+                                mode="primary"
+                                onClick={onTogglePlay}
+                                style={{
+                                    width: '72px',
+                                    height: '72px',
+                                    borderRadius: '50%',
+                                    background: station.color,
+                                    border: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: 0
+                                }}
+                            >
+                                {isPlaying ? (
+                                    <span style={{ fontSize: '32px', lineHeight: 1 }}></span>
+                                ) : (
+                                    <span style={{ fontSize: '32px', lineHeight: 1, marginLeft: '4px' }}>▶</span>
+                                )}
+                            </Button>
 
-                        {/* Кнопка Play/Pause */}
-                        <Button
-                            size="l"
-                            mode="primary"
-                            onClick={onTogglePlay}
-                            style={{
-                                width: '80px',
-                                height: '80px',
-                                borderRadius: '50%',
-                                background: station.color,
-                                border: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
-                        >
-                            {isPlaying ? (
-                                <span style={{ fontSize: '40px', color: '#ffffff' }}>⏸</span>
-                            ) : (
-                                <span style={{ fontSize: '40px', color: '#ffffff', marginLeft: '4px' }}>▶</span>
-                            )}
-                        </Button>
-
-                        {/* Кнопка "Следующий" - декоративная */}
-                        <Button
-                            size="l"
-                            mode="tertiary"
-                            style={{
-                                color: '#ffffff', // <-- Явный белый цвет
-                                fontSize: '32px',
-                                minWidth: '60px'
-                            }}
-                        >
-                            ⏭
-                        </Button>
-                    </div>
-                </Div>
+                            <Button
+                                size="l"
+                                mode="tertiary"
+                                style={{ color: '#ffffff', minWidth: '48px' }}
+                            >
+                                ⏭
+                            </Button>
+                        </div>
+                    </Div>
+                </div>
             </ModalPage>
         </ModalRoot>
     );

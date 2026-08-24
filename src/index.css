@@ -214,3 +214,23 @@ body {
     display: block;
     margin-top: 1px;
 }
+
+/* Принудительная темная тема для экрана "Сейчас играет" */
+.now-playing-modal .ModalPage__in {
+    background: #0a0a1a !important;
+    min-height: 100vh;
+}
+
+.now-playing-modal .ModalPage__header {
+    background: transparent !important;
+    border-bottom: none !important;
+}
+
+.now-playing-modal .ModalPage__header-in {
+    color: #ffffff !important;
+}
+
+/* Скрываем стандартную полосу прокрутки VKUI, если она мешает */
+.now-playing-modal::-webkit-scrollbar {
+    display: none;
+}
