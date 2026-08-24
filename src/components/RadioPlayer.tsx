@@ -39,6 +39,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Состояния для таймера сна
+    const [sleepTimeMinutes, setSleepTimeMinutes] = useState<number | null>(null);
+    const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
 
@@ -90,6 +94,32 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     }, [volume]);
 
+    // Логика таймера сна
+    useEffect(() => {
+        let timer: ReturnType<typeof setInterval> | undefined;
+
+        if (sleepTimeMinutes !== null && timeLeftSeconds !== null && timeLeftSeconds > 0) {
+            timer = setInterval(() => {
+                setTimeLeftSeconds((prev) => {
+                    if (prev !== null && prev <= 1) {
+                        // Время вышло: останавливаем музыку
+                        if (audioRef.current) {
+                            audioRef.current.pause();
+                        }
+                        setIsPlaying(false);
+                        setSleepTimeMinutes(null);
+                        return 0;
+                    }
+                    return prev !== null ? prev - 1 : null;
+                });
+            }, 1000); // Обновляем каждую секунду
+        }
+
+        return () => {
+            if (timer) clearInterval(timer);
+        };
+    }, [sleepTimeMinutes, timeLeftSeconds]);
+
     const togglePlay = async () => {
         if (!audioRef.current) return;
 
@@ -111,6 +141,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         setVolume(value / 100);
     };
 
+    const handleSleepTimer = (minutes: number | null) => {
+        setSleepTimeMinutes(minutes);
+        setTimeLeftSeconds(minutes ? minutes * 60 : null);
+    };
+
+    const formatTime = (totalSeconds: number | null) => {
+        if (totalSeconds === null) return '';
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    };
+
     const handleStationSelect = (station: RadioStation) => {
         if (station.id === currentStationId) {
             togglePlay();
@@ -119,6 +161,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setIsPlaying(false);
             setIsLoading(false);
             setError(null);
+            // Сбрасываем таймер при смене станции (опционально)
+            setSleepTimeMinutes(null);
+            setTimeLeftSeconds(null);
+
             setTimeout(() => {
                 if (audioRef.current) {
                     setIsLoading(true);
@@ -195,7 +241,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         {currentStation?.genre || 'Anime Radio • J-Pop • Lo-Fi • OST'}
                     </Caption>
 
-                    {/* Кнопка Play/Pause (теперь точно по центру) */}
+                    {/* Кнопка Play/Pause */}
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                         <Button
                             size="l"
@@ -261,7 +307,45 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             </span>
                         </div>
                     </Div>
-                </Div> {/* <-- ВОТ ЭТОГО ТЕГА НЕ ХВАТАЛО! */}
+
+                    {/* Таймер сна */}
+                    <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+                        <Caption style={{ color: '#99A2AD', marginBottom: '12px', display: 'block', textAlign: 'center' }}>
+                            Таймер сна {timeLeftSeconds !== null && timeLeftSeconds > 0 ? `• Осталось: ${formatTime(timeLeftSeconds)}` : 'выключен'}
+                        </Caption>
+                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            {[15, 30, 60].map((min) => (
+                                <Button
+                                    key={min}
+                                    size="s"
+                                    mode={sleepTimeMinutes === min ? 'primary' : 'outline'}
+                                    style={{
+                                        background: sleepTimeMinutes === min ? 'rgba(255, 102, 179, 0.2)' : 'transparent',
+                                        color: sleepTimeMinutes === min ? '#ff66b3' : '#99A2AD',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        minWidth: '60px'
+                                    }}
+                                    onClick={() => handleSleepTimer(min)}
+                                >
+                                    {min} мин
+                                </Button>
+                            ))}
+                            <Button
+                                size="s"
+                                mode="outline"
+                                style={{
+                                    background: sleepTimeMinutes === null ? 'rgba(255, 102, 179, 0.2)' : 'transparent',
+                                    color: sleepTimeMinutes === null ? '#ff66b3' : '#99A2AD',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    minWidth: '60px'
+                                }}
+                                onClick={() => handleSleepTimer(null)}
+                            >
+                                Выкл
+                            </Button>
+                        </div>
+                    </Div>
+                </Div>
 
                 {/* Кнопка Поделиться */}
                 <Cell
@@ -272,6 +356,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     Поделиться
                 </Cell>
 
+                {/* Ошибка */}
                 {error && (
                     <Placeholder
                         stretched
