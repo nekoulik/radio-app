@@ -32,6 +32,7 @@ import {
 } from '../data/radioStations';
 import { StationSearch } from './StationSearch'; // <-- Обновлённый импорт
 import { Visualizer } from './Visualizer';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface RadioPlayerProps {
     id: string;
@@ -51,6 +52,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
+
+    const { toggleFavorite, isFavorite } = useFavorites();
 
     useEffect(() => {
         if (!currentStation) return;
@@ -493,6 +496,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         currentStationId={currentStationId}
                         isPlaying={isPlaying}
                         onStationSelect={handleStationSelect}
+                        isFavorite={isFavorite}
+                        toggleFavorite={toggleFavorite}
                     />
                 </Group>
 

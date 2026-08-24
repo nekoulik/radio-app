@@ -7,6 +7,8 @@ interface StationSearchProps {
     currentStationId: string;
     isPlaying: boolean;
     onStationSelect: (station: RadioStation) => void;
+    isFavorite: (id: string) => boolean;
+    toggleFavorite: (id: string) => void;
 }
 
 export const StationSearch: React.FC<StationSearchProps> = ({
@@ -14,6 +16,8 @@ export const StationSearch: React.FC<StationSearchProps> = ({
     currentStationId,
     isPlaying,
     onStationSelect,
+    isFavorite,
+    toggleFavorite,
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -59,6 +63,8 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                     ) : (
                         filteredStations.map((station) => {
                             const isActive = station.id === currentStationId;
+                            const fav = isFavorite(station.id);
+
                             return (
                                 <Cell
                                     key={station.id}
@@ -75,24 +81,44 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                             fontSize: '20px',
                                             boxShadow: isActive ? '0 0 12px rgba(255, 102, 179, 0.6)' : 'none',
                                             transition: 'box-shadow 0.3s ease',
-                                            flexShrink: 0, // ← Добавлено: иконка не сжимается
+                                            flexShrink: 0,
                                         }}>
-                                            🎵
+
                                         </div>
                                     }
                                     after={
-                                        isActive ? (
-                                            <span style={{
-                                                fontSize: '12px',
-                                                color: isPlaying ? '#ff66b3' : '#99A2AD',
-                                                fontWeight: '600',
-                                                flexShrink: 0, // ← Добавлено: иконка play не сжимается
-                                            }}>
-                                                {isPlaying ? '▶' : '⏸'}
-                                            </span>
-                                        ) : null
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            {/* Иконка Play/Pause для активной станции */}
+                                            {isActive && (
+                                                <span style={{
+                                                    fontSize: '12px',
+                                                    color: isPlaying ? '#ff66b3' : '#99A2AD',
+                                                    fontWeight: '600',
+                                                }}>
+                                                    {isPlaying ? '▶' : '⏸'}
+                                                </span>
+                                            )}
+
+                                            {/* Кнопка Избранное (используем эмодзи вместо иконок) */}
+                                            <div
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(station.id);
+                                                }}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    padding: '4px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    fontSize: '20px',
+                                                    userSelect: 'none',
+                                                }}
+                                            >
+                                                {fav ? '❤️' : '🤍'}
+                                            </div>
+                                        </div>
                                     }
-                                    multiline // ← Добавлено: разрешаем многострочный текст
+                                    multiline
                                     style={{
                                         background: isActive
                                             ? 'rgba(255, 102, 179, 0.15)'
@@ -105,20 +131,18 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                         transition: 'all 0.2s ease',
                                     }}
                                 >
-                                    {/* Название станции - всегда видимо */}
                                     <Subhead
                                         weight={isActive ? '2' : '1'}
                                         style={{
                                             color: isActive ? '#ff66b3' : '#ffffff',
                                             lineHeight: '1.3',
-                                            wordBreak: 'break-word', // ← Добавлено: перенос длинных слов
+                                            wordBreak: 'break-word',
                                             overflowWrap: 'break-word',
                                         }}
                                     >
                                         {station.name}
                                     </Subhead>
 
-                                    {/* Жанр и описание на одной строке */}
                                     <div style={{ marginTop: '2px' }}>
                                         <Caption style={{
                                             color: '#99A2AD',
