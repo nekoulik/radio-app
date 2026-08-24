@@ -1,46 +1,90 @@
-# Basic [VK Bridge](https://github.com/VKCOM/vk-bridge) + [VKUI](https://github.com/VKCOM/VKUI) + [VK Miniapps Router](https://github.com/VKCOM/vk-mini-apps-router) app
+# 🌸 AniWave Radio
 
-Этот шаблон предоставляет базовый код и настройки для создания мини-приложения внутри ВКонтакте.
-В качестве сборщика проекта выступает [Vite](https://vite-docs-ru.vercel.app/guide/), подробнее про его конфигурацию и дополнительные плагины можно прочитать [здесь](https://vite-docs-ru.vercel.app/config/) и [здесь]().
+**Лучшее аниме-радио ВКонтакте (VK Mini App)**
 
-## 🚀 Запуск мини приложения
+AniWave Radio — это современное веб-приложение для прослушивания японской музыки, саундтреков из аниме и Lo-Fi битов прямо во ВКонтакте. Приложение написано на **React + TypeScript** с использованием дизайн-системы **VKUI**.
 
-Запустите ваш мини апп
+<div align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+  <img src="https://img.shields.io/badge/React-18.x-61DAFB?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-NextGen-646CFF?logo=vite" alt="Vite" />
+</div>
 
-```sh
- yarn start
-```
+---
 
-Перейдите на [devportal](https://dev.vk.ru/ru) или в [управление](https://vk.ru/apps?act=manage) и создайте новый мини апп.
-Вставьте URL на котором работает ваше приложение в настройки, предварительно включив режим разработки.
-Теперь можете открыть мини апп, нажав на его иконку.
-Список всех созданных вами мини приложений вы сможете найти [тут](https://vk.ru/apps?act=manage) или [тут](https://dev.vk.ru/ru/admin/apps-list).
+## ✨ Возможности
 
-## 🌐 Деплой мини приложения
+*    **15+ Радиостанций**: J-Pop, Anime OST, Lo-Fi, City Pop, K-Pop и многое другое.
+*    **Умный поиск**: Мгновенная фильтрация станций по названию или жанру.
+*   ❤️ **Избранное**: Сохраняйте любимые станции (данные сохраняются в LocalStorage).
+*   🌙 **Таймер сна**: Автоматическое выключение через 15, 30 или 60 минут.
+*   🎨 **Полноэкранный режим**: Стильный плеер "Сейчас играет" с анимированной визуализацией.
+*   📱 **Адаптивность**: Идеально работает на ПК и мобильных устройствах внутри VK.
+*   ⚡ **Быстрая работа**: Оптимизировано на Vite для мгновенной загрузки.
 
-Для того чтобы захостить ваше приложение на сервера ВКонтакте нужно зайти в vk-hosting-config.json и указать id вашего приложения. Далее можно запустить уже подготовленный скрипт:
+## 🛠 Технологический стек
 
-```sh
-yarn run deploy
-```
+| Категория | Технологии |
+| :--- | :--- |
+| **Core** | React 18, TypeScript |
+| **Build Tool** | Vite |
+| **UI Kit** | @vkontakte/vkui (VKUI) |
+| **Icons** | @vkontakte/icons |
+| **State** | React Hooks (`useState`, `useEffect`, `useMemo`) |
+| **Storage** | LocalStorage (для избранного) |
+| **Audio** | HTML5 Audio API |
 
-После чего, вы получите бессрочную ссылку на ваш мини апп.
+## 🚀 Установка и запуск
 
-## 🗂️ Предустановленные библиотеки
+Чтобы запустить проект локально, выполните следующие шаги:
 
-Мы подготовили для вас набор пакетов, с которыми вам будет легко начать разрабатывать мини аппы
-| Пакет | Назначение |
-| ------ | ------ |
-| [vk-bridge](https://dev.vk.ru/ru/mini-apps/bridge) | Библиотека для отправки команд и обмена данными с платформой ВКонтакте. |
-| [VKUI](https://vkcom.github.io/VKUI/) | Библиотека React-компонентов для создания мини-приложений в стиле ВКонтакте. |
-| [vk-bridge-react](https://www.npmjs.com/package/@vkontakte/vk-bridge-react) | Пакет, который даёт возможность использовать события библиотеки VK Bridge в React-приложениях. |
-| [vk-mini-apps-router](https://dev.vk.ru/ru/libraries/router) | Библиотека для маршрутизации и навигации в мини-приложениях, созданных с помощью VKUI. |
-| [icons](https://vkcom.github.io/icons/) | Набор иконок для использования в компонентах VKUI. |
-| [vk-miniapps-deploy](https://dev.vk.ru/ru/mini-apps/development/hosting) | Пакет для размещения файлов мини-приложения на хостинге ВКонтакте. |
-| [eruda](https://www.npmjs.com/package/eruda) | Консоль для мобильного браузера|
+1.  **Клонируйте репозиторий:**
+    ```bash
+    git clone https://github.com/nekoulik/radio-app.git
+    cd radio-app
+    ```
 
-## 📎 Полезные ссылки
+2.  **Установите зависимости:**
+    ```bash
+    npm install
+    # или
+    yarn install
+    ```
 
-[Dev портал разработчиков](https://dev.vk.ru/ru)
-[Пример мини приложения](https://dev.vk.ru/ru/mini-apps/examples/shop)
-[Если столкнулись с проблемами](https://github.com/VKCOM/create-vk-mini-app/issues)
+3.  **Запустите сервер разработки:**
+    ```bash
+    npm run dev
+    ```
+
+4.  **Откройте приложение:**
+    Перейдите по ссылке [http://localhost:5173](http://localhost:5173) в вашем браузере.
+
+## 📂 Структура проекта
+
+```text
+radio-app/
+── public/
+│   ├── icons/            # Иконки приложения (PWA/Favicon)
+│   └── background.png    # Фоновое изображение плеера
+├── src/
+│   ├── components/       # UI компоненты (Плеер, Поиск, Визуализатор, NowPlaying)
+│   ├── data/             # Данные радиостанций (radioStations.ts)
+│   ├── hooks/            # Кастомные хуки (useFavorites)
+│   ├── App.tsx           # Корневой компонент
+│   └── main.tsx          # Точка входа
+├── index.html            # Главный HTML файл с мета-тегами
+└── vite.config.ts        # Конфигурация сборщика
+
+🤝 Как внести вклад
+Pull Request'ы приветствуются! Если у вас есть идеи по улучшению или вы нашли баг, пожалуйста, создайте Issue.
+1.Форкните репозиторий.
+2.Создайте ветку для вашей фичи (git checkout -b feature/AmazingFeature).
+3.Закоммитьте изменения (git commit -m 'Add some AmazingFeature').
+Запушьте в ветку (git push origin feature/AmazingFeature).
+4.Откройте Pull Request.
+📄 Лицензия
+Этот проект распространяется под лицензией MIT. Подробнее в файле LICENSE.
+<div align="center">
+Made with ❤️ and ☕ by <b>Nekoulik</b>
+</div>
