@@ -241,6 +241,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* Баннер */}
             <div style={{
                 background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
                 padding: '20px 16px',
@@ -287,128 +288,170 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </div>
 
             <Group>
+                {/* Основной блок плеера с фоновой картинкой */}
                 <Div style={{
                     textAlign: 'center',
                     padding: '32px 16px',
-                    background: 'linear-gradient(135deg, #1a0a2e 0%, #0a0a1a 100%)',
                     borderRadius: '12px',
                     margin: '12px 0',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    minHeight: '450px',
                 }}>
-                    <Div style={{ marginBottom: '24px' }}>
-                        <Visualizer
-                            isPlaying={isPlaying}
-                            color={currentStation?.color || 'linear-gradient(180deg, #ff66b3 0%, #66ccff 100%)'}
-                        />
-                    </Div>
+                    {/* Фоновая картинка */}
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundImage: 'url(/background.png)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        filter: 'brightness(0.35)',
+                        zIndex: 0,
+                    }} />
 
-                    <Subhead style={{
-                        color: '#ffffff',
-                        marginBottom: '8px',
-                        fontSize: '18px',
-                        fontWeight: '600',
-                    }}>
-                        {currentStation?.name || 'AniWave Radio'}
-                    </Subhead>
-
-                    <Caption style={{ color: '#99A2AD', marginBottom: '24px' }}>
-                        {currentStation?.genre || 'Anime Radio • J-Pop • Lo-Fi • OST'}
-                    </Caption>
-
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-                        <Button
-                            size="l"
-                            mode="primary"
-                            style={{
-                                background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
-                                border: 'none',
-                                width: '80px',
-                                height: '80px',
-                                borderRadius: '50%',
-                                boxShadow: '0 8px 24px rgba(255, 102, 179, 0.4)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                            onClick={togglePlay}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <div style={{
-                                    width: '32px',
-                                    height: '32px',
-                                    border: '3px solid rgba(255, 255, 255, 0.3)',
-                                    borderTop: '3px solid #ffffff',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                }} />
-                            ) : isPlaying ? (
-                                <Icon28PauseOutline width={40} height={40} />
-                            ) : (
-                                <Icon28PlayOutline width={40} height={40} style={{ marginLeft: '4px' }} />
-                            )}
-                        </Button>
-                    </div>
-
-                    <Div style={{ maxWidth: '280px', margin: '0 auto' }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            marginBottom: '8px',
-                        }}>
-                            <Slider
-                                value={volume * 100}
-                                onChange={handleVolumeChange}
-                                min={0}
-                                max={100}
-                                style={{ flex: 1 }}
+                    {/* Контент поверх фона */}
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        {/* Эквалайзер */}
+                        <Div style={{ marginBottom: '24px' }}>
+                            <Visualizer
+                                isPlaying={isPlaying}
+                                color={currentStation?.color || 'linear-gradient(180deg, #ff66b3 0%, #66ccff 100%)'}
                             />
-                            <span style={{
-                                color: '#99A2AD',
-                                fontSize: '12px',
-                                minWidth: '40px',
-                            }}>
-                                {Math.round(volume * 100)}%
-                            </span>
-                        </div>
-                    </Div>
+                        </Div>
 
-                    <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
-                        <Caption style={{ color: '#99A2AD', marginBottom: '12px', display: 'block', textAlign: 'center' }}>
-                            Таймер сна {timeLeftSeconds !== null && timeLeftSeconds > 0 ? `• Осталось: ${formatTime(timeLeftSeconds)}` : 'выключен'}
+                        {/* Название станции */}
+                        <Subhead style={{
+                            color: '#ffffff',
+                            marginBottom: '8px',
+                            fontSize: '18px',
+                            fontWeight: '600',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.9)',
+                        }}>
+                            {currentStation?.name || 'AniWave Radio'}
+                        </Subhead>
+
+                        <Caption style={{
+                            color: '#ffffff',
+                            marginBottom: '24px',
+                            textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+                        }}>
+                            {currentStation?.genre || 'Anime Radio • J-Pop • Lo-Fi • OST'}
                         </Caption>
-                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                            {[15, 30, 60].map((min) => (
-                                <Button
-                                    key={min}
-                                    size="s"
-                                    mode={sleepTimeMinutes === min ? 'primary' : 'outline'}
-                                    style={{
-                                        background: sleepTimeMinutes === min ? 'rgba(255, 102, 179, 0.2)' : 'transparent',
-                                        color: sleepTimeMinutes === min ? '#ff66b3' : '#99A2AD',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        minWidth: '60px'
-                                    }}
-                                    onClick={() => handleSleepTimer(min)}
-                                >
-                                    {min} мин
-                                </Button>
-                            ))}
+
+                        {/* Кнопка Play/Pause */}
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                             <Button
-                                size="s"
-                                mode="outline"
+                                size="l"
+                                mode="primary"
                                 style={{
-                                    background: sleepTimeMinutes === null ? 'rgba(255, 102, 179, 0.2)' : 'transparent',
-                                    color: sleepTimeMinutes === null ? '#ff66b3' : '#99A2AD',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    minWidth: '60px'
+                                    background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
+                                    border: 'none',
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '50%',
+                                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                 }}
-                                onClick={() => handleSleepTimer(null)}
+                                onClick={togglePlay}
+                                disabled={isLoading}
                             >
-                                Выкл
+                                {isLoading ? (
+                                    <div style={{
+                                        width: '32px',
+                                        height: '32px',
+                                        border: '3px solid rgba(255, 255, 255, 0.3)',
+                                        borderTop: '3px solid #ffffff',
+                                        borderRadius: '50%',
+                                        animation: 'spin 1s linear infinite',
+                                    }} />
+                                ) : isPlaying ? (
+                                    <Icon28PauseOutline width={40} height={40} />
+                                ) : (
+                                    <Icon28PlayOutline width={40} height={40} style={{ marginLeft: '4px' }} />
+                                )}
                             </Button>
                         </div>
-                    </Div>
+
+                        {/* Громкость */}
+                        <Div style={{ maxWidth: '280px', margin: '0 auto' }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                                marginBottom: '8px',
+                            }}>
+                                <Slider
+                                    value={volume * 100}
+                                    onChange={handleVolumeChange}
+                                    min={0}
+                                    max={100}
+                                    style={{ flex: 1 }}
+                                />
+                                <span style={{
+                                    color: '#ffffff',
+                                    fontSize: '12px',
+                                    minWidth: '40px',
+                                    textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+                                }}>
+                                    {Math.round(volume * 100)}%
+                                </span>
+                            </div>
+                        </Div>
+
+                        {/* Таймер сна */}
+                        <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
+                            <Caption style={{
+                                color: '#ffffff',
+                                marginBottom: '12px',
+                                display: 'block',
+                                textAlign: 'center',
+                                textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+                            }}>
+                                Таймер сна {timeLeftSeconds !== null && timeLeftSeconds > 0 ? `• Осталось: ${formatTime(timeLeftSeconds)}` : 'выключен'}
+                            </Caption>
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                {[15, 30, 60].map((min) => (
+                                    <Button
+                                        key={min}
+                                        size="s"
+                                        mode={sleepTimeMinutes === min ? 'primary' : 'outline'}
+                                        style={{
+                                            background: sleepTimeMinutes === min ? 'rgba(255, 102, 179, 0.4)' : 'rgba(0,0,0,0.4)',
+                                            color: '#ffffff',
+                                            border: '1px solid rgba(255,255,255,0.3)',
+                                            minWidth: '60px',
+                                            backdropFilter: 'blur(10px)',
+                                            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+                                        }}
+                                        onClick={() => handleSleepTimer(min)}
+                                    >
+                                        {min} мин
+                                    </Button>
+                                ))}
+                                <Button
+                                    size="s"
+                                    mode="outline"
+                                    style={{
+                                        background: sleepTimeMinutes === null ? 'rgba(255, 102, 179, 0.4)' : 'rgba(0,0,0,0.4)',
+                                        color: '#ffffff',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        minWidth: '60px',
+                                        backdropFilter: 'blur(10px)',
+                                        textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+                                    }}
+                                    onClick={() => handleSleepTimer(null)}
+                                >
+                                    Выкл
+                                </Button>
+                            </div>
+                        </Div>
+                    </div>
                 </Div>
 
                 <Cell
@@ -438,13 +481,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Заглушка вместо истории треков (API laut.fm не работает) */}
+                {/* Заглушка вместо истории треков */}
                 <Separator />
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
                     <Cell multiline>
                         <Caption style={{ color: '#99A2AD' }}>
-                            Функция истории треков временно недоступна.
-                            Мы работаем над её возвращением!
+                            🚧 Функция истории треков временно недоступна. Мы работаем над её возвращением!
                         </Caption>
                     </Cell>
                 </Group>
