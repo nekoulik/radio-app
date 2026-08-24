@@ -31,6 +31,8 @@ import {
     RadioStation,
 } from '../data/radioStations';
 import { StationList } from './StationList';
+import { Visualizer } from './Visualizer';
+import { TrackHistory } from './TrackHistory'; // <-- Новый импорт
 
 interface RadioPlayerProps {
     id: string;
@@ -47,6 +49,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
+
+    // Новые состояния для истории треков
+    const [trackHistory, setTrackHistory] = useState<string[]>([]);
+    const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -106,6 +112,28 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         return () => { if (timer) clearInterval(timer); };
     }, [sleepTimeMinutes, timeLeftSeconds]);
 
+    // Загрузка истории треков при смене станции
+    useEffect(() => {
+        const fetchHistory = async () => {
+            setIsHistoryLoading(true);
+            try {
+                const response = await fetch(`https://api.laut.fm/station/${currentStationId}/history?limit=5`);
+                if (!response.ok) throw new Error('Failed to fetch');
+                const data = await response.json();
+
+                const historyTitles = data.slice(0, 5).map((item: any) => item.title || 'Неизвестный трек');
+                setTrackHistory(historyTitles);
+            } catch (error) {
+                console.error('Ошибка загрузки истории треков:', error);
+                setTrackHistory([]);
+            } finally {
+                setIsHistoryLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, [currentStationId]);
+
     const togglePlay = async () => {
         if (!audioRef.current) return;
         try {
@@ -155,7 +183,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    // Нативное окно отправки приложения ВК
     const handleShare = async () => {
         try {
             // @ts-ignore - VK Bridge метод
@@ -197,7 +224,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     return (
         <Panel id={id}>
-            {/* Fallback модальное окно копирования */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
@@ -242,7 +268,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
-            {/* Баннер */}
             <div style={{
                 background: 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
                 padding: '20px 16px',
@@ -297,20 +322,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     margin: '12px 0',
                 }}>
                     <Div style={{ marginBottom: '24px' }}>
-                        <div style={{
-                            width: '120px',
-                            height: '120px',
-                            margin: '0 auto',
-                            borderRadius: '50%',
-                            background: currentStation?.color || 'linear-gradient(135deg, #ff66b3 0%, #66ccff 100%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 0 40px rgba(255, 102, 179, 0.5)',
-                            animation: isPlaying ? 'pulse 2s ease-in-out infinite' : 'none',
-                        }}>
-                            <span style={{ fontSize: '64px' }}>🎵</span>
-                        </div>
+                        <Visualizer
+                            isPlaying={isPlaying}
+                            color={currentStation?.color || 'linear-gradient(180deg, #ff66b3 0%, #66ccff 100%)'}
+                        />
                     </Div>
 
                     <Subhead style={{
@@ -448,6 +463,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         isPlaying={isPlaying}
                         onStationSelect={handleStationSelect}
                     />
+                </Group>
+
+                {/* Новый блок: История треков */}
+                <Separator />
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
+                    <TrackHistory tracks={trackHistory} isLoading={isHistoryLoading} />
                 </Group>
 
                 <Separator />
