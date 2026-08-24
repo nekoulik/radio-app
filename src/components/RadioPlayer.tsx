@@ -30,7 +30,7 @@ import {
     getStationById,
     RadioStation,
 } from '../data/radioStations';
-import { StationList } from './StationList';
+import { StationSearch } from './StationSearch'; // <-- Обновлённый импорт
 import { Visualizer } from './Visualizer';
 
 interface RadioPlayerProps {
@@ -255,7 +255,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 backgroundSize: '400% 400%',
                 animation: 'gradientShift 8s ease infinite',
             }}>
-                {/* Плавающие круги */}
                 <div style={{
                     position: 'absolute',
                     top: '-30px',
@@ -287,7 +286,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     animation: 'float 5s ease-in-out infinite',
                 }} />
 
-                {/* Контент */}
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{
                         fontSize: '36px',
@@ -321,7 +319,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     overflow: 'hidden',
                     minHeight: '450px',
                 }}>
-                    {/* Фоновая картинка */}
                     <div style={{
                         position: 'absolute',
                         top: 0,
@@ -336,9 +333,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         zIndex: 0,
                     }} />
 
-                    {/* Контент поверх фона */}
                     <div style={{ position: 'relative', zIndex: 1 }}>
-                        {/* Эквалайзер */}
                         <Div style={{ marginBottom: '24px' }}>
                             <Visualizer
                                 isPlaying={isPlaying}
@@ -346,7 +341,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             />
                         </Div>
 
-                        {/* Название станции */}
                         <Subhead style={{
                             color: '#ffffff',
                             marginBottom: '8px',
@@ -365,7 +359,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             {currentStation?.genre || 'Anime Radio • J-Pop • Lo-Fi • OST'}
                         </Caption>
 
-                        {/* Кнопка Play/Pause */}
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                             <Button
                                 size="l"
@@ -401,7 +394,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             </Button>
                         </div>
 
-                        {/* Громкость */}
                         <Div style={{ maxWidth: '280px', margin: '0 auto' }}>
                             <div style={{
                                 display: 'flex',
@@ -427,7 +419,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             </div>
                         </Div>
 
-                        {/* Таймер сна */}
                         <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
                             <Caption style={{
                                 color: '#ffffff',
@@ -495,8 +486,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Placeholder>
                 )}
 
+                {/* Компактный список станций с поиском и скроллом */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
-                    <StationList
+                    <StationSearch
                         stations={radioStations}
                         currentStationId={currentStationId}
                         isPlaying={isPlaying}
@@ -509,7 +501,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
                     <Cell multiline>
                         <Caption style={{ color: '#99A2AD' }}>
-                            Функция истории треков временно недоступна. Мы работаем над её возвращением!
+                            🚧 Функция истории треков временно недоступна. Мы работаем над её возвращением!
                         </Caption>
                     </Cell>
                 </Group>
