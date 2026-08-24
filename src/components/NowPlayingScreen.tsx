@@ -10,7 +10,7 @@ interface NowPlayingScreenProps {
     station: RadioStation | undefined;
     isPlaying: boolean;
     onTogglePlay: () => void;
-    onSwitchStation: (direction: 'next' | 'prev') => void;
+    onSwitchStation: (direction: 'next' | 'prev') => void; // <-- Убедитесь, что этот проп есть
 }
 
 export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
@@ -19,13 +19,12 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
     station,
     isPlaying,
     onTogglePlay,
-    onSwitchStation,
+    onSwitchStation, // <-- Принимаем функцию
 }) => {
     if (!station) return null;
 
     return (
         <ModalRoot activeModal={isOpen ? 'now-playing' : undefined}>
-            {/* Добавляем класс dark-theme для принудительного темного фона */}
             <ModalPage
                 id="now-playing"
                 className="now-playing-modal"
@@ -36,7 +35,6 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 <Icon24Dismiss style={{ color: '#fff' }} />
                             </Button>
                         }
-                        // Делаем заголовок прозрачным или темным
                         style={{ background: 'transparent', color: '#fff' }}
                     >
                         <span style={{ color: '#ffffff' }}>Сейчас играет</span>
@@ -44,7 +42,6 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                 }
                 onClose={onClose}
             >
-                {/* Контейнер с темным фоном на всю высоту */}
                 <div className="now-playing-content">
                     <Div style={{
                         display: 'flex',
@@ -73,7 +70,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                             />
                         </div>
 
-                        {/* Информация о станции - ЯВНЫЙ БЕЛЫЙ ЦВЕТ */}
+                        {/* Информация о станции */}
                         <Subhead style={{
                             color: '#ffffff !important',
                             fontSize: '24px',
@@ -92,26 +89,23 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
 
                         {/* Крупные кнопки управления */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '40px', marginTop: '20px' }}>
-                            {/* Кнопка "Предыдущий" */}
+                            {/* Кнопка "Предыдущий" - ТЕПЕРЬ РАБОТАЕТ */}
                             <Button
                                 size="l"
                                 mode="tertiary"
                                 style={{
-                                    color: '#000000', // Черный цвет для видимости
+                                    color: '#000000',
                                     minWidth: '60px',
                                     height: '60px',
-                                    fontSize: '32px', // Размер эмодзи
+                                    fontSize: '32px',
                                     padding: 0
                                 }}
-                                onClick={() => {
-                                    // Здесь можно добавить логику переключения назад
-                                    console.log('Prev station');
-                                }}
+                                onClick={() => onSwitchStation('prev')} // <-- Вызываем функцию
                             >
                                 ⏮
                             </Button>
 
-                            {/* Кнопка Play/Pause (Центральная) */}
+                            {/* Кнопка Play/Pause */}
                             <Button
                                 size="l"
                                 mode="primary"
@@ -136,21 +130,18 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 )}
                             </Button>
 
-                            {/* Кнопка "Следующий" */}
+                            {/* Кнопка "Следующий" - ТЕПЕРЬ РАБОТАЕТ */}
                             <Button
                                 size="l"
                                 mode="tertiary"
                                 style={{
-                                    color: '#000000', // Черный цвет для видимости
+                                    color: '#000000',
                                     minWidth: '60px',
                                     height: '60px',
-                                    fontSize: '32px', // Размер эмодзи
+                                    fontSize: '32px',
                                     padding: 0
                                 }}
-                                onClick={() => {
-                                    // Здесь можно добавить логику переключения вперед
-                                    console.log('Next station');
-                                }}
+                                onClick={() => onSwitchStation('next')} // <-- Вызываем функцию
                             >
                                 ⏭
                             </Button>
