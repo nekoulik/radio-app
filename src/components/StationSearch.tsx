@@ -66,8 +66,11 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                     onClick={() => onStationSelect(station)}
                                     className={`station-cell ${isActive ? 'active' : ''}`}
                                     before={
-                                        <div className={`station-icon ${isActive ? 'pulsing' : ''}`}>
-
+                                        <div
+                                            className={`station-icon ${isActive ? 'pulsing' : ''}`}
+                                            style={{ background: station.color }} // <-- Вернули цвет!
+                                        >
+                                            🎵
                                         </div>
                                     }
                                     after={
