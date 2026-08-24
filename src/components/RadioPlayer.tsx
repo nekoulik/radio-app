@@ -501,14 +501,48 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Заглушка вместо истории треков */}
+                {/* Новые полезные ссылки вместо истории */}
                 <Separator />
-                <Group header={<Subhead style={{ padding: '12px 16px' }}>📜 История треков</Subhead>}>
-                    <Cell multiline>
-                        <Caption style={{ color: '#99A2AD' }}>
-                            🚧 Функция истории треков временно недоступна. Мы работаем над её возвращением!
-                        </Caption>
-                    </Cell>
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>🔗 Полезные ссылки</Subhead>}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 16px 16px' }}>
+
+                        {/* 1. Подписка / Канал */}
+                        <Cell
+                            Component="a"
+                            href="https://t.me/ВАШ_КАНАЛ" // <-- Замените на вашу ссылку
+                            target="_blank"
+                            before={<div style={{ fontSize: '24px' }}>📢</div>}
+                            subtitle="Новости, обновления и промокоды"
+                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                        >
+                            Подписаться на канал
+                        </Cell>
+
+                        {/* 2. Техподдержка */}
+                        <Cell
+                            Component="a"
+                            href="https://vk.com/im?sel=-239834224" // <-- Замените на ссылку на диалог или группу
+                            target="_blank"
+                            before={<div style={{ fontSize: '24px' }}>🛠️</div>}
+                            subtitle="Нашли баг? Напишите нам!"
+                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                        >
+                            Техническая поддержка
+                        </Cell>
+
+                        {/* 3. Сообщество */}
+                        <Cell
+                            Component="a"
+                            href="https://vk.ru/ani__wave" // <-- Замените на ссылку на группу
+                            target="_blank"
+                            before={<div style={{ fontSize: '24px' }}></div>}
+                            subtitle="Общайтесь с другими слушателями"
+                            style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                        >
+                            Наше сообщество
+                        </Cell>
+
+                    </div>
                 </Group>
 
                 <Separator />
