@@ -33,7 +33,7 @@ import {
 import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
-import { NowPlayingScreen } from './NowPlayingScreen'; // <-- Новый импорт
+import { NowPlayingScreen } from './NowPlayingScreen';
 
 interface RadioPlayerProps {
     id: string;
@@ -50,7 +50,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
-    const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false); // <-- Новое состояние
+    const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -142,6 +142,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
 
+    // Логика переключения станций (вперед/назад по кругу)
+    const switchStation = (direction: 'next' | 'prev') => {
+        const currentIndex = radioStations.findIndex(s => s.id === currentStationId);
+        let newIndex;
+
+        if (direction === 'next') {
+            newIndex = (currentIndex + 1) % radioStations.length;
+        } else {
+            newIndex = (currentIndex - 1 + radioStations.length) % radioStations.length;
+        }
+
+        const newStation = radioStations[newIndex];
+        handleStationSelect(newStation);
+    };
+
     const handleStationSelect = (station: RadioStation) => {
         if (station.id === currentStationId) {
             togglePlay();
@@ -200,7 +215,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    const openNowPlaying = () => setIsNowPlayingOpen(true); // <-- Функция открытия
+    const openNowPlaying = () => setIsNowPlayingOpen(true);
 
     return (
         <Panel id={id}>
@@ -256,6 +271,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 station={currentStation}
                 isPlaying={isPlaying}
                 onTogglePlay={togglePlay}
+                onSwitchStation={switchStation} // <-- Передаем функцию переключения
             />
 
             {/* Анимированный градиентный баннер */}
@@ -336,9 +352,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         position: 'relative',
                         overflow: 'hidden',
                         minHeight: '450px',
-                        cursor: 'pointer', // <-- Курсор руки
+                        cursor: 'pointer',
                     }}
-                    onClick={openNowPlaying} // <-- Открытие экрана
+                    onClick={openNowPlaying}
                 >
                     <div style={{
                         position: 'absolute',
@@ -396,7 +412,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     justifyContent: 'center',
                                 }}
                                 onClick={(e) => {
-                                    e.stopPropagation(); // <-- Чтобы не открывался экран при клике на Play
+                                    e.stopPropagation();
                                     togglePlay();
                                 }}
                                 disabled={isLoading}
@@ -427,10 +443,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             }}>
                                 <Slider
                                     value={volume * 100}
-                                    onChange={(value) => {
-                                        // Slider в VKUI передает просто число, а не событие
-                                        handleVolumeChange(value);
-                                    }}
+                                    onChange={(value) => handleVolumeChange(value)}
                                     min={0}
                                     max={100}
                                     style={{ flex: 1 }}
@@ -471,7 +484,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             textShadow: '0 1px 2px rgba(0,0,0,0.8)',
                                         }}
                                         onClick={(e) => {
-                                            e.stopPropagation(); // <-- Чтобы не открывался экран
+                                            e.stopPropagation();
                                             handleSleepTimer(min);
                                         }}
                                     >
@@ -490,7 +503,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         textShadow: '0 1px 2px rgba(0,0,0,0.8)',
                                     }}
                                     onClick={(e) => {
-                                        e.stopPropagation(); // <-- Чтобы не открывался экран
+                                        e.stopPropagation();
                                         handleSleepTimer(null);
                                     }}
                                 >
@@ -552,9 +565,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         Component="a"
                         href="https://vk.ru/ani__wave"
                         target="_blank"
-                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
+                        before={<div style={{ fontSize: '28px' }}></div>}
                         subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
-                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}></div>}
+                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
                         style={{
                             background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)',
                             borderRadius: '8px',

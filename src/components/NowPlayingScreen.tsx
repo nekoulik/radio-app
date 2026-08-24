@@ -10,6 +10,7 @@ interface NowPlayingScreenProps {
     station: RadioStation | undefined;
     isPlaying: boolean;
     onTogglePlay: () => void;
+    onSwitchStation: (direction: 'next' | 'prev') => void;
 }
 
 export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
@@ -18,6 +19,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
     station,
     isPlaying,
     onTogglePlay,
+    onSwitchStation,
 }) => {
     if (!station) return null;
 
