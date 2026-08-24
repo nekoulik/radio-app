@@ -75,22 +75,24 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                             fontSize: '20px',
                                             boxShadow: isActive ? '0 0 12px rgba(255, 102, 179, 0.6)' : 'none',
                                             transition: 'box-shadow 0.3s ease',
+                                            flexShrink: 0, // ← Добавлено: иконка не сжимается
                                         }}>
                                             🎵
                                         </div>
                                     }
-                                    subtitle={station.genre}
                                     after={
                                         isActive ? (
                                             <span style={{
                                                 fontSize: '12px',
                                                 color: isPlaying ? '#ff66b3' : '#99A2AD',
                                                 fontWeight: '600',
+                                                flexShrink: 0, // ← Добавлено: иконка play не сжимается
                                             }}>
                                                 {isPlaying ? '▶' : '⏸'}
                                             </span>
                                         ) : null
                                     }
+                                    multiline // ← Добавлено: разрешаем многострочный текст
                                     style={{
                                         background: isActive
                                             ? 'rgba(255, 102, 179, 0.15)'
@@ -103,23 +105,40 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                         transition: 'all 0.2s ease',
                                     }}
                                 >
+                                    {/* Название станции - всегда видимо */}
                                     <Subhead
                                         weight={isActive ? '2' : '1'}
                                         style={{
                                             color: isActive ? '#ff66b3' : '#ffffff',
-                                            lineHeight: '1.2',
+                                            lineHeight: '1.3',
+                                            wordBreak: 'break-word', // ← Добавлено: перенос длинных слов
+                                            overflowWrap: 'break-word',
                                         }}
                                     >
                                         {station.name}
                                     </Subhead>
-                                    <Caption style={{
-                                        color: '#99A2AD',
-                                        marginTop: '2px',
-                                        fontSize: '11px',
-                                        lineHeight: '1.2',
-                                    }}>
-                                        {station.description}
-                                    </Caption>
+
+                                    {/* Жанр и описание на одной строке */}
+                                    <div style={{ marginTop: '2px' }}>
+                                        <Caption style={{
+                                            color: '#99A2AD',
+                                            fontSize: '11px',
+                                            lineHeight: '1.3',
+                                        }}>
+                                            {station.genre}
+                                        </Caption>
+                                        {station.description && (
+                                            <Caption style={{
+                                                color: '#99A2AD',
+                                                fontSize: '11px',
+                                                lineHeight: '1.3',
+                                                display: 'block',
+                                                marginTop: '1px',
+                                            }}>
+                                                {station.description}
+                                            </Caption>
+                                        )}
+                                    </div>
                                 </Cell>
                             );
                         })
