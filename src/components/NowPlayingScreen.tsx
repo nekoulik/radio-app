@@ -89,42 +89,66 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         </Caption>
 
                         {/* Крупные кнопки управления */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '40px', marginTop: '20px' }}>
+                            {/* Кнопка "Предыдущий" */}
                             <Button
                                 size="l"
                                 mode="tertiary"
-                                style={{ color: '#ffffff', minWidth: '48px' }}
+                                style={{
+                                    color: '#000000', // Черный цвет для видимости
+                                    minWidth: '60px',
+                                    height: '60px',
+                                    fontSize: '32px', // Размер эмодзи
+                                    padding: 0
+                                }}
+                                onClick={() => {
+                                    // Здесь можно добавить логику переключения назад
+                                    console.log('Prev station');
+                                }}
                             >
-                                ⏮
+
                             </Button>
 
+                            {/* Кнопка Play/Pause (Центральная) */}
                             <Button
                                 size="l"
                                 mode="primary"
                                 onClick={onTogglePlay}
                                 style={{
-                                    width: '72px',
-                                    height: '72px',
+                                    width: '80px',
+                                    height: '80px',
                                     borderRadius: '50%',
                                     background: station.color,
                                     border: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
+                                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
                                     padding: 0
                                 }}
                             >
                                 {isPlaying ? (
-                                    <span style={{ fontSize: '32px', lineHeight: 1 }}></span>
+                                    <span style={{ fontSize: '36px', lineHeight: 1, color: '#fff' }}></span>
                                 ) : (
-                                    <span style={{ fontSize: '32px', lineHeight: 1, marginLeft: '4px' }}>▶</span>
+                                    <span style={{ fontSize: '36px', lineHeight: 1, marginLeft: '6px', color: '#fff' }}>▶</span>
                                 )}
                             </Button>
 
+                            {/* Кнопка "Следующий" */}
                             <Button
                                 size="l"
                                 mode="tertiary"
-                                style={{ color: '#ffffff', minWidth: '48px' }}
+                                style={{
+                                    color: '#000000', // Черный цвет для видимости
+                                    minWidth: '60px',
+                                    height: '60px',
+                                    fontSize: '32px', // Размер эмодзи
+                                    padding: 0
+                                }}
+                                onClick={() => {
+                                    // Здесь можно добавить логику переключения вперед
+                                    console.log('Next station');
+                                }}
                             >
                                 ⏭
                             </Button>
