@@ -96,7 +96,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 size="l"
                                 mode="tertiary"
                                 style={{
-                                    color: '#ffffff',
+                                    color: '#000000',
                                     minWidth: '56px',
                                     height: '56px',
                                     fontSize: '28px',
@@ -140,7 +140,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 size="l"
                                 mode="tertiary"
                                 style={{
-                                    color: '#ffffff',
+                                    color: '#000000',
                                     minWidth: '56px',
                                     height: '56px',
                                     fontSize: '28px',
