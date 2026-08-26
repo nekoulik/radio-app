@@ -90,24 +90,26 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         </Caption>
 
                         {/* Крупные кнопки управления */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '20px' }}>
-                            {/* Кнопка "Предыдущий" */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
+                            {/* Кнопка "Предыдущий" - теперь круглая */}
                             <Button
                                 size="l"
                                 mode="tertiary"
+                                onClick={() => onSwitchStation('prev')}
                                 style={{
-                                    color: '#000000',
                                     minWidth: '56px',
                                     height: '56px',
-                                    fontSize: '28px',
-                                    padding: 0,
-                                    background: 'rgba(255,255,255,0.1)',
                                     borderRadius: '50%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
                                     backdropFilter: 'blur(10px)',
+                                    padding: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                 }}
-                                onClick={() => onSwitchStation('prev')}
                             >
-                                ⏮
+                                <span style={{ fontSize: '24px', color: '#fff' }}>⏮</span>
                             </Button>
 
                             {/* Кнопка Play/Pause */}
@@ -135,23 +137,25 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 )}
                             </Button>
 
-                            {/* Кнопка "Следующий" */}
+                            {/* Кнопка "Следующий" - теперь круглая */}
                             <Button
                                 size="l"
                                 mode="tertiary"
+                                onClick={() => onSwitchStation('next')}
                                 style={{
-                                    color: '#000000',
                                     minWidth: '56px',
                                     height: '56px',
-                                    fontSize: '28px',
-                                    padding: 0,
-                                    background: 'rgba(255,255,255,0.1)',
                                     borderRadius: '50%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
                                     backdropFilter: 'blur(10px)',
+                                    padding: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                 }}
-                                onClick={() => onSwitchStation('next')}
                             >
-                                ⏭
+                                <span style={{ fontSize: '24px', color: '#fff' }}>⏭</span>
                             </Button>
 
                             {/* 🎲 Кнопка "Случайная станция" */}
@@ -177,7 +181,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         </div>
                     </Div>
                 </div>
-            </ModalPage>
-        </ModalRoot>
+            </ModalPage >
+        </ModalRoot >
     );
 };
