@@ -56,6 +56,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const { toggleFavorite, isFavorite } = useFavorites();
 
+    const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+
     useEffect(() => {
         if (!currentStation) return;
         if (audioRef.current) {
@@ -257,6 +259,52 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
                         <Caption style={{ color: '#99A2AD', marginTop: '12px', display: 'block', textAlign: 'center' }}>
                             Теперь вставьте текст в сообщение другу
+                        </Caption>
+                    </Div>
+                </ModalPage>
+            </ModalRoot>
+
+            {/* Модальное окно с приглашением в чат */}
+            <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
+                <ModalPage
+                    id="chat-invite"
+                    header={
+                        <ModalPageHeader
+                            before={
+                                <Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}>
+                                    <Icon24Dismiss />
+                                </Button>
+                            }
+                        >
+                            💬 Общий чат
+                        </ModalPageHeader>
+                    }
+                    onClose={() => setIsChatModalOpen(false)}
+                >
+                    <Div style={{ padding: '16px' }}>
+                        <Subhead style={{ marginBottom: '12px', display: 'block' }}>
+                            Добро пожаловать в чат AniWave Radio!
+                        </Subhead>
+                        <Caption style={{ color: '#99A2AD', display: 'block', marginBottom: '20px' }}>
+                            Здесь вы можете:
+                            <br />• Делиться любимыми треками
+                            <br />• Обсуждать аниме и музыку
+                            <br />• Предлагать новые радиостанции
+                            <br />• Знакомиться с другими слушателями
+                        </Caption>
+                        <Button
+                            size="l"
+                            mode="primary"
+                            style={{ width: '100%', marginBottom: '12px' }}
+                            Component="a"
+                            href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
+                            target="_blank"
+                            onClick={() => setIsChatModalOpen(false)}
+                        >
+                            Присоединиться к чату →
+                        </Button>
+                        <Caption style={{ color: '#99A2AD', textAlign: 'center', display: 'block' }}>
+                            Нажмите, чтобы открыть чат в новом окне
                         </Caption>
                     </Div>
                 </ModalPage>
@@ -522,9 +570,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 <Cell
                     before={<div style={{ fontSize: '24px' }}>💬</div>}
-                    Component="a"
-                    href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
-                    target="_blank"
+                    onClick={() => setIsChatModalOpen(true)}
                     subtitle="Общайтесь с другими слушателями и делитесь треками"
                     style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
                 >
