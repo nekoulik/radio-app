@@ -157,6 +157,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         handleStationSelect(newStation);
     };
 
+    //  СЛУЧАЙНАЯ СТАНЦИЯ
+    const playRandomStation = () => {
+        const availableStations = radioStations.filter(s => s.id !== currentStationId);
+        const randomIndex = Math.floor(Math.random() * availableStations.length);
+        const randomStation = availableStations[randomIndex];
+        handleStationSelect(randomStation);
+    };
+
     const handleStationSelect = (station: RadioStation) => {
         if (station.id === currentStationId) {
             togglePlay();
@@ -318,6 +326,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 isPlaying={isPlaying}
                 onTogglePlay={togglePlay}
                 onSwitchStation={switchStation}
+                onRandomStation={playRandomStation}
             />
 
             {/* Анимированный градиентный баннер */}
