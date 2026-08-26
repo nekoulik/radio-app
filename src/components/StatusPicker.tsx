@@ -39,18 +39,25 @@ export const StatusPicker: React.FC<StatusPickerProps> = ({
         setSuccessMessage('');
 
         try {
-            // Запрашиваем право на установку статуса
-            await bridge.send('VKWebAppGetAuthToken', {
+            // Запрашиваем право на установку статуса и получаем токен
+            const tokenResponse = await bridge.send('VKWebAppGetAuthToken', {
                 app_id: 54729099,
                 scope: 'status'
             });
 
-            // Устанавливаем статус через VK API
-            // Используем as any для обхода строгой типизации VK Bridge
+            // Извлекаем access_token из ответа
+            const accessToken = tokenResponse.access_token;
+
+            if (!accessToken) {
+                throw new Error('Токен не получен');
+            }
+
+            // Устанавливаем статус через VK API с токеном
             await bridge.send('VKWebAppCallAPIMethod' as any, {
                 method: 'status.set',
                 params: {
-                    text: statusText
+                    text: statusText,
+                    access_token: accessToken
                 }
             } as any);
 
