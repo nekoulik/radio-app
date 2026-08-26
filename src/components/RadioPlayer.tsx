@@ -144,8 +144,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             // но меняем src. Если createMediaElementSource был вызван для этого элемента, он останется привязанным.
         }
 
-        const audio = new Audio(currentStation.streamUrl);
-        audio.crossOrigin = "anonymous"; // Важно для CORS
+        // СТАЛО (через Cloudflare Worker):
+        const PROXY_URL = 'https://aniwave-proxy.nekoulik.workers.dev';
+        const streamUrl = `${PROXY_URL}/?url=${encodeURIComponent(currentStation.streamUrl)}`;
+        const audio = new Audio(streamUrl);
+        audio.crossOrigin = "anonymous"; // Важно для Web Audio API
         audio.preload = 'none';
         audio.volume = volume;
 
