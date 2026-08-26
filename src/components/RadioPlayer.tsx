@@ -5,7 +5,6 @@ import {
     Group,
     Cell,
     Slider,
-    Placeholder,
     Div,
     Text,
     Subhead,
@@ -34,6 +33,8 @@ import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
+import { CommunityChat } from './CommunityChat';
+import { InAppChat } from './InAppChat';
 
 interface RadioPlayerProps {
     id: string;
@@ -522,15 +523,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     Поделиться
                 </Cell>
 
+                {/* <-- ДОБАВЬТЕ ЭТУ СТРОКУ */}
+                <InAppChat />
+
+                {/* Чат с сообществом */}
+                <CommunityChat communityId="-239834224" />
+
                 {error && (
-                    // @ts-ignore - Placeholder принимает description как строку
-                    <Placeholder stretched description={error}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Ошибка воспроизведения</div>
-                        <Button size="m" mode="secondary" onClick={togglePlay}>
-                            Попробовать снова
-                        </Button>
-                    </Placeholder>
+                    <Group>
+                        <Div style={{
+                            padding: '16px',
+                            textAlign: 'center',
+                            background: 'rgba(244, 67, 54, 0.1)',
+                            borderRadius: '8px'
+                        }}>
+                            <Subhead weight="2" style={{ color: '#F44336', marginBottom: '8px' }}>
+                                Ошибка воспроизведения
+                            </Subhead>
+                            <Caption style={{ color: '#F44336', display: 'block', marginBottom: '12px' }}>
+                                {error}
+                            </Caption>
+                            <Button size="m" mode="secondary" onClick={togglePlay}>
+                                Попробовать снова
+                            </Button>
+                        </Div>
+                    </Group>
                 )}
+
 
                 {/* Компактный список станций с поиском */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
