@@ -109,7 +109,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                     justifyContent: 'center',
                                 }}
                             >
-                                <span style={{ fontSize: '24px', color: '#fff' }}>⏮</span>
+                                <span style={{ fontSize: '24px', color: '#2D81E0' }}>⏮</span>
                             </Button>
 
                             {/* Кнопка Play/Pause */}
@@ -155,7 +155,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                     justifyContent: 'center',
                                 }}
                             >
-                                <span style={{ fontSize: '24px', color: '#fff' }}>⏭</span>
+                                <span style={{ fontSize: '24px', color: '#2D81E0' }}>⏭</span>
                             </Button>
 
                             {/* 🎲 Кнопка "Случайная станция" */}
