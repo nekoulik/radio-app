@@ -51,9 +51,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [copySuccess, setCopySuccess] = useState(false);
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
 
-    // <-- Состояние для статусов есть
-    const [isStatusPickerOpen, setIsStatusPickerOpen] = useState(false);
-
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
 
@@ -273,13 +270,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 isPlaying={isPlaying}
                 onTogglePlay={togglePlay}
                 onSwitchStation={switchStation}
-            />
-
-            {/* <-- ДОБАВЛЕНО: Модальное окно выбора статуса */}
-            <StatusPicker
-                isOpen={isStatusPickerOpen}
-                onClose={() => setIsStatusPickerOpen(false)}
-                currentStationName={currentStation?.name}
             />
 
             {/* Анимированный градиентный баннер */}
