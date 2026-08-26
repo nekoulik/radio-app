@@ -521,14 +521,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </Cell>
 
                 <Cell
-                    before={<div style={{ fontSize: '24px' }}></div>}
+                    before={<div style={{ fontSize: '24px' }}>💬</div>}
                     Component="a"
-                    href="https://vk.com/im?sel=-239834224"
+                    href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
                     target="_blank"
                     subtitle="Общайтесь с другими слушателями и делитесь треками"
                     style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
                 >
-                    💬 Чат с сообществом
+                    Общий чат слушателей
                 </Cell>
 
                 {error && (
