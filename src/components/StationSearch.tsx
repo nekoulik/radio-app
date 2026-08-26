@@ -4,7 +4,7 @@ import { RadioStation } from '../data/radioStations';
 
 interface StationSearchProps {
     stations: RadioStation[];
-    currentStationId: string;
+    currentStationId: string | null;
     isPlaying: boolean;
     onStationSelect: (station: RadioStation) => void;
     isFavorite: (id: string) => boolean;
@@ -28,7 +28,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
         return stations.filter(station =>
             station.name.toLowerCase().includes(query) ||
             station.genre.toLowerCase().includes(query) ||
-            station.description.toLowerCase().includes(query)
+            (station.description && station.description.toLowerCase().includes(query)) // <-- Добавлена проверка
         );
     }, [stations, searchQuery]);
 
