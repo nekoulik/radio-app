@@ -46,18 +46,19 @@ export const StatusPicker: React.FC<StatusPickerProps> = ({
             });
 
             // Извлекаем access_token из ответа
-            const accessToken = tokenResponse.access_token;
+            const accessToken = (tokenResponse as any).access_token;
 
             if (!accessToken) {
                 throw new Error('Токен не получен');
             }
 
-            // Устанавливаем статус через VK API с токеном
+            // Устанавливаем статус через VK API с токеном и версией API
             await bridge.send('VKWebAppCallAPIMethod' as any, {
                 method: 'status.set',
                 params: {
                     text: statusText,
-                    access_token: accessToken
+                    access_token: accessToken,
+                    v: '5.199' // Версия API VK (обязательный параметр!)
                 }
             } as any);
 
