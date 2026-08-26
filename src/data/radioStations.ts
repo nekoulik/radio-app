@@ -7,7 +7,7 @@ export interface RadioStation {
     genre: string;
     color: string;
     description?: string;
-    useProxy?: boolean; // <-- Новый флаг: true = через прокси, false = напрямую
+    useProxy: boolean; // <-- Новый флаг
 }
 
 const COLORS = [
@@ -29,142 +29,142 @@ const COLORS = [
 ];
 
 export const radioStations: RadioStation[] = [
-    // === НАДЕЖНЫЕ СТАНЦИИ (работают напрямую, без прокси) ===
+    // === ПРЯМЫЕ ПОТОКИ (Работают без прокси) ===
     {
         id: '1',
-        name: 'Nightride FM',
-        streamUrl: 'https://stream.nightride.fm/nightride.m4a',
-        genre: 'Synthwave • Cyberpunk',
+        name: 'Wave Anime Radio',
+        streamUrl: 'https://channel_3.waveani.fun/stream',
+        genre: 'Anime • OST',
         color: COLORS[0],
-        description: 'Ретровейв и киберпанк 24/7',
+        description: 'Лучшие аниме треки 24/7',
         useProxy: false
     },
     {
         id: '2',
-        name: 'Radio Paradise',
-        streamUrl: 'https://stream.radioparadise.com/aac-320',
-        genre: 'Eclectic • Rock',
+        name: 'Hunter.fm Lo-Fi',
+        streamUrl: 'https://live.hunter.fm/lofi_high',
+        genre: 'Lo-Fi • Chill',
         color: COLORS[1],
-        description: 'Лучшая музыка без рекламы',
+        description: 'Идеально для учебы и релакса',
         useProxy: false
     },
     {
         id: '3',
-        name: 'SomaFM Groove Salad',
-        streamUrl: 'https://ice1.somafm.com/groovesalad-256-mp3',
-        genre: 'Ambient • Chill',
+        name: 'Radio Planeta',
+        streamUrl: 'https://radioplaneta.emitironline.com/radio',
+        genre: 'Pop • Dance',
         color: COLORS[2],
-        description: 'Спокойный эмбиент для релакса',
+        description: 'Популярные хиты со всего мира',
         useProxy: false
     },
     {
         id: '4',
-        name: 'SomaFM Drone Zone',
-        streamUrl: 'https://ice1.somafm.com/dronezone-256-mp3',
-        genre: 'Drone • Atmospheric',
+        name: 'Full Spectrum DnB',
+        streamUrl: 'https://fullspectrumradio.com/listen',
+        genre: 'DnB • Dubstep',
         color: COLORS[3],
-        description: 'Глубокие атмосферные текстуры',
+        description: 'Тяжелые басы и быстрые ритмы',
         useProxy: false
     },
     {
         id: '5',
-        name: 'SomaFM Lush',
-        streamUrl: 'https://ice1.somafm.com/lush-256-mp3',
-        genre: 'Electronic • Sensual',
+        name: 'Happy Rave Radio',
+        streamUrl: 'https://happyrave-rex.radioca.st/stream',
+        genre: 'Rave • Happy Hardcore',
         color: COLORS[4],
-        description: 'Чувственная электроника',
+        description: 'Энергичная рейв-музыка',
         useProxy: false
     },
     {
         id: '6',
-        name: 'SomaFM Space Station',
-        streamUrl: 'https://ice1.somafm.com/spacestation-128-mp3',
-        genre: 'Space • Ambient',
+        name: 'IA Music & News',
+        streamUrl: 'https://ianewsja.ice.infomaniak.ch/ianewsja-128.mp3',
+        genre: 'J-Pop • News',
         color: COLORS[5],
-        description: 'Космический эмбиент',
+        description: 'Японская музыка и новости',
         useProxy: false
     },
     {
         id: '7',
-        name: 'SomaFM Secret Agent',
-        streamUrl: 'https://ice1.somafm.com/secretagent-256-mp3',
-        genre: 'Lounge • Spy',
+        name: 'OnlyHits Japan',
+        streamUrl: 'https://j.onlyhit.us/play',
+        genre: 'J-Pop • Hits',
         color: COLORS[6],
-        description: 'Музыка для шпионов',
+        description: 'Только хиты японской сцены',
         useProxy: false
     },
     {
         id: '8',
-        name: 'SomaFM Indie Pop',
-        streamUrl: 'https://ice1.somafm.com/indiepop-128-mp3',
-        genre: 'Indie • Pop',
+        name: 'Happy Hardcore FM',
+        streamUrl: 'https://happyhardcore-high.rautemusik.fm/?ref=radiobrowser',
+        genre: 'Hardcore • Gabber',
         color: COLORS[7],
-        description: 'Независимая поп-музыка',
+        description: 'Самый быстрый хардкор',
         useProxy: false
     },
-
-    // === LAUT.FM СТАНЦИИ (требуют прокси) ===
     {
         id: '9',
-        name: 'Anime Radio',
-        streamUrl: 'https://stream.laut.fm/anime',
-        genre: 'Anime • OST',
+        name: 'Anime FM (Laut)',
+        streamUrl: 'https://animefm.stream.laut.fm/animefm',
+        genre: 'Anime • J-Pop',
         color: COLORS[8],
-        description: 'Лучшие опенинги и эндинги',
-        useProxy: true
+        description: 'Классическое аниме радио',
+        useProxy: false // Пробуем напрямую, этот поддомен иногда работает
     },
+
+    // === ТРЕБУЮТ ПРОКСИ (Zeno, Laut.fm, HTTP) ===
     {
         id: '10',
-        name: 'J-Pop Power',
-        streamUrl: 'https://stream.laut.fm/jpop',
-        genre: 'J-Pop • Idol',
+        name: 'Аниме Para Ti',
+        streamUrl: 'https://stream.zeno.fm/qpn8mkt8c4duv',
+        genre: 'Anime • Latin',
         color: COLORS[9],
-        description: 'Свежие хиты японского попа',
+        description: 'Аниме музыка для души',
         useProxy: true
     },
     {
         id: '11',
-        name: 'Lo-Fi Beats',
-        streamUrl: 'https://stream.laut.fm/lofi',
-        genre: 'Lo-Fi • Chill',
+        name: 'Animecol Radio',
+        streamUrl: 'https://stream.zeno.fm/6bfysacxc6quv',
+        genre: 'Anime • Colombia',
         color: COLORS[10],
-        description: 'Идеально для учебы',
+        description: 'Латиноамериканское аниме радио',
         useProxy: true
     },
     {
         id: '12',
-        name: 'City Pop',
-        streamUrl: 'https://stream.laut.fm/citypop',
-        genre: 'City Pop • 80s',
+        name: 'Animealive',
+        streamUrl: 'https://stream.laut.fm/animealive',
+        genre: 'Anime • Live',
         color: COLORS[11],
-        description: 'Ностальгия по 80-м',
+        description: 'Живое аниме радио',
         useProxy: true
     },
     {
         id: '13',
-        name: 'Nightcore',
-        streamUrl: 'https://stream.laut.fm/nightcore',
-        genre: 'Nightcore • Fast',
+        name: 'Otaku World',
+        streamUrl: 'https://otaku-world.stream.laut.fm/otaku-world',
+        genre: 'Otaku • Culture',
         color: COLORS[12],
-        description: 'Ускоренные треки',
+        description: 'Мир отаку и аниме культуры',
         useProxy: true
     },
     {
         id: '14',
-        name: 'Vocaloid',
-        streamUrl: 'https://stream.laut.fm/vocaloid',
-        genre: 'Vocaloid • Miku',
+        name: 'Anime Radio (HTTP)',
+        streamUrl: 'https://stream.laut.fm/animefm', // Исправлено на HTTPS
+        genre: 'Anime • Classic',
         color: COLORS[13],
-        description: 'Хатсуне Мику и друзья',
+        description: 'Классические аниме хиты',
         useProxy: true
     },
     {
         id: '15',
-        name: 'K-Pop Global',
-        streamUrl: 'https://stream.laut.fm/kpop',
-        genre: 'K-Pop • Korean',
+        name: 'J-Rock Powerplay',
+        streamUrl: 'https://kathy.torontocast.com:3340/;?shoutcast',
+        genre: 'J-Rock • Power',
         color: COLORS[14],
-        description: 'Корейские хиты',
+        description: 'Мощный японский рок',
         useProxy: true
     }
 ];

@@ -143,12 +143,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
         // Определяем, нужен ли прокси
         const PROXY_URL = 'https://aniwave-proxy.nekoulik.workers.dev';
-        const finalStreamUrl = currentStation.useProxy
+        const finalStreamUrl = currentStation?.useProxy
             ? `${PROXY_URL}/?url=${encodeURIComponent(currentStation.streamUrl)}`
-            : currentStation.streamUrl;
+            : currentStation!.streamUrl;
 
         const audio = new Audio(finalStreamUrl);
-        audio.crossOrigin = "anonymous";
+        audio.crossOrigin = "anonymous"; // Важно для Web Audio API
         audio.preload = 'none';
         audio.volume = volume;
 
