@@ -5,7 +5,6 @@ import {
     Group,
     Cell,
     Slider,
-    Placeholder,
     Div,
     Text,
     Subhead,
@@ -34,6 +33,7 @@ import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
+import { StatusPicker } from './StatusPicker'; // <-- Импорт есть
 
 interface RadioPlayerProps {
     id: string;
@@ -51,6 +51,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
+
+    // <-- Состояние для статусов есть
+    const [isStatusPickerOpen, setIsStatusPickerOpen] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -142,7 +145,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
 
-    // Логика переключения станций (вперед/назад по кругу)
     const switchStation = (direction: 'next' | 'prev') => {
         const currentIndex = radioStations.findIndex(s => s.id === currentStationId);
         let newIndex;
@@ -271,7 +273,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 station={currentStation}
                 isPlaying={isPlaying}
                 onTogglePlay={togglePlay}
-                onSwitchStation={switchStation} // <-- Передаем функцию переключения
+                onSwitchStation={switchStation}
+            />
+
+            {/* <-- ДОБАВЛЕНО: Модальное окно выбора статуса */}
+            <StatusPicker
+                isOpen={isStatusPickerOpen}
+                onClose={() => setIsStatusPickerOpen(false)}
+                currentStationName={currentStation?.name}
             />
 
             {/* Анимированный градиентный баннер */}
@@ -342,7 +351,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </div>
 
             <Group>
-                {/* Основной блок плеера (кликабельный для открытия Now Playing) */}
+                {/* Основной блок плеера */}
                 <Div
                     style={{
                         textAlign: 'center',
@@ -522,14 +531,35 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     Поделиться
                 </Cell>
 
+                {/* <-- ДОБАВЛЕНО: Кнопка для открытия выбора статуса */}
+                <Cell
+                    before={<div style={{ fontSize: '24px' }}>🌸</div>}
+                    onClick={() => setIsStatusPickerOpen(true)}
+                    subtitle="Покажите друзьям, что вы слушаете"
+                    style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                >
+                    Установить статус в профиль
+                </Cell>
+
                 {error && (
-                    // @ts-ignore - Placeholder принимает description как строку
-                    <Placeholder stretched description={error}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Ошибка воспроизведения</div>
-                        <Button size="m" mode="secondary" onClick={togglePlay}>
-                            Попробовать снова
-                        </Button>
-                    </Placeholder>
+                    <Group>
+                        <Div style={{
+                            padding: '16px',
+                            textAlign: 'center',
+                            background: 'rgba(244, 67, 54, 0.1)',
+                            borderRadius: '8px'
+                        }}>
+                            <Subhead weight="2" style={{ color: '#F44336', marginBottom: '8px' }}>
+                                Ошибка воспроизведения
+                            </Subhead>
+                            <Caption style={{ color: '#F44336', display: 'block', marginBottom: '12px' }}>
+                                {error}
+                            </Caption>
+                            <Button size="m" mode="secondary" onClick={togglePlay}>
+                                Попробовать снова
+                            </Button>
+                        </Div>
+                    </Group>
                 )}
 
                 {/* Компактный список станций с поиском */}

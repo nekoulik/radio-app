@@ -10,7 +10,7 @@ interface NowPlayingScreenProps {
     station: RadioStation | undefined;
     isPlaying: boolean;
     onTogglePlay: () => void;
-    onSwitchStation: (direction: 'next' | 'prev') => void; // <-- Убедитесь, что этот проп есть
+    onSwitchStation: (direction: 'next' | 'prev') => void;
 }
 
 export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
@@ -19,7 +19,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
     station,
     isPlaying,
     onTogglePlay,
-    onSwitchStation, // <-- Принимаем функцию
+    onSwitchStation,
 }) => {
     if (!station) return null;
 
@@ -89,7 +89,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
 
                         {/* Крупные кнопки управления */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '40px', marginTop: '20px' }}>
-                            {/* Кнопка "Предыдущий" - ТЕПЕРЬ РАБОТАЕТ */}
+                            {/* Кнопка "Предыдущий" */}
                             <Button
                                 size="l"
                                 mode="tertiary"
@@ -100,7 +100,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                     fontSize: '32px',
                                     padding: 0
                                 }}
-                                onClick={() => onSwitchStation('prev')} // <-- Вызываем функцию
+                                onClick={() => onSwitchStation('prev')}
                             >
                                 ⏮
                             </Button>
@@ -130,7 +130,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 )}
                             </Button>
 
-                            {/* Кнопка "Следующий" - ТЕПЕРЬ РАБОТАЕТ */}
+                            {/* Кнопка "Следующий" */}
                             <Button
                                 size="l"
                                 mode="tertiary"
@@ -141,7 +141,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                     fontSize: '32px',
                                     padding: 0
                                 }}
-                                onClick={() => onSwitchStation('next')} // <-- Вызываем функцию
+                                onClick={() => onSwitchStation('next')}
                             >
                                 ⏭
                             </Button>
