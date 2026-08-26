@@ -9,7 +9,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
 
     useEffect(() => {
         if (!isLoading) {
-            // Плавное исчезновение через 500ms
             const timer = setTimeout(() => setVisible(false), 500);
             return () => clearTimeout(timer);
         } else {
@@ -19,7 +18,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
 
     if (!visible) return null;
 
-    // Создаём 15 лепестков сакуры со случайными параметрами
     const petals = Array.from({ length: 15 }, (_, i) => ({
         id: i,
         left: `${Math.random() * 100}%`,
@@ -74,6 +72,10 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
                     margin-bottom: 16px;
                     animation: pulse 2s ease-in-out infinite;
                     filter: drop-shadow(0 0 20px rgba(255, 102, 179, 0.6));
+                    background: transparent;
+                    border: none;
+                    display: inline-block;
+                    line-height: 1;
                 }
                 .loading-title {
                     font-size: 28px;
