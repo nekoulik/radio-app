@@ -9,81 +9,139 @@ export interface RadioStation {
     description?: string;
 }
 
-// Базовые цвета для станций
+// Палитра градиентов для станций
 const COLORS = [
-    'linear-gradient(135deg, #ff66b3 0%, #a18cd1 100%)',
-    'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
-    'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
-    'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
-    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)', // Розовый закат
+    'linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)', // Мятный бриз
+    'linear-gradient(to right, #fa709a 0%, #fee140 100%)', // Персиковый сорбет
+    'linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)', // Лавандовый туман
+    'linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)', // Теплый песок
+    'linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)', // Небесный свод
+    'linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)', // Серебряный иней
+    'linear-gradient(to right, #4facfe 0%, #00f2fe 100%)', // Глубокий океан
+    'linear-gradient(to top, #30cfd0 0%, #330867 100%)', // Неоновый ночной клуб
+    'linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%)', // Радужный единорог
+    'linear-gradient(to right, #f83600 0%, #f9d423 100%)', // Огненный закат
+    'linear-gradient(-20deg, #b721ff 0%, #21d4fd 100%)', // Киберпанк
+    'linear-gradient(to top, #0ba360 0%, #3cba92 100%)', // Изумрудный лес
 ];
 
-// Функция для получения станций из Radio Browser API
-export async function fetchRadioStations(): Promise<RadioStation[]> {
-    const tags = ['anime', 'jpop', 'lofi', 'ost', 'chill'];
-    const stations: RadioStation[] = [];
-
-    try {
-        for (const tag of tags) {
-            const response = await fetch(
-                `https://de1.api.radio-browser.info/json/stations/search?limit=10&hidebroken=true&order=clickcount&reverse=true&tag=${tag}`
-            );
-
-            if (!response.ok) continue;
-
-            const data = await response.json();
-
-            data.forEach((station: any, _index: number) => {
-                // Фильтруем только рабочие потоки
-                if (station.codec && ['MP3', 'AAC', 'AAC+', 'OGG'].includes(station.codec.toUpperCase())) {
-                    stations.push({
-                        id: station.stationuuid,
-                        name: station.name,
-                        streamUrl: station.url_resolved || station.url,
-                        genre: station.tags ? station.tags.split(',')[0] : tag,
-                        color: COLORS[stations.length % COLORS.length],
-                        description: `${station.name} • ${station.tags || tag}`, // <-- Описание добавлено ЗДЕСЬ, внутри цикла
-                    });
-                }
-            });
-        }
-
-        // Удаляем дубликаты по URL
-        const uniqueStations = Array.from(
-            new Map(stations.map(s => [s.streamUrl, s])).values()
-        );
-
-        return uniqueStations.length > 0 ? uniqueStations : getFallbackStations();
-
-    } catch (error) {
-        console.error('Ошибка загрузки станций из API:', error);
-        return getFallbackStations();
+export const radioStations: RadioStation[] = [
+    {
+        id: '1',
+        name: 'Anime Radio',
+        streamUrl: 'https://stream.laut.fm/anime',
+        genre: 'Anime • J-Pop',
+        color: COLORS[0],
+        description: 'Лучшие опенинги и эндинги 24/7'
+    },
+    {
+        id: '2',
+        name: 'J-Pop Power',
+        streamUrl: 'https://stream.laut.fm/jpop',
+        genre: 'J-Pop • Idol',
+        color: COLORS[1],
+        description: 'Свежие хиты японской поп-музыки'
+    },
+    {
+        id: '3',
+        name: 'Lo-Fi Girl',
+        streamUrl: 'https://stream.laut.fm/lofi',
+        genre: 'Lo-Fi • Chill',
+        color: COLORS[2],
+        description: 'Идеально для учебы и релакса'
+    },
+    {
+        id: '4',
+        name: 'Gaming FM',
+        streamUrl: 'https://stream.laut.fm/gaming',
+        genre: 'Gaming • OST',
+        color: COLORS[3],
+        description: 'Саундтреки из любимых игр'
+    },
+    {
+        id: '5',
+        name: 'City Pop',
+        streamUrl: 'https://stream.laut.fm/citypop',
+        genre: 'City Pop • Retro',
+        color: COLORS[4],
+        description: 'Вайб японских 80-х'
+    },
+    {
+        id: '6',
+        name: 'Nightcore',
+        streamUrl: 'https://stream.laut.fm/nightcore',
+        genre: 'Nightcore • Fast',
+        color: COLORS[5],
+        description: 'Ускоренные треки для энергии'
+    },
+    {
+        id: '7',
+        name: 'Vocaloid',
+        streamUrl: 'https://stream.laut.fm/vocaloid',
+        genre: 'Vocaloid • Miku',
+        color: COLORS[6],
+        description: 'Хатсуне Мику и друзья'
+    },
+    {
+        id: '8',
+        name: 'K-Pop Global',
+        streamUrl: 'https://stream.laut.fm/kpop',
+        genre: 'K-Pop • Korean',
+        color: COLORS[7],
+        description: 'Корейские хиты и новинки'
+    },
+    {
+        id: '9',
+        name: 'Chillhop',
+        streamUrl: 'https://stream.laut.fm/chillhop',
+        genre: 'Hip-Hop • Beats',
+        color: COLORS[8],
+        description: 'Биты для хорошего настроения'
+    },
+    {
+        id: '10',
+        name: 'Retro Anime',
+        streamUrl: 'https://stream.laut.fm/retroanime',
+        genre: 'Retro • 90s',
+        color: COLORS[9],
+        description: 'Классика аниме музыки'
+    },
+    {
+        id: '11',
+        name: 'Piano & Strings',
+        streamUrl: 'https://stream.laut.fm/piano',
+        genre: 'Classical • OST',
+        color: COLORS[10],
+        description: 'Эмоциональные саундтреки'
+    },
+    {
+        id: '12',
+        name: 'Future Bass',
+        streamUrl: 'https://stream.laut.fm/futurebass',
+        genre: 'Electronic • Bass',
+        color: COLORS[11],
+        description: 'Мощные басы и синты'
+    },
+    {
+        id: '13',
+        name: 'Ambient Space',
+        streamUrl: 'https://stream.laut.fm/ambient',
+        genre: 'Ambient • Space',
+        color: COLORS[12],
+        description: 'Музыка для медитации и сна'
     }
-}
+];
 
-// Резервные станции
-function getFallbackStations(): RadioStation[] {
-    return [
-        {
-            id: 'fallback-1',
-            name: 'Anime Radio (Backup)',
-            streamUrl: 'https://stream.laut.fm/anime',
-            genre: 'Anime • J-Pop',
-            color: COLORS[0],
-            description: 'Лучшие аниме треки 24/7'
-        },
-        {
-            id: 'fallback-2',
-            name: 'Lo-Fi Beats (Backup)',
-            streamUrl: 'https://stream.laut.fm/lofi',
-            genre: 'Lo-Fi • Chill',
-            color: COLORS[1],
-            description: 'Расслабляющая музыка для учебы и работы'
-        }
-    ];
-}
-
-// Экспорты для совместимости
-export const DEFAULT_STATION_ID = 'loading...';
-export const radioStations: RadioStation[] = [];
+// Вспомогательные функции
+export const DEFAULT_STATION_ID = '1';
 export const getStationById = (id: string) => radioStations.find(s => s.id === id);
+
+// Функция fetchRadioStations теперь просто возвращает наш статический список
+// Это сохраняет совместимость с кодом в RadioPlayer.tsx
+export async function fetchRadioStations(): Promise<RadioStation[]> {
+    // Имитация задержки сети для плавности (опционально)
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(radioStations), 500);
+    });
+}
