@@ -33,6 +33,7 @@ import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
+import { Equalizer } from './Equalizer'; // <-- Импорт эквалайзера
 
 interface RadioPlayerProps {
     id: string;
@@ -51,29 +52,126 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [copySuccess, setCopySuccess] = useState(false);
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
 
+    // Состояния для эквалайзера
+    const [isEqOpen, setIsEqOpen] = useState(false);
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
-
     const { toggleFavorite, isFavorite } = useFavorites();
-
     const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+
+    // Refs для Web Audio API
+    const audioContextRef = useRef<AudioContext | null>(null);
+    const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+    const bassFilterRef = useRef<BiquadFilterNode | null>(null);
+    const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
+    const analyserRef = useRef<AnalyserNode | null>(null);
+    const isAudioInitialized = useRef<boolean>(false);
+
+    // Инициализация Audio Context (выполняется один раз)
+    const initAudioContext = (audioElement: HTMLAudioElement) => {
+        if (isAudioInitialized.current) return;
+
+        try {
+            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+            const ctx = new AudioCtx();
+
+            // Создаем источник из элемента audio
+            // ВАЖНО: createMediaElementSource может требовать CORS заголовков от потока
+            const source = ctx.createMediaElementSource(audioElement);
+
+            // Создаем фильтры
+            const bass = ctx.createBiquadFilter();
+            bass.type = 'lowshelf';
+            bass.frequency.value = 200;
+
+            const treble = ctx.createBiquadFilter();
+            treble.type = 'highshelf';
+            treble.frequency.value = 2000;
+
+            // Анализатор для визуализации
+            const analyser = ctx.createAnalyser();
+            analyser.fftSize = 64;
+
+            // Цепочка: Источник -> Бас -> Высокие -> Анализатор -> Выход
+            source.connect(bass);
+            bass.connect(treble);
+            treble.connect(analyser);
+            analyser.connect(ctx.destination);
+
+            // Сохраняем ссылки
+            audioContextRef.current = ctx;
+            sourceRef.current = source;
+            bassFilterRef.current = bass;
+            trebleFilterRef.current = treble;
+            analyserRef.current = analyser;
+
+            isAudioInitialized.current = true;
+        } catch (err) {
+            console.error("Ошибка инициализации AudioContext (возможна проблема CORS):", err);
+        }
+    };
+
+    // Функция применения пресетов
+    const applyEqPreset = (preset: string) => {
+        if (!bassFilterRef.current || !trebleFilterRef.current) return;
+
+        switch (preset) {
+            case 'bass':
+                bassFilterRef.current.gain.value = 15; // Усиливаем басы
+                trebleFilterRef.current.gain.value = -5; // Чуть глушим высокие
+                break;
+            case 'vocal':
+                bassFilterRef.current.gain.value = -5; // Глушим басы
+                trebleFilterRef.current.gain.value = 5; // Усиливаем высокие
+                break;
+            case 'flat':
+            default:
+                bassFilterRef.current.gain.value = 0; // Сброс
+                trebleFilterRef.current.gain.value = 0; // Сброс
+                break;
+        }
+    };
 
     useEffect(() => {
         if (!currentStation) return;
+
+        // Очищаем предыдущий аудио элемент
         if (audioRef.current) {
             audioRef.current.pause();
-            audioRef.current = null;
+            audioRef.current.src = '';
+            // Не удаляем полностью, чтобы не ломать связь с AudioContext, 
+            // но меняем src. Если createMediaElementSource был вызван для этого элемента, он останется привязанным.
         }
 
         const audio = new Audio(currentStation.streamUrl);
+        audio.crossOrigin = "anonymous"; // Важно для CORS
         audio.preload = 'none';
         audio.volume = volume;
+
+        // Инициализируем контекст при первом воспроизведении или загрузке
+        if (!isAudioInitialized.current) {
+            // Откладываем инициализацию до первого play(), так как браузеры блокируют автоплей аудио контекста
+            // Но мы можем подготовить элементы.
+            // Для простоты в этом коде: инициализируем сразу, но активируем контекст при клике play.
+        }
 
         audio.addEventListener('playing', () => {
             setIsPlaying(true);
             setIsLoading(false);
             setError(null);
+
+            // Активируем AudioContext при первом воспроизведении (требование браузеров)
+            if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+                audioContextRef.current.resume();
+            }
+
+            // Если контекст еще не создан (первый запуск), создаем его сейчас
+            if (!isAudioInitialized.current) {
+                initAudioContext(audio);
+            }
         });
+
         audio.addEventListener('pause', () => setIsPlaying(false));
         audio.addEventListener('waiting', () => setIsLoading(true));
         audio.addEventListener('error', () => {
@@ -83,9 +181,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         });
 
         audioRef.current = audio;
+
+        // При размонтировании или смене станции не удаляем audio полностью, 
+        // чтобы не разрывать связь с Web Audio API узлами, если они уже созданы.
+        // Просто ставим на паузу.
         return () => {
             audio.pause();
-            audio.src = '';
+            // audio.src = ''; // Не очищаем src, чтобы сохранить привязку к source node
         };
     }, [currentStationId]);
 
@@ -120,6 +222,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 await audioRef.current.pause();
             } else {
                 setIsLoading(true);
+
+                // Если контекст существует и приостановлен, возобновляем его
+                if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+                    await audioContextRef.current.resume();
+                }
+
                 await audioRef.current.play();
             }
         } catch (err) {
@@ -157,7 +265,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         handleStationSelect(newStation);
     };
 
-    //  СЛУЧАЙНАЯ СТАНЦИЯ
     const playRandomStation = () => {
         const availableStations = radioStations.filter(s => s.id !== currentStationId);
         const randomIndex = Math.floor(Math.random() * availableStations.length);
@@ -318,6 +425,30 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* Модальное окно Эквалайзера */}
+            <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
+                <ModalPage
+                    id="equalizer"
+                    header={
+                        <ModalPageHeader
+                            before={
+                                <Button mode="tertiary" onClick={() => setIsEqOpen(false)}>
+                                    <Icon24Dismiss />
+                                </Button>
+                            }
+                        >
+                            Настройки звука
+                        </ModalPageHeader>
+                    }
+                    onClose={() => setIsEqOpen(false)}
+                >
+                    <Equalizer
+                        onPresetChange={applyEqPreset}
+                        analyserNode={analyserRef.current}
+                    />
+                </ModalPage>
+            </ModalRoot>
+
             {/* Полноэкранный режим "Сейчас играет" */}
             <NowPlayingScreen
                 isOpen={isNowPlayingOpen}
@@ -383,7 +514,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         marginBottom: '6px',
                         letterSpacing: '1px',
                     }}>
-                        🌸 AniWave Radio
+                        AniWave Radio
                     </div>
                     <div style={{
                         fontSize: '15px',
@@ -584,6 +715,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
                 >
                     Общий чат слушателей
+                </Cell>
+
+                {/* НОВАЯ КНОПКА ЭКВАЛАЙЗЕРА */}
+                <Cell
+                    before={<div style={{ fontSize: '24px' }}>🎛️</div>}
+                    onClick={() => setIsEqOpen(true)}
+                    subtitle="Настройте басы и высокие частоты"
+                    style={{ borderRadius: '8px', background: 'rgba(255,255,255,0.05)' }}
+                >
+                    Эквалайзер
                 </Cell>
 
                 {error && (
