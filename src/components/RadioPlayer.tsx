@@ -141,8 +141,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             audioRef.current.src = '';
         }
 
-        // Прямая ссылка (без прокси), так как Radio Browser поддерживает CORS
-        const audio = new Audio(currentStation.streamUrl);
+        const PROXY_URL = 'https://aniwave-proxy.nekoulik.workers.dev';
+        const streamUrl = `${PROXY_URL}/?url=${encodeURIComponent(currentStation.streamUrl)}`;
+        const audio = new Audio(streamUrl);
         audio.crossOrigin = "anonymous";
         audio.preload = 'none';
         audio.volume = volume;
