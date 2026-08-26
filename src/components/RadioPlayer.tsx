@@ -33,8 +33,6 @@ import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
-import { CommunityChat } from './CommunityChat';
-import { InAppChat } from './InAppChat';
 
 interface RadioPlayerProps {
     id: string;
@@ -52,6 +50,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [shareText, setShareText] = useState('');
     const [copySuccess, setCopySuccess] = useState(false);
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
+
+    // <-- Состояние для статусов есть
+    const [isStatusPickerOpen, setIsStatusPickerOpen] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = getStationById(currentStationId);
@@ -143,7 +144,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
 
-    // Логика переключения станций (вперед/назад по кругу)
     const switchStation = (direction: 'next' | 'prev') => {
         const currentIndex = radioStations.findIndex(s => s.id === currentStationId);
         let newIndex;
@@ -272,7 +272,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 station={currentStation}
                 isPlaying={isPlaying}
                 onTogglePlay={togglePlay}
-                onSwitchStation={switchStation} // <-- Передаем функцию переключения
+                onSwitchStation={switchStation}
+            />
+
+            {/* <-- ДОБАВЛЕНО: Модальное окно выбора статуса */}
+            <StatusPicker
+                isOpen={isStatusPickerOpen}
+                onClose={() => setIsStatusPickerOpen(false)}
+                currentStationName={currentStation?.name}
             />
 
             {/* Анимированный градиентный баннер */}
@@ -343,7 +350,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </div>
 
             <Group>
-                {/* Основной блок плеера (кликабельный для открытия Now Playing) */}
+                {/* Основной блок плеера */}
                 <Div
                     style={{
                         textAlign: 'center',
@@ -522,12 +529,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 >
                     Поделиться
                 </Cell>
-
-                {/* <-- ДОБАВЬТЕ ЭТУ СТРОКУ */}
-                <InAppChat />
-
-                {/* Чат с сообществом */}
-                <CommunityChat communityId="-239834224" />
 
                 {error && (
                     <Group>
