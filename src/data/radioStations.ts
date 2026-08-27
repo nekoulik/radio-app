@@ -59,11 +59,11 @@ export const radioStations: RadioStation[] = [
     },
     {
         id: '4',
-        name: 'OnlyHits Japan',
-        streamUrl: 'https://j.onlyhit.us/play',
-        genre: 'J-Pop • Hits',
+        name: 'SomaFM Indie Pop Rocks',
+        streamUrl: 'https://ice1.somafm.com/indiepop-128-mp3',
+        genre: 'Indie • J-Pop',
         color: COLORS[3],
-        description: 'Только хиты японской сцены',
+        description: 'Независимая поп-музыка со всего мира',
         useProxy: false
     },
     {
@@ -117,11 +117,11 @@ export const radioStations: RadioStation[] = [
     // === GAMING & ENERGY (Для драйва) ===
     {
         id: '10',
-        name: 'Full Spectrum DnB',
-        streamUrl: 'https://fullspectrumradio.com/listen',
-        genre: 'DnB • Dubstep',
+        name: 'SomaFM Metal Detector',
+        streamUrl: 'https://ice1.somafm.com/metal-128-mp3',
+        genre: 'Metal • Heavy',
         color: COLORS[9],
-        description: 'Тяжелые басы и быстрые ритмы',
+        description: 'Тяжелый метал и хард-рок для драйва',
         useProxy: false
     },
     {

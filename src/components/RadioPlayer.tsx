@@ -436,9 +436,49 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
+                {/* Блок ссылок и поддержки */}
+                <Separator />
+                <Group header={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
+                        <Subhead> Ссылки</Subhead>
+                        <Button
+                            size="s"
+                            mode="tertiary"
+                            Component="a"
+                            href="https://vk.com/im?sel=-239834224"
+                            target="_blank"
+                            style={{ color: '#99A2AD' }}
+                        >
+                            🛠️ Поддержка
+                        </Button>
+                    </div>
+                }>
+                    <Cell
+                        Component="a"
+                        href="https://vk.ru/ani__wave"
+                        target="_blank"
+                        before={<div style={{ fontSize: '28px' }}></div>}
+                        subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
+                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
+                        style={{
+                            background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)',
+                            borderRadius: '8px',
+                            margin: '8px 16px',
+                            border: '1px solid rgba(255, 102, 179, 0.2)'
+                        }}
+                    >
+                        <Subhead weight="2" style={{ color: '#ffffff' }}>Наше сообщество</Subhead>
+                    </Cell>
+                </Group>
+
                 <Separator />
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>О радио</Subhead>}>
-                    <Cell multiline><Text>AniWave — лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST 24/7.</Text></Cell>
+                    <Cell multiline>
+                        <Text>
+                            AniWave — это лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST из
+                            любимых аниме 24/7.
+                        </Text>
+                    </Cell>
                 </Group>
             </Group>
 
