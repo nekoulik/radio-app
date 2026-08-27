@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Div, Button, Caption } from '@vkontakte/vkui';
 
 interface EqualizerProps {
@@ -7,6 +7,7 @@ interface EqualizerProps {
 }
 
 export const Equalizer: React.FC<EqualizerProps> = ({ onPresetChange, analyserNode }) => {
+    const [activePreset, setActivePreset] = useState('flat'); // <-- Добавили состояние
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const animationRef = useRef<number | null>(null);
 
@@ -32,9 +33,8 @@ export const Equalizer: React.FC<EqualizerProps> = ({ onPresetChange, analyserNo
             let x = 0;
 
             for (let i = 0; i < bufferLength; i++) {
-                barHeight = dataArray[i] / 2; // Масштабируем высоту
+                barHeight = dataArray[i] / 2;
 
-                // Градиент для полосок
                 const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
                 gradient.addColorStop(0, '#ff66b3');
                 gradient.addColorStop(1, '#66ccff');
@@ -55,13 +55,37 @@ export const Equalizer: React.FC<EqualizerProps> = ({ onPresetChange, analyserNo
         };
     }, [analyserNode]);
 
+    // Функция обработки клика по пресету
+    const handlePresetClick = (preset: string) => {
+        setActivePreset(preset); // <-- Обновляем состояние кнопки
+        onPresetChange(preset);  // <-- Вызываем функцию родителя
+    };
+
     return (
         <Div style={{ padding: '16px' }}>
-            {/* Кнопки пресетов */}
+            {/* Кнопки пресетов с динамическим mode */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', justifyContent: 'center' }}>
-                <Button size="m" mode="primary" onClick={() => onPresetChange('flat')}>Плоский</Button>
-                <Button size="m" mode="secondary" onClick={() => onPresetChange('bass')}>Басы</Button>
-                <Button size="m" mode="secondary" onClick={() => onPresetChange('vocal')}>Вокал</Button>
+                <Button
+                    size="m"
+                    mode={activePreset === 'flat' ? 'primary' : 'secondary'}
+                    onClick={() => handlePresetClick('flat')}
+                >
+                    Плоский
+                </Button>
+                <Button
+                    size="m"
+                    mode={activePreset === 'bass' ? 'primary' : 'secondary'}
+                    onClick={() => handlePresetClick('bass')}
+                >
+                    Басы
+                </Button>
+                <Button
+                    size="m"
+                    mode={activePreset === 'vocal' ? 'primary' : 'secondary'}
+                    onClick={() => handlePresetClick('vocal')}
+                >
+                    Вокал
+                </Button>
             </div>
 
             {/* Канвас для визуализации */}
