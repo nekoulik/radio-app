@@ -136,8 +136,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     useEffect(() => {
         if (!currentStation) return;
 
-        // Очищаем предыдущий таймер ошибки, если он был
         let errorTimer: ReturnType<typeof setTimeout> | undefined;
+        let retryCount = 0;
+        const MAX_RETRIES = 2; // Максимум 2 попытки перед показом ошибки
 
         if (audioRef.current) {
             audioRef.current.pause();
@@ -151,20 +152,43 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
         // --- ЛОГИКА ТАЙМЕРА ОШИБКИ ---
         const startErrorTimer = () => {
-            // Сбрасываем старый таймер
             if (errorTimer) clearTimeout(errorTimer);
-            // Стало (60 секунд):
+
+            // УВЕЛИЧЕННЫЙ ТАЙМАУТ: 60 секунд
             errorTimer = setTimeout(() => {
                 if (isLoading && !isPlaying) {
-                    setError('Ошибка воспроизведения потока (таймаут 60с)');
+                    setError(`Не удалось загрузить поток "${currentStation.name}" за 60 сек.`);
                     setIsLoading(false);
                 }
-            }, 60000);
+            }, 60000); // <-- 60 СЕКУНД ВМЕСТО 30
+        };
+
+        const handleError = () => {
+            if (errorTimer) clearTimeout(errorTimer);
+
+            // Пробуем перезапустить поток автоматически (до 2 раз)
+            if (retryCount < MAX_RETRIES) {
+                retryCount++;
+                console.log(`Попытка перезапуска потока #${retryCount}...`);
+
+                // Небольшая задержка перед повторной попыткой
+                setTimeout(() => {
+                    if (audioRef.current) {
+                        audioRef.current.load();
+                        audioRef.current.play().catch(e => console.error('Retry failed:', e));
+                    }
+                }, 2000);
+            } else {
+                // Все попытки исчерпаны — показываем ошибку
+                setError(`Ошибка воспроизведения "${currentStation.name}". Попробуйте другую станцию.`);
+                setIsLoading(false);
+                setIsPlaying(false);
+            }
         };
 
         audio.addEventListener('playing', () => {
-            // Если пошло воспроизведение — очищаем таймер ошибки!
             if (errorTimer) clearTimeout(errorTimer);
+            retryCount = 0; // Сбрасываем счетчик при успешном воспроизведении
 
             setIsPlaying(true);
             setIsLoading(false);
@@ -180,31 +204,26 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         });
 
         audio.addEventListener('pause', () => {
-            if (errorTimer) clearTimeout(errorTimer); // Пауза пользователем — не ошибка
+            if (errorTimer) clearTimeout(errorTimer);
             setIsPlaying(false);
         });
 
         audio.addEventListener('waiting', () => {
             setIsLoading(true);
-            startErrorTimer(); // Начинаем отсчет при буферизации
+            startErrorTimer();
         });
 
-        audio.addEventListener('error', (e) => {
-            if (errorTimer) clearTimeout(errorTimer); // Мгновенная ошибка браузера
-            console.error('Audio Error:', e);
-            setError('Ошибка воспроизведения потока');
-            setIsLoading(false);
-            setIsPlaying(false);
-        });
+        audio.addEventListener('error', handleError);
+        audio.addEventListener('stalled', handleError); // Добавляем обработку "зависания"
 
-        // Запускаем таймер сразу при создании аудио (на случай если waiting не сработает сразу)
+        // Запускаем таймер сразу
         startErrorTimer();
 
         audioRef.current = audio;
 
         return () => {
             audio.pause();
-            if (errorTimer) clearTimeout(errorTimer); // Чистим таймер при размонтировании/смене станции
+            if (errorTimer) clearTimeout(errorTimer);
         };
     }, [currentStationId]);
 
