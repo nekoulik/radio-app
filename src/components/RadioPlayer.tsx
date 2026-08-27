@@ -153,16 +153,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         const startErrorTimer = () => {
             // Сбрасываем старый таймер
             if (errorTimer) clearTimeout(errorTimer);
-
-            // Запускаем новый на 30 секунд (30000 мс)
+            // Стало (60 секунд):
             errorTimer = setTimeout(() => {
-                // Если к этому моменту мы все еще в состоянии загрузки (isLoading === true)
-                // и не играет (isPlaying === false), то показываем ошибку
                 if (isLoading && !isPlaying) {
                     setError('Ошибка воспроизведения потока (таймаут 60с)');
                     setIsLoading(false);
                 }
-            }, 30000);
+            }, 60000);
         };
 
         audio.addEventListener('playing', () => {
