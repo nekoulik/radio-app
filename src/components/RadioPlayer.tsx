@@ -70,7 +70,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const bassFilterRef = useRef<BiquadFilterNode | null>(null);
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
-    const isAudioInitialized = useRef<boolean>(false);
 
     // 1. Загрузка станций при монтировании
     useEffect(() => {
@@ -94,11 +93,51 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         loadStations();
     }, []);
 
-    // 2. Инициализация Audio Context (для эквалайзера)
+    // 2. Инициализация Audio Context (теперь пересоздает цепочку полностью)
     const initAudioContext = (audioElement: HTMLAudioElement) => {
-        if (isAudioInitialized.current) return;
-
         try {
+            // Если контекст уже есть, просто обновляем источник
+            if (audioContextRef.current) {
+                const ctx = audioContextRef.current;
+
+                // Отключаем старые узлы (если они есть)
+                if (sourceRef.current) {
+                    try { sourceRef.current.disconnect(); } catch (e) { }
+                }
+
+                // Создаем НОВЫЙ источник для нового аудио-элемента
+                const source = ctx.createMediaElementSource(audioElement);
+
+                // Пересоздаем фильтры и анализатор
+                const bass = ctx.createBiquadFilter();
+                bass.type = 'lowshelf';
+                bass.frequency.value = 200;
+                // Применяем текущий пресет (если нужно сохранить настройки)
+                // bass.gain.value = ... 
+
+                const treble = ctx.createBiquadFilter();
+                treble.type = 'highshelf';
+                treble.frequency.value = 2000;
+
+                const analyser = ctx.createAnalyser();
+                analyser.fftSize = 64;
+
+                // Соединяем заново
+                source.connect(bass);
+                bass.connect(treble);
+                treble.connect(analyser);
+                analyser.connect(ctx.destination);
+
+                // Сохраняем новые ссылки
+                sourceRef.current = source;
+                bassFilterRef.current = bass;
+                trebleFilterRef.current = treble;
+                analyserRef.current = analyser;
+
+                return; // Выходим, так как контекст уже был создан ранее
+            }
+
+            // Если контекста нет вообще — создаем с нуля (первый запуск)
             const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
             const ctx = new AudioCtx();
 
@@ -126,7 +165,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             trebleFilterRef.current = treble;
             analyserRef.current = analyser;
 
-            isAudioInitialized.current = true;
         } catch (err) {
             console.error("Ошибка инициализации AudioContext:", err);
         }
@@ -208,7 +246,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
         audio.addEventListener('playing', () => {
             if (errorTimer) clearTimeout(errorTimer);
-            retryCount = 0; // Сбрасываем счетчик при успешном воспроизведении
+            retryCount = 0;
 
             setIsPlaying(true);
             setIsLoading(false);
@@ -218,9 +256,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 audioContextRef.current.resume();
             }
 
-            if (!isAudioInitialized.current) {
-                initAudioContext(audio);
-            }
+            // ✅ Всегда инициализируем/обновляем контекст для текущего аудио
+            initAudioContext(audio);
         });
 
         audio.addEventListener('pause', () => {
