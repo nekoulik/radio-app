@@ -32,8 +32,8 @@ export const radioStations: RadioStation[] = [
     // === ANIME & J-POP (Тематические) ===
     {
         id: '1',
-        name: 'Wave Anime Radio',
-        streamUrl: 'https://channel_3.waveani.fun/stream',
+        name: 'Anison.fm',
+        streamUrl: 'https://pool.anison.fm/AniSonFM(320)',
         genre: 'Anime • OST',
         color: COLORS[0],
         description: 'Лучшие опенинги и эндинги 24/7',

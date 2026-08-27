@@ -457,7 +457,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         Component="a"
                         href="https://vk.ru/ani__wave"
                         target="_blank"
-                        before={<div style={{ fontSize: '28px' }}></div>}
+                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
                         subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
                         after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
                         style={{
