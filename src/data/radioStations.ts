@@ -101,7 +101,7 @@ export const radioStations: RadioStation[] = [
         streamUrl: 'https://ice1.somafm.com/fluid-128-mp3',
         genre: 'Instrumental • Hip Hop',
         color: COLORS[7],
-        description: 'Инструментальный хип-хоп и лоу-фай биты без',
+        description: 'Инструментальный хип-хоп и лоу-фай биты без слов', // <-- Исправлено описание
         useProxy: false
     },
     {
@@ -157,7 +157,7 @@ export const radioStations: RadioStation[] = [
         id: '14',
         name: 'NPO Radio 2',
         streamUrl: 'https://icecast.omroep.nl/radio2-bb-mp3',
-        genre: 'city pop',
+        genre: 'City Pop • Retro', // <-- Уточнен жанр для лучшей читаемости
         color: COLORS[13],
         description: 'Саундтрек вашей жизни в стиле аниме 90-х',
         useProxy: false
