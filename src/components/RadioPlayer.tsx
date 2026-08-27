@@ -159,7 +159,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 // Если к этому моменту мы все еще в состоянии загрузки (isLoading === true)
                 // и не играет (isPlaying === false), то показываем ошибку
                 if (isLoading && !isPlaying) {
-                    setError('Ошибка воспроизведения потока (таймаут 30с)');
+                    setError('Ошибка воспроизведения потока (таймаут 60с)');
                     setIsLoading(false);
                 }
             }, 30000);
