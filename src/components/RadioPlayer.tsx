@@ -151,16 +151,26 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         audio.volume = volume;
 
         // --- ЛОГИКА ТАЙМЕРА ОШИБКИ ---
+        // Внутри startErrorTimer добавьте промежуточный чекпоинт:
         const startErrorTimer = () => {
             if (errorTimer) clearTimeout(errorTimer);
 
-            // УВЕЛИЧЕННЫЙ ТАЙМАУТ: 60 секунд
+            // Промежуточное уведомление через 30 сек (опционально)
+            const warningTimer = setTimeout(() => {
+                if (isLoading && !isPlaying && !error) {
+                    console.warn('Поток загружается дольше 30 секунд...');
+                    // Можно показать мягкое уведомление, но не блокирующую ошибку
+                }
+            }, 30000);
+
+            // Основная ошибка через 60 сек
             errorTimer = setTimeout(() => {
+                clearTimeout(warningTimer); // Очищаем предупреждение
                 if (isLoading && !isPlaying) {
                     setError(`Не удалось загрузить поток "${currentStation.name}" за 60 сек.`);
                     setIsLoading(false);
                 }
-            }, 60000); // <-- 60 СЕКУНД ВМЕСТО 30
+            }, 60000);
         };
 
         const handleError = () => {
@@ -446,7 +456,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <Div style={{ marginBottom: '24px' }}><Visualizer isPlaying={isPlaying} color={currentStation?.color} /></Div>
                         <Subhead style={{ color: '#fff', fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}>{currentStation?.name || 'Выберите станцию'}</Subhead>
-                        <Caption style={{ color: '#eee', marginBottom: '24px' }}>{currentStation?.genre}</Caption>
+                        <Caption style={{ color: '#eee', marginBottom: '24px' }}>
+                            {currentStation?.genre}
+                            {isLoading && !isPlaying && (
+                                <span style={{ marginLeft: '8px', opacity: 0.7 }}>• Загрузка...</span>
+                            )}
+                        </Caption>
 
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
                             <Button size="l" mode="primary" style={{ width: '80px', height: '80px', borderRadius: '50%', background: currentStation?.color, border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }} onClick={(e) => { e.stopPropagation(); togglePlay(); }} disabled={isLoading}>
@@ -475,12 +490,31 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Cell before={<div style={{ fontSize: '24px' }}>💬</div>} onClick={() => setIsChatModalOpen(true)} subtitle="Общайтесь с другими слушателями">Общий чат</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>🎛️</div>} onClick={() => setIsEqOpen(true)} subtitle="Настройте басы и высокие частоты">Эквалайзер</Cell>
 
-                {error && <Group><Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}><Subhead weight="2" style={{ color: '#F44336' }}>Ошибка</Subhead><Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption><Button size="m" mode="secondary" onClick={togglePlay}>Попробовать снова</Button></Div></Group>}
+                {error && (
+                    <Group>
+                        <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
+                            <Subhead weight="2" style={{ color: '#F44336' }}>Ошибка воспроизведения</Subhead>
+                            <Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption>
+                            <Button
+                                size="m"
+                                mode="secondary"
+                                onClick={() => {
+                                    setError(null);
+                                    setIsLoading(true);
+                                    togglePlay();
+                                }}
+                            >
+                                Попробовать снова
+                            </Button>
+                        </Div>
+                    </Group>
+                )}
 
-                <Group header={<Subhead style={{ padding: '12px 16px' }}> Радиостанции</Subhead>}>
+                {/* Компактный список станций с поиском */}
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
                     <StationSearch
                         stations={stations}
-                        currentStationId={currentStationId || ''} // Передаем пустую строку, если null
+                        currentStationId={currentStationId}
                         isPlaying={isPlaying}
                         onStationSelect={handleStationSelect}
                         isFavorite={isFavorite}
@@ -489,7 +523,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </Group>
 
                 {/* Блок ссылок и поддержки */}
-                <Separator />
+                < Separator />
                 <Group header={
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
                         <Subhead> Ссылки</Subhead>
