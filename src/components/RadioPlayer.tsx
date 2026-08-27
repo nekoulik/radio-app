@@ -174,6 +174,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         };
 
         const handleError = () => {
+            // Если таймер ошибки уже сработал и показал сообщение — не пытаемся перезапускать
+            if (error) return;
+
             if (errorTimer) clearTimeout(errorTimer);
 
             // Пробуем перезапустить поток автоматически (до 2 раз)
@@ -183,9 +186,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 // Небольшая задержка перед повторной попыткой
                 setTimeout(() => {
-                    if (audioRef.current) {
+                    // ВАЖНО: Проверяем, актуален ли ещё этот аудио-элемент
+                    // Если пользователь переключил станцию, audioRef.current будет другим (или null)
+                    if (audioRef.current && audioRef.current.src === audio.src) {
                         audioRef.current.load();
-                        audioRef.current.play().catch(e => console.error('Retry failed:', e));
+                        audioRef.current.play().catch(e => {
+                            // Игнорируем AbortError, так как он возникает при переключении станции
+                            if (e.name !== 'AbortError') {
+                                console.error('Retry failed:', e);
+                            }
+                        });
                     }
                 }, 2000);
             } else {
