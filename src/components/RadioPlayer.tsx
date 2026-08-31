@@ -79,8 +79,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 const loadedStations = await fetchRadioStations();
                 setStations(loadedStations);
 
-                // Устанавливаем первую станцию по умолчанию
-                if (loadedStations.length > 0 && !currentStationId) {
+                // Проверяем, есть ли сохранённая станция
+                const savedStationId = localStorage.getItem('lastStationId');
+
+                // Устанавливаем станцию: сначала из localStorage, иначе первую
+                if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
+                    setCurrentStationId(savedStationId);
+                } else if (loadedStations.length > 0) {
                     setCurrentStationId(loadedStations[0].id);
                 }
             } catch (err) {
@@ -358,6 +363,47 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         handleStationSelect(newStation);
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                return;
+            }
+
+            switch (e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    togglePlay();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    switchStation('next');
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    switchStation('prev');
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    setVolume(prev => Math.min(prev + 0.1, 1));
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    setVolume(prev => Math.max(prev - 0.1, 0));
+                    break;
+                case 'KeyM':
+                    e.preventDefault();
+                    setVolume(prev => prev === 0 ? 0.8 : 0);
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [togglePlay, switchStation]);
+
     const playRandomStation = () => {
         if (stations.length === 0) return;
         const availableStations = stations.filter(s => s.id !== currentStationId);
@@ -378,6 +424,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setError(null);
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
+
+            // 💾 Сохраняем выбранную станцию
+            localStorage.setItem('lastStationId', station.id);
+
             setTimeout(() => {
                 if (audioRef.current) {
                     setIsLoading(true);
@@ -614,6 +664,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Cell>
                 </Group>
             </Group>
+
+            <Caption style={{ color: '#99A2AD', textAlign: 'center', marginTop: '12px' }}>
+                💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)
+            </Caption>
 
             <style>{`
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
