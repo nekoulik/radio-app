@@ -662,12 +662,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             любимых аниме 24/7.
                         </Text>
                     </Cell>
+                    {/* Добавляем подсказку внутрь Group с отступами */}
+                    <Div style={{ padding: '12px 16px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                        <Caption style={{ color: '#99A2AD', textAlign: 'center', display: 'block' }}>
+                            💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)
+                        </Caption>
+                    </Div>
                 </Group>
             </Group>
-
-            <Caption style={{ color: '#99A2AD', textAlign: 'center', marginTop: '12px' }}>
-                💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)
-            </Caption>
 
             <style>{`
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
