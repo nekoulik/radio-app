@@ -638,36 +638,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             {/* 2. Полноэкранный плеер */}
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
 
-            {/* 3. 🕐 Блок "Недавно прослушанные" (Теперь корректно внутри return, ПЕРЕД баннером) */}
-            {listeningHistory.length > 0 && (
-                <Group header={<Subhead style={{ padding: '12px 16px' }}>🕐 Недавно прослушанные</Subhead>}>
-                    {listeningHistory.slice(0, 3).map(stationId => {
-                        const station = stations.find(s => s.id === stationId);
-                        if (!station) return null;
-
-                        return (
-                            <Cell
-                                key={station.id}
-                                before={<div style={{ fontSize: '24px' }}>🕐</div>}
-                                onClick={() => handleStationSelect(station)}
-                                subtitle={station.genre}
-                            >
-                                {station.name}
-                            </Cell>
-                        );
-                    })}
-                    {listeningHistory.length > 3 && (
-                        <Cell
-                            before={<div style={{ fontSize: '24px' }}>📋</div>}
-                            onClick={() => setIsHistoryModalOpen(true)}
-                            subtitle="Показать все последние станции"
-                        >
-                            Вся история
-                        </Cell>
-                    )}
-                </Group>
-            )}
-
             {/* 4. Баннер */}
             <div style={{ padding: '30px 16px', textAlign: 'center', background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)', backgroundSize: '400% 400%', animation: 'gradientShift 8s ease infinite', color: '#fff' }}>
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
