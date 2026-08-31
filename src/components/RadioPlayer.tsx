@@ -71,6 +71,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const audioContextRef = useRef<AudioContext | null>(null);
     const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
     const bassFilterRef = useRef<BiquadFilterNode | null>(null);
+    const boundAudioElementRef = useRef<HTMLAudioElement | null>(null);
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
 
@@ -114,56 +115,34 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const initAudioContext = (audioElement: HTMLAudioElement) => {
         try {
-            // Если контекст уже есть, просто обновляем источник
-            if (audioContextRef.current) {
-                const ctx = audioContextRef.current;
+            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
 
-                // Проверяем, есть ли уже источник для этого элемента
-                // Если sourceRef.current существует и он уже подключён к этому элементу — выходим
-                if (sourceRef.current) {
-                    // Пытаемся отключить старый источник
-                    try {
-                        sourceRef.current.disconnect();
-                    } catch (e) {
-                        // Игнорируем ошибки отключения
-                    }
-                    sourceRef.current = null;
+            // 1. Создаем контекст только один раз
+            if (!audioContextRef.current) {
+                audioContextRef.current = new AudioCtx();
+            }
+            const ctx = audioContextRef.current;
+
+            // 2. 🔥 ГЛАВНОЕ ИСПРАВЛЕНИЕ:
+            // Если этот аудио-элемент УЖЕ подключен, мы НЕ создаем источник заново.
+            // Мы просто убеждаемся, что контекст запущен (например, после паузы).
+            if (boundAudioElementRef.current === audioElement && sourceRef.current) {
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
                 }
-
-                // Создаем НОВЫЙ источник для текущего аудио-элемента
-                const source = ctx.createMediaElementSource(audioElement);
-
-                // Пересоздаем фильтры и анализатор
-                const bass = ctx.createBiquadFilter();
-                bass.type = 'lowshelf';
-                bass.frequency.value = 200;
-
-                const treble = ctx.createBiquadFilter();
-                treble.type = 'highshelf';
-                treble.frequency.value = 2000;
-
-                const analyser = ctx.createAnalyser();
-                analyser.fftSize = 64;
-
-                // Соединяем заново
-                source.connect(bass);
-                bass.connect(treble);
-                treble.connect(analyser);
-                analyser.connect(ctx.destination);
-
-                // Сохраняем новые ссылки
-                sourceRef.current = source;
-                bassFilterRef.current = bass;
-                trebleFilterRef.current = treble;
-                analyserRef.current = analyser;
-
-                return;
+                return; // Выходим, чтобы не вызывать ошибку браузера!
             }
 
-            // Если контекста нет вообще — создаем с нуля (первый запуск)
-            const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-            const ctx = new AudioCtx();
+            // 3. Если элемент новый (сменилась станция), отключаем старый
+            if (sourceRef.current) {
+                try {
+                    sourceRef.current.disconnect();
+                } catch (e) {
+                    // Игнорируем ошибки
+                }
+            }
 
+            // 4. Создаем источник ТОЛЬКО для нового аудио-элемента
             const source = ctx.createMediaElementSource(audioElement);
 
             const bass = ctx.createBiquadFilter();
@@ -182,11 +161,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             treble.connect(analyser);
             analyser.connect(ctx.destination);
 
-            audioContextRef.current = ctx;
+            // 5. Запоминаем, какой элемент мы подключили
+            boundAudioElementRef.current = audioElement;
             sourceRef.current = source;
             bassFilterRef.current = bass;
             trebleFilterRef.current = treble;
             analyserRef.current = analyser;
+
+            // 6. Убеждаемся, что контекст работает
+            if (ctx.state === 'suspended') {
+                ctx.resume();
+            }
 
         } catch (err) {
             console.error("Ошибка инициализации AudioContext:", err);
