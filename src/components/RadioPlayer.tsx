@@ -30,6 +30,7 @@ import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
 import { Equalizer } from './Equalizer';
+import { useTheme } from '../hooks/useTheme';
 
 interface RadioPlayerProps {
     id: string;
@@ -53,6 +54,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareText, setShareText] = useState('');
+    const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
     const [isEqOpen, setIsEqOpen] = useState(false);
@@ -71,6 +73,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const bassFilterRef = useRef<BiquadFilterNode | null>(null);
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
+
+    const { isDarkTheme, toggleTheme } = useTheme();
 
     // 1. Загрузка станций и истории при монтировании
     useEffect(() => {
@@ -521,7 +525,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     return (
         <Panel id={id}>
-            {/* Модальные окна (Share, Chat, Eq) */}
+            {/* 1. Модальные окна */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage id="share" header={<ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss /></Button>}>Поделиться</ModalPageHeader>} onClose={() => setIsShareModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
@@ -529,8 +533,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         <Textarea value={shareText} onChange={(e) => setShareText(e.target.value)} rows={6} style={{ marginBottom: '16px' }} />
                         <Button
                             size="l"
-                            mode={copySuccess ? 'primary' : 'primary'} // Используем 'primary' для обоих состояний
-                            style={{ width: '100%', background: copySuccess ? '#4BB34B' : undefined }} // Зеленый фон при успехе
+                            mode={copySuccess ? 'primary' : 'primary'}
+                            style={{ width: '100%', background: copySuccess ? '#4BB34B' : undefined }}
                             onClick={copyShareText}
                         >
                             {copySuccess ? '✅ Скопировано!' : '📋 Копировать текст'}
@@ -549,9 +553,95 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* 🕐 Модальное окно полной истории прослушиваний */}
+            <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
+                <ModalPage
+                    id="history"
+                    header={
+                        <ModalPageHeader
+                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
+                        >
+                            📜 История прослушиваний
+                        </ModalPageHeader>
+                    }
+                    onClose={() => setIsHistoryModalOpen(false)}
+                >
+                    <Div style={{ padding: '16px' }}>
+                        {listeningHistory.length === 0 ? (
+                            <Div style={{ textAlign: 'center', padding: '32px 0' }}>
+                                <Subhead style={{ color: '#99A2AD' }}>История пуста</Subhead>
+                                <Caption style={{ color: '#99A2AD', display: 'block', marginTop: '8px' }}>
+                                    Начните слушать радио, чтобы увидеть историю
+                                </Caption>
+                            </Div>
+                        ) : (
+                            listeningHistory.map((stationId, index) => {
+                                const station = stations.find(s => s.id === stationId);
+                                if (!station) return null;
+
+                                return (
+                                    <Cell
+                                        key={station.id}
+                                        before={<div style={{ fontSize: '24px' }}>{index + 1}</div>}
+                                        onClick={() => {
+                                            handleStationSelect(station);
+                                            setIsHistoryModalOpen(false);
+                                        }}
+                                        subtitle={station.genre}
+                                        after={
+                                            <Button
+                                                size="s"
+                                                mode="primary"
+                                                style={{ background: station.color, color: '#fff' }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleStationSelect(station);
+                                                    setIsHistoryModalOpen(false);
+                                                }}
+                                            >
+                                                ▶
+                                            </Button>
+                                        }
+                                    >
+                                        {station.name}
+                                    </Cell>
+                                );
+                            })
+                        )}
+
+                        {listeningHistory.length > 0 && (
+                            <Div style={{ marginTop: '16px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                                <Button
+                                    size="l"
+                                    mode="secondary"
+                                    style={{ width: '100%' }}
+                                    onClick={() => {
+                                        localStorage.removeItem('listeningHistory');
+                                        setListeningHistory([]);
+                                        setIsHistoryModalOpen(false);
+                                    }}
+                                >
+                                    🗑️ Очистить историю
+                                </Button>
+                            </Div>
+                        )}
+                    </Div>
+                </ModalPage>
+            </ModalRoot>
+
+            <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
+                <ModalPage id="equalizer" header={<ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}>Настройки звука</ModalPageHeader>} onClose={() => setIsEqOpen(false)}>
+                    <Equalizer onPresetChange={applyEqPreset} analyserNode={analyserRef.current} />
+                </ModalPage>
+            </ModalRoot>
+
+            {/* 2. Полноэкранный плеер */}
+            <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
+
+            {/* 3. 🕐 Блок "Недавно прослушанные" (Теперь корректно внутри return, ПЕРЕД баннером) */}
             {listeningHistory.length > 0 && (
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>🕐 Недавно прослушанные</Subhead>}>
-                    {listeningHistory.map(stationId => {
+                    {listeningHistory.slice(0, 3).map(stationId => {
                         const station = stations.find(s => s.id === stationId);
                         if (!station) return null;
 
@@ -566,31 +656,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             </Cell>
                         );
                     })}
+                    {listeningHistory.length > 3 && (
+                        <Cell
+                            before={<div style={{ fontSize: '24px' }}>📋</div>}
+                            onClick={() => setIsHistoryModalOpen(true)}
+                            subtitle="Показать все последние станции"
+                        >
+                            Вся история
+                        </Cell>
+                    )}
                 </Group>
             )}
 
-            <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
-                <ModalPage id="equalizer" header={<ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}>Настройки звука</ModalPageHeader>} onClose={() => setIsEqOpen(false)}>
-                    <Equalizer onPresetChange={applyEqPreset} analyserNode={analyserRef.current} />
-                </ModalPage>
-            </ModalRoot>
-
-            <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
-
-            {/* Баннер */}
+            {/* 4. Баннер */}
             <div style={{ padding: '30px 16px', textAlign: 'center', background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)', backgroundSize: '400% 400%', animation: 'gradientShift 8s ease infinite', color: '#fff' }}>
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
                 <div style={{ fontSize: '15px', marginTop: '6px' }}>Anime • J-Pop • Lo-Fi • OST</div>
             </div>
 
+            {/* 5. Основной контент */}
             <Group>
                 {/* Плеер */}
-                <Div style={{ textAlign: 'center', padding: '32px 16px', borderRadius: '12px', margin: '12px 0', background: 'url(/background.png) center/cover', filter: 'brightness(0.8)', position: 'relative', overflow: 'hidden', minHeight: '400px', cursor: 'pointer' }} onClick={openNowPlaying}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 0 }} />
+                <Div style={{ textAlign: 'center', padding: '32px 16px', borderRadius: '12px', margin: '12px 0', background: 'url(/background.png) center/cover', filter: 'brightness(0.8)', position: 'relative', overflow: 'hidden', minHeight: '400px', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={openNowPlaying}>
+                    <div style={{ position: 'absolute', inset: 0, background: 'var(--player-overlay)', zIndex: 0 }} />
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <Div style={{ marginBottom: '24px' }}><Visualizer isPlaying={isPlaying} color={currentStation?.color} /></Div>
-                        <Subhead style={{ color: '#fff', fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}>{currentStation?.name || 'Выберите станцию'}</Subhead>
-                        <Caption style={{ color: '#eee', marginBottom: '24px' }}>
+                        <Subhead style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}> {currentStation?.name || 'Выберите станцию'} </Subhead>
+                        <Caption style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>
                             {currentStation?.genre}
                             {isLoading && !isPlaying && (
                                 <span style={{ marginLeft: '8px', opacity: 0.7 }}>• Загрузка...</span>
@@ -606,24 +698,71 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         <Div style={{ maxWidth: '280px', margin: '0 auto' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                                 <Slider value={volume * 100} onChange={handleVolumeChange} min={0} max={100} style={{ flex: 1 }} />
-                                <span style={{ color: '#fff', fontSize: '12px', minWidth: '40px' }}>{Math.round(volume * 100)}%</span>
+                                <span style={{ color: 'var(--text-primary)', fontSize: '12px', minWidth: '40px' }}> {Math.round(volume * 100)}% </span>
                             </div>
                         </Div>
 
-                        <Div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
-                            <Caption style={{ color: '#fff', marginBottom: '12px', display: 'block' }}>Таймер сна {timeLeftSeconds ? `• ${formatTime(timeLeftSeconds)}` : 'выкл'}</Caption>
+                        <Div style={{ marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                            <Caption style={{ color: 'var(--text-primary)', marginBottom: '12px', display: 'block' }}>
+                                Таймер сна {timeLeftSeconds ? `• ${formatTime(timeLeftSeconds)}` : 'выкл'}
+                            </Caption>
                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                {[15, 30, 60].map(min => <Button key={min} size="s" mode={sleepTimeMinutes === min ? 'primary' : 'outline'} style={{ background: sleepTimeMinutes === min ? 'rgba(255,102,179,0.4)' : 'rgba(0,0,0,0.4)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={(e) => { e.stopPropagation(); handleSleepTimer(min); }}>{min} мин</Button>)}
-                                <Button size="s" mode="outline" style={{ background: !sleepTimeMinutes ? 'rgba(255,102,179,0.4)' : 'rgba(0,0,0,0.4)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={(e) => { e.stopPropagation(); handleSleepTimer(null); }}>Выкл</Button>
+                                {[15, 30, 60].map(min => (
+                                    <Button
+                                        key={min}
+                                        size="s"
+                                        mode={sleepTimeMinutes === min ? 'primary' : 'outline'}
+                                        style={{
+                                            background: sleepTimeMinutes === min ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)',
+                                            color: 'var(--text-primary)',
+                                            border: '1px solid var(--border-color)'
+                                        }}
+                                        onClick={(e) => { e.stopPropagation(); handleSleepTimer(min); }}
+                                    >
+                                        {min} мин
+                                    </Button>
+                                ))}
+                                <Button
+                                    size="s"
+                                    mode="outline"
+                                    style={{
+                                        background: !sleepTimeMinutes ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)',
+                                        color: 'var(--text-primary)',
+                                        border: '1px solid var(--border-color)'
+                                    }}
+                                    onClick={(e) => { e.stopPropagation(); handleSleepTimer(null); }}
+                                >
+                                    Выкл
+                                </Button>
                             </div>
                         </Div>
                     </div>
                 </Div>
 
+                {/* Ячейки меню */}
                 <Cell before={<Icon28CopyOutline />} onClick={handleShare} subtitle="Отправить приложение другу">Поделиться</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>💬</div>} onClick={() => setIsChatModalOpen(true)} subtitle="Общайтесь с другими слушателями">Общий чат</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>🎛️</div>} onClick={() => setIsEqOpen(true)} subtitle="Настройте басы и высокие частоты">Эквалайзер</Cell>
 
+                {/* 🕐 Кнопка открытия полной истории */}
+                <Cell
+                    before={<div style={{ fontSize: '24px' }}>📜</div>}
+                    onClick={() => setIsHistoryModalOpen(true)}
+                    subtitle="Посмотреть историю прослушиваний"
+                >
+                    История прослушивания
+                </Cell>
+
+                {/* 🌓 Переключатель темы */}
+                <Cell
+                    before={<div style={{ fontSize: '24px' }}>{isDarkTheme ? '🌙' : '☀️'}</div>}
+                    onClick={toggleTheme}
+                    subtitle={isDarkTheme ? 'Тёмная тема активна' : 'Светлая тема активна'}
+                >
+                    Тема оформления
+                </Cell>
+
+                {/* Ошибка */}
                 {error && (
                     <Group>
                         <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
@@ -644,7 +783,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Group>
                 )}
 
-                {/* Компактный список станций с поиском */}
+                {/* Список станций */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
                     <StationSearch
                         stations={stations}
@@ -656,11 +795,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Блок ссылок и поддержки */}
-                < Separator />
+                {/* Ссылки и поддержка */}
+                <Separator />
                 <Group header={
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
-                        <Subhead> Ссылки</Subhead>
+                        <Subhead>Ссылки</Subhead>
                         <Button
                             size="s"
                             mode="tertiary"
@@ -699,9 +838,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             любимых аниме 24/7.
                         </Text>
                     </Cell>
-                    {/* Добавляем подсказку внутрь Group с отступами */}
-                    <Div style={{ padding: '12px 16px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                        <Caption style={{ color: '#99A2AD', textAlign: 'center', display: 'block' }}>
+                    <Div style={{ padding: '12px 16px', borderTop: '1px solid var(--border-color)' }}>
+                        <Caption style={{ color: 'var(--text-secondary)', textAlign: 'center', display: 'block' }}>
                             💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)
                         </Caption>
                     </Div>
@@ -709,6 +847,20 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </Group>
 
             <style>{`
+                :root {
+                    --bg-primary: #19191a;
+                    --text-primary: #ffffff;
+                    --text-secondary: #939393;
+                    --border-color: rgba(255, 255, 255, 0.1);
+                    --player-overlay: rgba(0, 0, 0, 0.5);
+                }
+                [data-theme="light"] {
+                    --bg-primary: #ffffff;
+                    --text-primary: #000000;
+                    --text-secondary: #818c99;
+                    --border-color: rgba(0, 0, 0, 0.1);
+                    --player-overlay: rgba(255, 255, 255, 0.4);
+                }
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
