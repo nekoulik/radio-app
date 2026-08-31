@@ -112,27 +112,31 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         loadData();
     }, []);
 
-    // 2. Инициализация Audio Context (теперь пересоздает цепочку полностью)
     const initAudioContext = (audioElement: HTMLAudioElement) => {
         try {
             // Если контекст уже есть, просто обновляем источник
             if (audioContextRef.current) {
                 const ctx = audioContextRef.current;
 
-                // Отключаем старые узлы (если они есть)
+                // Проверяем, есть ли уже источник для этого элемента
+                // Если sourceRef.current существует и он уже подключён к этому элементу — выходим
                 if (sourceRef.current) {
-                    try { sourceRef.current.disconnect(); } catch (e) { }
+                    // Пытаемся отключить старый источник
+                    try {
+                        sourceRef.current.disconnect();
+                    } catch (e) {
+                        // Игнорируем ошибки отключения
+                    }
+                    sourceRef.current = null;
                 }
 
-                // Создаем НОВЫЙ источник для нового аудио-элемента
+                // Создаем НОВЫЙ источник для текущего аудио-элемента
                 const source = ctx.createMediaElementSource(audioElement);
 
                 // Пересоздаем фильтры и анализатор
                 const bass = ctx.createBiquadFilter();
                 bass.type = 'lowshelf';
                 bass.frequency.value = 200;
-                // Применяем текущий пресет (если нужно сохранить настройки)
-                // bass.gain.value = ... 
 
                 const treble = ctx.createBiquadFilter();
                 treble.type = 'highshelf';
@@ -153,7 +157,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 trebleFilterRef.current = treble;
                 analyserRef.current = analyser;
 
-                return; // Выходим, так как контекст уже был создан ранее
+                return;
             }
 
             // Если контекста нет вообще — создаем с нуля (первый запуск)
