@@ -45,6 +45,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(0.8);
     const [isLoading, setIsLoading] = useState(false);
+    const [listeningHistory, setListeningHistory] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     // Состояния интерфейса
@@ -71,9 +72,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
 
-    // 1. Загрузка станций при монтировании
+    // 1. Загрузка станций и истории при монтировании
     useEffect(() => {
-        const loadStations = async () => {
+        const loadData = async () => {
             setIsLoadingStations(true);
             try {
                 const loadedStations = await fetchRadioStations();
@@ -81,12 +82,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 // Проверяем, есть ли сохранённая станция
                 const savedStationId = localStorage.getItem('lastStationId');
-
-                // Устанавливаем станцию: сначала из localStorage, иначе первую
                 if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
                     setCurrentStationId(savedStationId);
                 } else if (loadedStations.length > 0) {
                     setCurrentStationId(loadedStations[0].id);
+                }
+
+                // ✅ Безопасно загружаем историю прослушивания
+                const savedHistory = localStorage.getItem('listeningHistory');
+                if (savedHistory) {
+                    try {
+                        setListeningHistory(JSON.parse(savedHistory));
+                    } catch (e) {
+                        console.error("Failed to parse listening history", e);
+                        localStorage.removeItem('listeningHistory'); // Очищаем битые данные
+                    }
                 }
             } catch (err) {
                 console.error("Failed to load stations", err);
@@ -95,7 +105,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 setIsLoadingStations(false);
             }
         };
-        loadStations();
+        loadData();
     }, []);
 
     // 2. Инициализация Audio Context (теперь пересоздает цепочку полностью)
@@ -425,7 +435,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
 
-            // 💾 Сохраняем выбранную станцию
+            // 💾 Безопасно обновляем историю, используя предыдущее состояние
+            setListeningHistory(prevHistory => {
+                const newHistory = [station.id, ...prevHistory.filter(id => id !== station.id)].slice(0, 10);
+                localStorage.setItem('listeningHistory', JSON.stringify(newHistory));
+                return newHistory;
+            });
+
+            // 💾 Сохраняем последнюю станцию
             localStorage.setItem('lastStationId', station.id);
 
             setTimeout(() => {
@@ -531,6 +548,26 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Div>
                 </ModalPage>
             </ModalRoot>
+
+            {listeningHistory.length > 0 && (
+                <Group header={<Subhead style={{ padding: '12px 16px' }}>🕐 Недавно прослушанные</Subhead>}>
+                    {listeningHistory.map(stationId => {
+                        const station = stations.find(s => s.id === stationId);
+                        if (!station) return null;
+
+                        return (
+                            <Cell
+                                key={station.id}
+                                before={<div style={{ fontSize: '24px' }}>🕐</div>}
+                                onClick={() => handleStationSelect(station)}
+                                subtitle={station.genre}
+                            >
+                                {station.name}
+                            </Cell>
+                        );
+                    })}
+                </Group>
+            )}
 
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
                 <ModalPage id="equalizer" header={<ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}>Настройки звука</ModalPageHeader>} onClose={() => setIsEqOpen(false)}>
