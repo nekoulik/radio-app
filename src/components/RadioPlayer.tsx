@@ -574,7 +574,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
+                            style={{ background: 'rgba(14, 13, 13, 0.1)', backdropFilter: 'blur(10px)' }}
                         >
                             <span style={{ color: '#fff' }}>💬 Общий чат</span>
                         </ModalPageHeader>
@@ -589,9 +589,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             mode="primary"
                             style={{
                                 width: '100%',
-                                background: 'rgba(255,255,255,0.15)',
+                                background: 'rgba(8, 8, 8, 0.15)',
                                 color: '#fff',
-                                border: '1px solid rgba(255,255,255,0.3)'
+                                border: '1px solid rgba(7, 7, 7, 0.3)'
                             }}
                             Component="a"
                             href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
@@ -616,7 +616,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
                             style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
                         >
-                            <span style={{ color: '#fff' }}>📜 История прослушиваний</span>
+                            <span style={{ color: '#0c0c0c' }}>📜 История прослушиваний</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
@@ -672,15 +672,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         )}
 
                         {listeningHistory.length > 0 && (
-                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
+                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(10, 10, 10, 0.2)', paddingTop: '16px' }}>
                                 <Button
                                     size="l"
                                     mode="secondary"
                                     style={{
                                         width: '100%',
-                                        background: 'rgba(255,255,255,0.15)',
+                                        background: 'rgba(10, 10, 10, 0.15)',
                                         color: '#fff',
-                                        border: '1px solid rgba(255,255,255,0.3)'
+                                        border: '1px solid rgba(8, 8, 8, 0.3)'
                                     }}
                                     onClick={() => {
                                         localStorage.removeItem('listeningHistory');
@@ -707,9 +707,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
+                            style={{ background: 'rgba(8, 8, 8, 0.1)', backdropFilter: 'blur(10px)' }}
                         >
-                            <span style={{ color: '#fff' }}>Настройки звука</span>
+                            <span style={{ color: '#0f0e0e' }}>Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
