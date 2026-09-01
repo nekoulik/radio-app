@@ -1,13 +1,15 @@
+/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (для светлого фона VK по умолчанию) === */
 :root {
-    --vkui--color_background: #0a0a1a;
-    --vkui--color_text_primary: #ffffff;
-    --vkui--color_text_secondary: #b0b0b0;
+    --vkui--color_background: #f5f5f5;
+    --vkui--color_text_primary: #000000;
+    --vkui--color_text_secondary: #555555;
+    --vkui--color_background_content: #ffffff;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #1a0a2e 0%, #0a0a1a 100%);
+    background: #f5f5f5;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -22,7 +24,6 @@ body {
 
 /* === АНИМАЦИИ === */
 
-/* Анимация пульсации для логотипа */
 @keyframes pulse {
 
     0%,
@@ -37,7 +38,6 @@ body {
     }
 }
 
-/* Анимация вращения для спиннера загрузки */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -48,7 +48,6 @@ body {
     }
 }
 
-/* Анимация эквалайзера */
 @keyframes equalizer {
 
     0%,
@@ -69,7 +68,6 @@ body {
     }
 }
 
-/* Анимация пульсации иконки станции */
 @keyframes iconPulse {
     0% {
         transform: scale(0.95);
@@ -87,7 +85,6 @@ body {
     }
 }
 
-/* Анимация пульсации текста */
 @keyframes textPulse {
 
     0%,
@@ -100,15 +97,14 @@ body {
     }
 }
 
-/* === СКРОЛЛБАР === */
+/* === СКРОЛЛБАР (по умолчанию — для светлой темы) === */
 
-/* Кастомный скроллбар для списка станций */
 ::-webkit-scrollbar {
     width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 3px;
 }
 
@@ -122,36 +118,32 @@ body {
     background: rgba(255, 102, 179, 0.7);
 }
 
-/* Контейнер списка со скроллом */
 .station-list-container {
     max-height: 320px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.1);
+    scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.05);
 }
 
-/* === СТИЛИ СТАНЦИЙ (БАЗОВЫЕ / ТЁМНАЯ ТЕМА) === */
+/* === СТИЛИ СТАНЦИЙ (БАЗОВЫЕ — для светлого фона VK) === */
 
-/* Карточка станции */
 .station-cell {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border-left: 3px solid transparent;
     cursor: pointer;
+    background: transparent !important;
 }
 
-/* Эффект при наведении */
 .station-cell:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
     transform: translateX(4px);
 }
 
-/* Активная станция */
 .station-cell.active {
     background: rgba(255, 102, 179, 0.15) !important;
     border-left: 3px solid #ff66b3 !important;
 }
 
-/* Иконка станции */
 .station-icon {
     width: 40px;
     height: 40px;
@@ -162,23 +154,20 @@ body {
     font-size: 20px;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Пульсация для активной станции */
 .station-icon.pulsing {
     animation: iconPulse 2s infinite;
-    box-shadow: 0 0 0 0 rgba(255, 102, 179, 0.7);
 }
 
-/* Индикатор воспроизведения */
 .play-indicator {
     font-size: 12px;
-    color: #ff66b3 !important;
+    color: #4BB34B !important;
     font-weight: 600;
     animation: textPulse 1.5s infinite;
 }
 
-/* Кнопка избранного */
 .favorite-btn {
     cursor: pointer;
     padding: 4px;
@@ -197,32 +186,31 @@ body {
     transform: scale(0.9);
 }
 
-/* Текстовые стили */
+/* Текстовые стили — ТЁМНЫЙ текст на светлом фоне VK */
 .active-title {
-    color: #ff66b3 !important;
-    font-weight: 600;
+    color: #d63384 !important;
+    font-weight: 700;
 }
 
 .station-title {
-    color: #ffffff !important;
+    color: #000000 !important;
     line-height: 1.3;
     word-break: break-word;
     overflow-wrap: break-word;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .station-genre,
 .station-desc {
-    color: #b0b0b0 !important;
+    color: #555555 !important;
     font-size: 11px;
     line-height: 1.3;
     display: block;
     margin-top: 2px;
 }
 
-/* === ЭКРАН "СЕЙЧАС ИГРАЕТ" === */
+/* === ЭКРАН "СЕЙЧАС ИГРАЕТ" (всегда тёмный) === */
 
-/* Принудительная темная тема для экрана "Сейчас играет" */
 .now-playing-modal .ModalPage__in {
     background: #0a0a1a !important;
     min-height: 100vh;
@@ -237,12 +225,11 @@ body {
     color: #ffffff !important;
 }
 
-/* Скрываем стандартную полосу прокрутки VKUI */
 .now-playing-modal::-webkit-scrollbar {
     display: none;
 }
 
-/* === ПЕРЕОПРЕДЕЛЕНИЕ VKUI ПЕРЕМЕННЫХ (ТЁМНАЯ ТЕМА) === */
+/* === ТЁМНАЯ ТЕМА ПРИЛОЖЕНИЯ === */
 
 [data-theme="dark"] {
     --vkui--color_text_primary: #ffffff !important;
@@ -251,24 +238,66 @@ body {
     --vkui--color_background_content: #1a1a2e !important;
 }
 
-/* === СВЕТЛАЯ ТЕМА === */
+[data-theme="dark"] body,
+[data-theme="dark"] #root,
+[data-theme="dark"] .Panel {
+    background: #0a0a1a !important;
+}
+
+[data-theme="dark"] .station-title {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .station-genre,
+[data-theme="dark"] .station-desc {
+    color: #b0b0b0 !important;
+}
+
+[data-theme="dark"] .active-title {
+    color: #ff66b3 !important;
+}
+
+[data-theme="dark"] .station-cell:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .station-cell.active {
+    background: rgba(255, 102, 179, 0.2) !important;
+    border-left: 3px solid #ff66b3 !important;
+}
+
+[data-theme="dark"] .play-indicator {
+    color: #ff66b3 !important;
+}
+
+[data-theme="dark"] .station-icon {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 102, 179, 0.6);
+}
+
+/* === СВЕТЛАЯ ТЕМА ПРИЛОЖЕНИЯ (явная) === */
 
 [data-theme="light"] {
     --vkui--color_text_primary: #000000 !important;
-    --vkui--color_text_secondary: #333333 !important;
+    --vkui--color_text_secondary: #555555 !important;
     --vkui--color_background: #f5f5f5 !important;
     --vkui--color_background_content: #ffffff !important;
 }
 
 [data-theme="light"] .station-title {
     color: #000000 !important;
-    font-weight: 600;
 }
 
 [data-theme="light"] .station-genre,
 [data-theme="light"] .station-desc {
-    color: #333333 !important;
-    font-weight: 400;
+    color: #555555 !important;
 }
 
 [data-theme="light"] .station-cell {
@@ -281,26 +310,12 @@ body {
 
 [data-theme="light"] .station-cell.active {
     background: rgba(255, 102, 179, 0.15) !important;
-    border-left: 3px solid #ff66b3 !important;
 }
 
-[data-theme="light"] .active-title {
-    color: #d63384 !important;
-}
-
-[data-theme="light"] .play-indicator {
-    color: #4BB34B !important;
-}
-
-[data-theme="light"] .station-icon {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Скроллбар для светлой темы */
 [data-theme="light"] ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="light"] ::-webkit-scrollbar-thumb {
-    background: rgba(255, 102, 179, 0.6);
+    background: rgba(255, 102, 179, 0.5);
 }
