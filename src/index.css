@@ -788,3 +788,36 @@ html.theme-light .ModalPage input::placeholder {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
 }
+
+/* === АБСОЛЮТНО МАКСИМАЛЬНАЯ СПЕЦИФИЧНОСТЬ === */
+
+div.ModalRoot div.ModalPage__in,
+div.ModalRoot div.ModalPage,
+div.vkuiModalRoot div.vkuiModalPage__in,
+div.vkuiModalRoot div.vkuiModalPage,
+div[id*="modal"] div[class*="ModalPage"],
+div[class*="ModalRoot"] div[class*="ModalPage__in"] {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite !important;
+}
+
+div.ModalRoot div.ModalPage__header,
+div.vkuiModalRoot div.vkuiModalPage__header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+div.ModalRoot div.ModalPage__header-in,
+div.vkuiModalRoot div.vkuiModalPage__header-in {
+    color: #ffffff !important;
+}
+
+div.ModalRoot div.Cell,
+div.ModalRoot div.Group,
+div.ModalRoot div.Div,
+div.vkuiModalRoot div.vkuiCell,
+div.vkuiModalRoot div.vkuiGroup {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
