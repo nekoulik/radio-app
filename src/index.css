@@ -1,4 +1,4 @@
-/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (светлая тема по умолчанию) === */
+/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (светлая тема по умолчанию для VK) === */
 :root {
     --vkui--color_background: #f5f5f5;
     --vkui--color_text_primary: #000000;
@@ -24,6 +24,7 @@ body {
 }
 
 /* === АНИМАЦИИ === */
+
 @keyframes pulse {
 
     0%,
@@ -98,6 +99,7 @@ body {
 }
 
 /* === СКРОЛЛБАР === */
+
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -124,7 +126,8 @@ body {
     scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.05);
 }
 
-/* === БАЗОВЫЕ СТИЛИ СТАНЦИЙ (светлая тема) === */
+/* === БАЗОВЫЕ СТИЛИ СТАНЦИЙ (светлая тема по умолчанию) === */
+
 .station-cell {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border-left: 3px solid transparent;
@@ -184,6 +187,7 @@ body {
     transform: scale(0.9);
 }
 
+/* Текстовые стили по умолчанию (светлая тема) */
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
@@ -207,6 +211,7 @@ body {
 }
 
 /* === ЭКРАН "СЕЙЧАС ИГРАЕТ" (всегда тёмный) === */
+
 .now-playing-modal .ModalPage__in {
     background: #0a0a1a !important;
     min-height: 100vh;
@@ -225,86 +230,115 @@ body {
     display: none;
 }
 
-/* === ТЁМНАЯ ТЕМА (через body и класс) === */
-body[data-theme="dark"],
-body.theme-dark,
-body[data-theme="dark"] *,
-body.theme-dark * {
+/* === ТЁМНАЯ ТЕМА (через #root) === */
+
+#root[data-theme="dark"] {
     --vkui--color_text_primary: #ffffff !important;
     --vkui--color_text_secondary: #b0b0b0 !important;
     --vkui--color_background: #0a0a1a !important;
-}
-
-body[data-theme="dark"],
-body.theme-dark {
+    --vkui--color_background_content: #1a1a2e !important;
     background: #0a0a1a !important;
 }
 
-body[data-theme="dark"] .station-title,
-body.theme-dark .station-title {
+#root[data-theme="dark"] .Panel,
+#root[data-theme="dark"] .Group,
+#root[data-theme="dark"] .Cell {
+    background: #0a0a1a !important;
+}
+
+#root[data-theme="dark"] .station-title {
     color: #ffffff !important;
 }
 
-body[data-theme="dark"] .station-genre,
-body.theme-dark .station-genre,
-body[data-theme="dark"] .station-desc,
-body.theme-dark .station-desc {
+#root[data-theme="dark"] .station-genre,
+#root[data-theme="dark"] .station-desc {
     color: #b0b0b0 !important;
 }
 
-body[data-theme="dark"] .active-title,
-body.theme-dark .active-title {
+#root[data-theme="dark"] .active-title {
     color: #ff66b3 !important;
 }
 
-body[data-theme="dark"] .station-cell:hover,
-body.theme-dark .station-cell:hover {
+#root[data-theme="dark"] .station-cell:hover {
     background: rgba(255, 255, 255, 0.08) !important;
 }
 
-body[data-theme="dark"] .station-cell.active,
-body.theme-dark .station-cell.active {
+#root[data-theme="dark"] .station-cell.active {
     background: rgba(255, 102, 179, 0.2) !important;
     border-left: 3px solid #ff66b3 !important;
 }
 
-body[data-theme="dark"] .play-indicator,
-body.theme-dark .play-indicator {
+#root[data-theme="dark"] .play-indicator {
     color: #ff66b3 !important;
 }
 
-body[data-theme="dark"] .station-icon,
-body.theme-dark .station-icon {
+#root[data-theme="dark"] .station-icon {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-body[data-theme="dark"] ::-webkit-scrollbar-track,
-body.theme-dark ::-webkit-scrollbar-track {
+#root[data-theme="dark"] ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-body[data-theme="dark"] ::-webkit-scrollbar-thumb,
-body.theme-dark ::-webkit-scrollbar-thumb {
+#root[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.6);
 }
 
+#root[data-theme="dark"] .Subhead,
+#root[data-theme="dark"] .Text,
+#root[data-theme="dark"] h1,
+#root[data-theme="dark"] h2,
+#root[data-theme="dark"] h3,
+#root[data-theme="dark"] p,
+#root[data-theme="dark"] span {
+    color: #ffffff !important;
+}
+
+#root[data-theme="dark"] .Caption {
+    color: #b0b0b0 !important;
+}
+
 /* === СВЕТЛАЯ ТЕМА (явная) === */
-body[data-theme="light"],
-body.theme-light {
+
+#root[data-theme="light"] {
     --vkui--color_text_primary: #000000 !important;
     --vkui--color_text_secondary: #555555 !important;
     --vkui--color_background: #f5f5f5 !important;
+    --vkui--color_background_content: #ffffff !important;
     background: #f5f5f5 !important;
 }
 
-body[data-theme="light"] .station-title,
-body.theme-light .station-title {
+#root[data-theme="light"] .Panel,
+#root[data-theme="light"] .Group,
+#root[data-theme="light"] .Cell {
+    background: #ffffff !important;
+}
+
+#root[data-theme="light"] .station-title {
     color: #000000 !important;
 }
 
-body[data-theme="light"] .station-genre,
-body.theme-light .station-genre,
-body[data-theme="light"] .station-desc,
-body.theme-light .station-desc {
+#root[data-theme="light"] .station-genre,
+#root[data-theme="light"] .station-desc {
     color: #555555 !important;
+}
+
+#root[data-theme="light"] .station-cell {
+    background: #ffffff !important;
+}
+
+#root[data-theme="light"] .station-cell:hover {
+    background: #f5f5f5 !important;
+}
+
+#root[data-theme="light"] .station-cell.active {
+    background: rgba(255, 102, 179, 0.15) !important;
+}
+
+#root[data-theme="light"] ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+#root[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 102, 179, 0.5);
 }
