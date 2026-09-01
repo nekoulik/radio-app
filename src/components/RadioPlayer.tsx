@@ -576,21 +576,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
                             style={{ background: 'rgba(14, 13, 13, 0.1)', backdropFilter: 'blur(10px)' }}
                         >
-                            <span style={{ color: '#fff' }}>💬 Общий чат</span>
+                            <span style={{ color: '#050505' }}>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsChatModalOpen(false)}
                 >
                     <Div style={{ padding: '16px' }}>
-                        <Subhead style={{ marginBottom: '12px', color: '#fff' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
-                        <Caption style={{ color: '#d4d4ff', display: 'block', marginBottom: '20px' }}>Общайтесь, делитесь треками и предлагайте идеи!</Caption>
+                        <Subhead style={{ marginBottom: '12px', color: '#080808' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
+                        <Caption style={{ color: '#070707', display: 'block', marginBottom: '20px' }}>Общайтесь, делитесь треками и предлагайте идеи!</Caption>
                         <Button
                             size="l"
                             mode="primary"
                             style={{
                                 width: '100%',
                                 background: 'rgba(8, 8, 8, 0.15)',
-                                color: '#fff',
+                                color: '#080808',
                                 border: '1px solid rgba(7, 7, 7, 0.3)'
                             }}
                             Component="a"
@@ -679,7 +679,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     style={{
                                         width: '100%',
                                         background: 'rgba(10, 10, 10, 0.15)',
-                                        color: '#fff',
+                                        color: '#070707',
                                         border: '1px solid rgba(8, 8, 8, 0.3)'
                                     }}
                                     onClick={() => {
