@@ -110,7 +110,6 @@ body {
 ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
     border-radius: 3px;
-    transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -221,11 +220,13 @@ body {
     display: none;
 }
 
-/* === ТЁМНАЯ ТЕМА (ТОЧЕЧНАЯ, без * !) === */
+/* === ТЁМНАЯ ТЕМА — МЕНЯЕМ ВСЁ, КРОМЕ БАННЕРА И ПЛЕЕРА === */
+
 #root.theme-dark {
     background: #0a0a1a !important;
 }
 
+/* Меняем фон ВСЕХ ячеек и панелей */
 #root.theme-dark .Panel,
 #root.theme-dark .Group {
     background: transparent !important;
@@ -235,15 +236,20 @@ body {
     background: #1a1a2e !important;
 }
 
-#root.theme-dark .Cell .Subhead,
-#root.theme-dark .Cell .Text {
+/* Меняем текст везде */
+#root.theme-dark .Subhead,
+#root.theme-dark .Text,
+#root.theme-dark .Caption,
+#root.theme-dark span,
+#root.theme-dark div {
     color: #ffffff !important;
 }
 
-#root.theme-dark .Cell .Caption {
+#root.theme-dark .Caption {
     color: #b0b0b0 !important;
 }
 
+/* Станции */
 #root.theme-dark .station-title {
     color: #ffffff !important;
 }
@@ -273,7 +279,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* === ЗАЩИТА БАННЕРА И ПЛЕЕРА ОТ ЗАТЕМНЕНИЯ === */
+/* ️ ЗАЩИЩАЕМ ТОЛЬКО БАННЕР И ПЛЕЕР */
 #root.theme-dark .gradient-banner {
     background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
     background-size: 400% 400% !important;
@@ -284,13 +290,9 @@ body {
     filter: brightness(0.8);
 }
 
-/* === СВЕТЛАЯ ТЕМА (явная) === */
+/* === СВЕТЛАЯ ТЕМА === */
 #root.theme-light {
     background: #f5f5f5 !important;
-}
-
-#root.theme-light .Cell {
-    background: #ffffff !important;
 }
 
 #root.theme-light .station-title {
