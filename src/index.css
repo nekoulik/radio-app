@@ -342,3 +342,15 @@ body {
 #root[data-theme="light"] ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
 }
+
+/* === УЛЬТРА-СИЛЬНЫЕ СЕЛЕКТОРЫ ДЛЯ VK === */
+#root[data-theme="dark"] .station-cell .Subhead,
+#root[data-theme="dark"] .station-cell .Text,
+#root[data-theme="dark"] .station-cell span,
+#root[data-theme="dark"] .station-cell div {
+    color: #ffffff !important;
+}
+
+#root[data-theme="dark"] .station-cell .Caption {
+    color: #b0b0b0 !important;
+}
