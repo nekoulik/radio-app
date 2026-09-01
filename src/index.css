@@ -1,4 +1,4 @@
-/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (для светлого фона VK по умолчанию) === */
+/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (по умолчанию — светлая тема для VK) === */
 :root {
     --vkui--color_background: #f5f5f5;
     --vkui--color_text_primary: #000000;
@@ -9,13 +9,14 @@
 body {
     margin: 0;
     padding: 0;
-    background: #f5f5f5;
+    background: #f5f5f5 !important;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 #root {
     min-height: 100vh;
+    background: #f5f5f5 !important;
 }
 
 * {
@@ -97,7 +98,7 @@ body {
     }
 }
 
-/* === СКРОЛЛБАР (по умолчанию — для светлой темы) === */
+/* === СКРОЛЛБАР === */
 
 ::-webkit-scrollbar {
     width: 6px;
@@ -125,7 +126,7 @@ body {
     scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.05);
 }
 
-/* === СТИЛИ СТАНЦИЙ (БАЗОВЫЕ — для светлого фона VK) === */
+/* === БАЗОВЫЕ СТИЛИ СТАНЦИЙ (светлая тема по умолчанию) === */
 
 .station-cell {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -186,7 +187,7 @@ body {
     transform: scale(0.9);
 }
 
-/* Текстовые стили — ТЁМНЫЙ текст на светлом фоне VK */
+/* Текстовые стили по умолчанию (светлая тема) */
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
@@ -229,93 +230,124 @@ body {
     display: none;
 }
 
-/* === ТЁМНАЯ ТЕМА ПРИЛОЖЕНИЯ === */
+/* === ТЁМНАЯ ТЕМА — МАКСИМАЛЬНАЯ СПЕЦИФИЧНОСТЬ === */
 
-[data-theme="dark"] {
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .Panel,
+html[data-theme="dark"] .Group,
+html[data-theme="dark"] .Cell,
+html[data-theme="dark"] .ModalPage {
+    background: #0a0a1a !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] {
     --vkui--color_text_primary: #ffffff !important;
     --vkui--color_text_secondary: #b0b0b0 !important;
     --vkui--color_background: #0a0a1a !important;
     --vkui--color_background_content: #1a1a2e !important;
 }
 
-[data-theme="dark"] body,
-[data-theme="dark"] #root,
-[data-theme="dark"] .Panel {
-    background: #0a0a1a !important;
-}
-
-[data-theme="dark"] .station-title {
+/* Станции в тёмной теме */
+html[data-theme="dark"] .station-title {
     color: #ffffff !important;
 }
 
-[data-theme="dark"] .station-genre,
-[data-theme="dark"] .station-desc {
+html[data-theme="dark"] .station-genre,
+html[data-theme="dark"] .station-desc {
     color: #b0b0b0 !important;
 }
 
-[data-theme="dark"] .active-title {
+html[data-theme="dark"] .active-title {
     color: #ff66b3 !important;
 }
 
-[data-theme="dark"] .station-cell:hover {
+html[data-theme="dark"] .station-cell:hover {
     background: rgba(255, 255, 255, 0.08) !important;
 }
 
-[data-theme="dark"] .station-cell.active {
+html[data-theme="dark"] .station-cell.active {
     background: rgba(255, 102, 179, 0.2) !important;
     border-left: 3px solid #ff66b3 !important;
 }
 
-[data-theme="dark"] .play-indicator {
+html[data-theme="dark"] .play-indicator {
     color: #ff66b3 !important;
 }
 
-[data-theme="dark"] .station-icon {
+html[data-theme="dark"] .station-icon {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-track {
+html[data-theme="dark"] ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.6);
 }
 
-/* === СВЕТЛАЯ ТЕМА ПРИЛОЖЕНИЯ (явная) === */
+/* Заголовки и текст в тёмной теме */
+html[data-theme="dark"] .Subhead,
+html[data-theme="dark"] .Caption,
+html[data-theme="dark"] .Text,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] p,
+html[data-theme="dark"] span {
+    color: #ffffff !important;
+}
 
-[data-theme="light"] {
+html[data-theme="dark"] .Caption {
+    color: #b0b0b0 !important;
+}
+
+/* === СВЕТЛАЯ ТЕМА — ЯВНАЯ === */
+
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] .Panel,
+html[data-theme="light"] .Group,
+html[data-theme="light"] .Cell {
+    background: #f5f5f5 !important;
+}
+
+html[data-theme="light"] {
     --vkui--color_text_primary: #000000 !important;
     --vkui--color_text_secondary: #555555 !important;
     --vkui--color_background: #f5f5f5 !important;
     --vkui--color_background_content: #ffffff !important;
 }
 
-[data-theme="light"] .station-title {
+html[data-theme="light"] .station-title {
     color: #000000 !important;
 }
 
-[data-theme="light"] .station-genre,
-[data-theme="light"] .station-desc {
+html[data-theme="light"] .station-genre,
+html[data-theme="light"] .station-desc {
     color: #555555 !important;
 }
 
-[data-theme="light"] .station-cell {
+html[data-theme="light"] .station-cell {
     background: #ffffff !important;
 }
 
-[data-theme="light"] .station-cell:hover {
+html[data-theme="light"] .station-cell:hover {
     background: #f5f5f5 !important;
 }
 
-[data-theme="light"] .station-cell.active {
+html[data-theme="light"] .station-cell.active {
     background: rgba(255, 102, 179, 0.15) !important;
 }
 
-[data-theme="light"] ::-webkit-scrollbar-track {
+html[data-theme="light"] ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="light"] ::-webkit-scrollbar-thumb {
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
 }
