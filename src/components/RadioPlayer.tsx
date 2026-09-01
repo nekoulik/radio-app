@@ -527,13 +527,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss /></Button>}
                             style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
                         >
-                            <span style={{ color: '#fff' }}>Поделиться</span>
+                            <span style={{ color: '#050505' }}>Поделиться</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsShareModalOpen(false)}
                 >
                     <Div style={{ padding: '16px' }}>
-                        <Caption style={{ color: '#d4d4ff', marginBottom: '12px', display: 'block' }}>Скопируйте текст:</Caption>
+                        <Caption style={{ color: '#0a0a0a', marginBottom: '12px', display: 'block' }}>Скопируйте текст:</Caption>
                         <Textarea
                             value={shareText}
                             onChange={(e) => setShareText(e.target.value)}
@@ -552,7 +552,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             style={{
                                 width: '100%',
                                 background: copySuccess ? '#4BB34B' : 'rgba(255,255,255,0.15)',
-                                color: '#fff',
+                                color: '#0e0d0d',
                                 border: '1px solid rgba(255,255,255,0.3)'
                             }}
                             onClick={copyShareText}
@@ -637,7 +637,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 return (
                                     <Cell
                                         key={station.id}
-                                        before={<div style={{ fontSize: '24px', color: '#fff' }}>{index + 1}</div>}
+                                        before={<div style={{ fontSize: '24px', color: '#0a0a0a' }}>{index + 1}</div>}
                                         onClick={() => {
                                             handleStationSelect(station);
                                             setIsHistoryModalOpen(false);
