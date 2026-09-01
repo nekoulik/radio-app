@@ -9,21 +9,19 @@ export const useTheme = () => {
     useEffect(() => {
         localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
 
-        // Добавляем класс на body И на documentElement для надёжности
         if (isDarkTheme) {
-            document.body.classList.add('theme-dark');
             document.body.classList.remove('theme-light');
-            document.documentElement.classList.add('theme-dark');
+            document.body.classList.add('theme-dark');
             document.documentElement.classList.remove('theme-light');
+            document.documentElement.classList.add('theme-dark');
         } else {
-            document.body.classList.add('theme-light');
             document.body.classList.remove('theme-dark');
-            document.documentElement.classList.add('theme-light');
+            document.body.classList.add('theme-light');
             document.documentElement.classList.remove('theme-dark');
+            document.documentElement.classList.add('theme-light');
         }
 
-        console.log('Theme applied:', isDarkTheme ? 'dark' : 'light');
-        console.log('Body classes:', document.body.classList.toString());
+        console.log('Theme:', isDarkTheme ? 'dark' : 'light');
     }, [isDarkTheme]);
 
     const toggleTheme = () => setIsDarkTheme(prev => !prev);
