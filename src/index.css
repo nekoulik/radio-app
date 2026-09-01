@@ -1,4 +1,4 @@
-/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (по умолчанию — светлая тема для VK) === */
+/* === БАЗОВЫЕ ПЕРЕМЕННЫЕ (светлая тема по умолчанию) === */
 :root {
     --vkui--color_background: #f5f5f5;
     --vkui--color_text_primary: #000000;
@@ -24,7 +24,6 @@ body {
 }
 
 /* === АНИМАЦИИ === */
-
 @keyframes pulse {
 
     0%,
@@ -99,7 +98,6 @@ body {
 }
 
 /* === СКРОЛЛБАР === */
-
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -126,8 +124,7 @@ body {
     scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.05);
 }
 
-/* === БАЗОВЫЕ СТИЛИ СТАНЦИЙ (светлая тема по умолчанию) === */
-
+/* === БАЗОВЫЕ СТИЛИ СТАНЦИЙ (светлая тема) === */
 .station-cell {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border-left: 3px solid transparent;
@@ -187,7 +184,6 @@ body {
     transform: scale(0.9);
 }
 
-/* Текстовые стили по умолчанию (светлая тема) */
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
@@ -211,7 +207,6 @@ body {
 }
 
 /* === ЭКРАН "СЕЙЧАС ИГРАЕТ" (всегда тёмный) === */
-
 .now-playing-modal .ModalPage__in {
     background: #0a0a1a !important;
     min-height: 100vh;
@@ -230,124 +225,86 @@ body {
     display: none;
 }
 
-/* === ТЁМНАЯ ТЕМА — МАКСИМАЛЬНАЯ СПЕЦИФИЧНОСТЬ === */
-
-html[data-theme="dark"],
-html[data-theme="dark"] body,
-html[data-theme="dark"] #root,
-html[data-theme="dark"] .Panel,
-html[data-theme="dark"] .Group,
-html[data-theme="dark"] .Cell,
-html[data-theme="dark"] .ModalPage {
-    background: #0a0a1a !important;
-    color: #ffffff !important;
-}
-
-html[data-theme="dark"] {
+/* === ТЁМНАЯ ТЕМА (через body и класс) === */
+body[data-theme="dark"],
+body.theme-dark,
+body[data-theme="dark"] *,
+body.theme-dark * {
     --vkui--color_text_primary: #ffffff !important;
     --vkui--color_text_secondary: #b0b0b0 !important;
     --vkui--color_background: #0a0a1a !important;
-    --vkui--color_background_content: #1a1a2e !important;
 }
 
-/* Станции в тёмной теме */
-html[data-theme="dark"] .station-title {
+body[data-theme="dark"],
+body.theme-dark {
+    background: #0a0a1a !important;
+}
+
+body[data-theme="dark"] .station-title,
+body.theme-dark .station-title {
     color: #ffffff !important;
 }
 
-html[data-theme="dark"] .station-genre,
-html[data-theme="dark"] .station-desc {
+body[data-theme="dark"] .station-genre,
+body.theme-dark .station-genre,
+body[data-theme="dark"] .station-desc,
+body.theme-dark .station-desc {
     color: #b0b0b0 !important;
 }
 
-html[data-theme="dark"] .active-title {
+body[data-theme="dark"] .active-title,
+body.theme-dark .active-title {
     color: #ff66b3 !important;
 }
 
-html[data-theme="dark"] .station-cell:hover {
+body[data-theme="dark"] .station-cell:hover,
+body.theme-dark .station-cell:hover {
     background: rgba(255, 255, 255, 0.08) !important;
 }
 
-html[data-theme="dark"] .station-cell.active {
+body[data-theme="dark"] .station-cell.active,
+body.theme-dark .station-cell.active {
     background: rgba(255, 102, 179, 0.2) !important;
     border-left: 3px solid #ff66b3 !important;
 }
 
-html[data-theme="dark"] .play-indicator {
+body[data-theme="dark"] .play-indicator,
+body.theme-dark .play-indicator {
     color: #ff66b3 !important;
 }
 
-html[data-theme="dark"] .station-icon {
+body[data-theme="dark"] .station-icon,
+body.theme-dark .station-icon {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-html[data-theme="dark"] ::-webkit-scrollbar-track {
+body[data-theme="dark"] ::-webkit-scrollbar-track,
+body.theme-dark ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+body[data-theme="dark"] ::-webkit-scrollbar-thumb,
+body.theme-dark ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.6);
 }
 
-/* Заголовки и текст в тёмной теме */
-html[data-theme="dark"] .Subhead,
-html[data-theme="dark"] .Caption,
-html[data-theme="dark"] .Text,
-html[data-theme="dark"] h1,
-html[data-theme="dark"] h2,
-html[data-theme="dark"] h3,
-html[data-theme="dark"] p,
-html[data-theme="dark"] span {
-    color: #ffffff !important;
-}
-
-html[data-theme="dark"] .Caption {
-    color: #b0b0b0 !important;
-}
-
-/* === СВЕТЛАЯ ТЕМА — ЯВНАЯ === */
-
-html[data-theme="light"],
-html[data-theme="light"] body,
-html[data-theme="light"] #root,
-html[data-theme="light"] .Panel,
-html[data-theme="light"] .Group,
-html[data-theme="light"] .Cell {
-    background: #f5f5f5 !important;
-}
-
-html[data-theme="light"] {
+/* === СВЕТЛАЯ ТЕМА (явная) === */
+body[data-theme="light"],
+body.theme-light {
     --vkui--color_text_primary: #000000 !important;
     --vkui--color_text_secondary: #555555 !important;
     --vkui--color_background: #f5f5f5 !important;
-    --vkui--color_background_content: #ffffff !important;
-}
-
-html[data-theme="light"] .station-title {
-    color: #000000 !important;
-}
-
-html[data-theme="light"] .station-genre,
-html[data-theme="light"] .station-desc {
-    color: #555555 !important;
-}
-
-html[data-theme="light"] .station-cell {
-    background: #ffffff !important;
-}
-
-html[data-theme="light"] .station-cell:hover {
     background: #f5f5f5 !important;
 }
 
-html[data-theme="light"] .station-cell.active {
-    background: rgba(255, 102, 179, 0.15) !important;
+body[data-theme="light"] .station-title,
+body.theme-light .station-title {
+    color: #000000 !important;
 }
 
-html[data-theme="light"] ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-html[data-theme="light"] ::-webkit-scrollbar-thumb {
-    background: rgba(255, 102, 179, 0.5);
+body[data-theme="light"] .station-genre,
+body.theme-light .station-genre,
+body[data-theme="light"] .station-desc,
+body.theme-light .station-desc {
+    color: #555555 !important;
 }
