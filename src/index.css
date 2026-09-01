@@ -210,7 +210,6 @@ html.theme-dark {
     transform: scale(0.9);
 }
 
-/* Текст в светлой теме */
 .station-title {
     color: #000000 !important;
     line-height: 1.3;
@@ -265,9 +264,7 @@ html.theme-dark {
     filter: brightness(0.8);
 }
 
-/* === ТЁМНАЯ ТЕМА — УЛЬТРА СИЛЬНЫЕ СЕЛЕКТОРЫ === */
-
-/* Сброс фона у всех элементов в тёмной теме */
+/* === ТЁМНАЯ ТЕМА === */
 body.theme-dark .Panel,
 body.theme-dark .Group,
 body.theme-dark .Cell,
@@ -279,13 +276,11 @@ html.theme-dark * {
     background: transparent !important;
 }
 
-/* Ячейки меню — тёмный фон */
 body.theme-dark .Cell,
 html.theme-dark .Cell {
     background: #1a1a2e !important;
 }
 
-/* Текст в тёмной теме */
 body.theme-dark .Subhead,
 body.theme-dark .Text,
 body.theme-dark .Caption,
@@ -304,7 +299,6 @@ html.theme-dark .Caption {
     color: #b0b0b0 !important;
 }
 
-/* Станции в тёмной теме */
 body.theme-dark .station-title,
 html.theme-dark .station-title {
     color: #ffffff !important;
@@ -342,7 +336,6 @@ html.theme-dark .station-icon {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* ЗАЩИТА БАННЕРА И ПЛЕЕРА в тёмной теме */
 body.theme-dark .gradient-banner,
 html.theme-dark .gradient-banner {
     background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
@@ -357,7 +350,6 @@ html.theme-dark .player-card {
     filter: brightness(0.8);
 }
 
-/* Скроллбар в тёмной теме */
 body.theme-dark ::-webkit-scrollbar-track,
 html.theme-dark ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
@@ -432,88 +424,7 @@ html.theme-light ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
 }
 
-/* === МОДАЛЬНЫЕ ОКНА — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
-
-/* Фон всех модальных окон */
-.ModalPage__in,
-.ModalPage,
-.ModalRoot {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite;
-}
-
-/* Header модалок */
-.ModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.ModalPage__header-in,
-.ModalPage__header .Subhead {
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-/* Ячейки внутри модалок */
-.ModalPage .Cell,
-.ModalPage .Group,
-.ModalPage .Div {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px);
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    margin: 4px 8px;
-}
-
-.ModalPage .Cell:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* Текст в модалках */
-.ModalPage .Subhead,
-.ModalPage .Text {
-    color: #ffffff !important;
-}
-
-.ModalPage .Caption {
-    color: #d4d4ff !important;
-}
-
-/* Кнопки в модалках */
-.ModalPage .Button {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* Поиск в модалках */
-.ModalPage input,
-.ModalPage .Search {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-}
-
-.ModalPage input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* Скроллбар в модалках */
-.ModalPage ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.ModalPage ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 3px;
-}
-
 /* === СПИСОК СТАНЦИЙ — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
-
 body.theme-dark .station-list-container,
 html.theme-dark .station-list-container {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
@@ -560,7 +471,6 @@ html.theme-dark .station-list-container .station-desc {
     color: #d4d4ff !important;
 }
 
-/* Поиск станций в тёмной теме */
 body.theme-dark .Search,
 body.theme-dark input[type="search"],
 html.theme-dark .Search,
@@ -576,4 +486,125 @@ body.theme-dark input::placeholder,
 html.theme-dark .Search::placeholder,
 html.theme-dark input::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ================================================================= */
+/* === МОДАЛЬНЫЕ ОКНА — АБСОЛЮТНЫЙ ПРИОРИТЕТ (В САМОМ КОНЦЕ ФАЙЛА) === */
+/* ================================================================= */
+
+body .ModalRoot .ModalPage__in,
+body .ModalRoot .ModalPage,
+body.theme-dark .ModalRoot .ModalPage__in,
+body.theme-dark .ModalRoot .ModalPage,
+html.theme-dark .ModalRoot .ModalPage__in,
+html.theme-dark .ModalRoot .ModalPage,
+#root .ModalPage__in,
+#root .ModalPage {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite !important;
+}
+
+body .ModalPage__header,
+body.theme-dark .ModalPage__header,
+html.theme-dark .ModalPage__header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body .ModalPage__header-in,
+body .ModalPage__header .Subhead,
+body.theme-dark .ModalPage__header-in,
+body.theme-dark .ModalPage__header .Subhead,
+html.theme-dark .ModalPage__header-in,
+html.theme-dark .ModalPage__header .Subhead {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+body .ModalPage .Cell,
+body .ModalPage .Group,
+body .ModalPage .Div,
+body.theme-dark .ModalPage .Cell,
+body.theme-dark .ModalPage .Group,
+body.theme-dark .ModalPage .Div,
+html.theme-dark .ModalPage .Cell,
+html.theme-dark .ModalPage .Group,
+html.theme-dark .ModalPage .Div {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px;
+    margin: 4px 8px;
+}
+
+body .ModalPage .Cell:hover,
+body.theme-dark .ModalPage .Cell:hover,
+html.theme-dark .ModalPage .Cell:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+body .ModalPage .Subhead,
+body .ModalPage .Text,
+body .ModalPage .Caption,
+body.theme-dark .ModalPage .Subhead,
+body.theme-dark .ModalPage .Text,
+body.theme-dark .ModalPage .Caption,
+html.theme-dark .ModalPage .Subhead,
+html.theme-dark .ModalPage .Text,
+html.theme-dark .ModalPage .Caption {
+    color: #ffffff !important;
+}
+
+body .ModalPage .Caption,
+body.theme-dark .ModalPage .Caption,
+html.theme-dark .ModalPage .Caption {
+    color: #d4d4ff !important;
+}
+
+body .ModalPage .Button,
+body.theme-dark .ModalPage .Button,
+html.theme-dark .ModalPage .Button {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+body .ModalPage input,
+body .ModalPage .Search,
+body .ModalPage textarea,
+body.theme-dark .ModalPage input,
+body.theme-dark .ModalPage .Search,
+body.theme-dark .ModalPage textarea,
+html.theme-dark .ModalPage input,
+html.theme-dark .ModalPage .Search,
+html.theme-dark .ModalPage textarea {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px;
+}
+
+body .ModalPage input::placeholder,
+body .ModalPage textarea::placeholder,
+body.theme-dark .ModalPage input::placeholder,
+body.theme-dark .ModalPage textarea::placeholder,
+html.theme-dark .ModalPage input::placeholder,
+html.theme-dark .ModalPage textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body .ModalPage ::-webkit-scrollbar-track,
+body.theme-dark .ModalPage ::-webkit-scrollbar-track,
+html.theme-dark .ModalPage ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body .ModalPage ::-webkit-scrollbar-thumb,
+body.theme-dark .ModalPage ::-webkit-scrollbar-thumb,
+html.theme-dark .ModalPage ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
 }
