@@ -806,20 +806,25 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </Group>
 
             <style>{`
+                /* По умолчанию СВЕТЛАЯ тема (под светлый фон VK) */
                 :root {
-                    --bg-primary: #19191a;
+                    --bg-primary: #f5f5f5;
+                    --text-primary: #000000;
+                    --text-secondary: #555555;
+                    --border-color: rgba(0, 0, 0, 0.1);
+                    --player-overlay: rgba(255, 255, 255, 0.85);
+                }
+
+                /* Тёмная тема приложения (применяется при data-theme="dark") */
+                [data-theme="dark"] {
+                    --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
-                    --text-secondary: #939393;
+                    --text-secondary: #b0b0b0;
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.5);
                 }
-                [data-theme="light"] {
-                    --bg-primary: #f5f5f5;
-                    --text-primary: #000000;
-                    --text-secondary: #666666;
-                    --border-color: rgba(0, 0, 0, 0.15);
-                    --player-overlay: rgba(255, 255, 255, 0.85);
-                }
+
+                /* Экран "Сейчас играет" всегда тёмный */
                 .now-playing-modal .ModalPage__in {
                     background: #0a0a1a !important;
                     min-height: 100vh;
@@ -834,6 +839,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 .now-playing-modal::-webkit-scrollbar {
                     display: none;
                 }
+
+                /* Принудительный фон для тёмной темы */
+                html[data-theme="dark"] body,
+                html[data-theme="dark"] #root,
+                html[data-theme="dark"] .Panel,
+                html[data-theme="dark"] .Group {
+                    background: #0a0a1a !important;
+                }
+
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
