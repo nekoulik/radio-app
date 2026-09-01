@@ -627,8 +627,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             {/* 2. Полноэкранный плеер */}
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
 
-            {/* 4. Баннер */}
-            <div style={{ padding: '30px 16px', textAlign: 'center', background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)', backgroundSize: '400% 400%', animation: 'gradientShift 8s ease infinite', color: '#fff' }}>
+            {/* Баннер — добавлен className */}
+            <div
+                className="gradient-banner"
+                style={{
+                    padding: '30px 16px',
+                    textAlign: 'center',
+                    background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)',
+                    backgroundSize: '400% 400%',
+                    animation: 'gradientShift 8s ease infinite',
+                    color: '#fff'
+                }}
+            >
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
                 <div style={{ fontSize: '15px', marginTop: '6px' }}>Anime • J-Pop • Lo-Fi • OST</div>
             </div>
@@ -636,7 +646,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             {/* 5. Основной контент */}
             <Group>
                 {/* Плеер */}
-                <Div style={{ textAlign: 'center', padding: '32px 16px', borderRadius: '12px', margin: '12px 0', background: 'url(/background.png) center/cover', filter: 'brightness(0.8)', position: 'relative', overflow: 'hidden', minHeight: '400px', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={openNowPlaying}>
+                <Div
+                    className="player-card"
+                    style={{
+                        textAlign: 'center',
+                        padding: '32px 16px',
+                        borderRadius: '12px',
+                        margin: '12px 0',
+                        background: 'url(/background.png) center/cover',
+                        filter: 'brightness(0.8)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        minHeight: '400px',
+                        cursor: 'pointer',
+                        color: 'var(--text-primary)'
+                    }}
+                    onClick={openNowPlaying}
+                >
                     <div style={{ position: 'absolute', inset: 0, background: 'var(--player-overlay)', zIndex: 0 }} />
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <Div style={{ marginBottom: '24px' }}><Visualizer isPlaying={isPlaying} color={currentStation?.color} /></Div>
@@ -722,25 +748,27 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </Cell>
 
                 {/* Ошибка */}
-                {error && (
-                    <Group>
-                        <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
-                            <Subhead weight="2" style={{ color: '#F44336' }}>Ошибка воспроизведения</Subhead>
-                            <Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption>
-                            <Button
-                                size="m"
-                                mode="secondary"
-                                onClick={() => {
-                                    setError(null);
-                                    setIsLoading(true);
-                                    togglePlay();
-                                }}
-                            >
-                                Попробовать снова
-                            </Button>
-                        </Div>
-                    </Group>
-                )}
+                {
+                    error && (
+                        <Group>
+                            <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
+                                <Subhead weight="2" style={{ color: '#F44336' }}>Ошибка воспроизведения</Subhead>
+                                <Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption>
+                                <Button
+                                    size="m"
+                                    mode="secondary"
+                                    onClick={() => {
+                                        setError(null);
+                                        setIsLoading(true);
+                                        togglePlay();
+                                    }}
+                                >
+                                    Попробовать снова
+                                </Button>
+                            </Div>
+                        </Group>
+                    )
+                }
 
                 {/* Список станций */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
@@ -803,7 +831,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Caption>
                     </Div>
                 </Group>
-            </Group>
+            </Group >
 
             <style>{`
                 /* По умолчанию СВЕТЛАЯ тема (под светлый фон VK) */
@@ -815,13 +843,27 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --player-overlay: rgba(255, 255, 255, 0.85);
                 }
 
-                /* Тёмная тема приложения (применяется при data-theme="dark") */
-                [data-theme="dark"] {
+                /* Тёмная тема приложения */
+                #root[data-theme="dark"],
+                #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
                     --text-secondary: #b0b0b0;
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.5);
+                    background: #0a0a1a !important;
+                }
+
+                #root[data-theme="dark"] .Panel,
+                #root.theme-dark .Panel,
+                #root[data-theme="dark"] .Group,
+                #root.theme-dark .Group {
+                    background: transparent !important;
+                }
+
+                #root[data-theme="dark"] .Cell,
+                #root.theme-dark .Cell {
+                    background: #1a1a2e !important;
                 }
 
                 /* Экран "Сейчас играет" всегда тёмный */
@@ -840,17 +882,22 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     display: none;
                 }
 
-                /* Принудительный фон для тёмной темы */
-                html[data-theme="dark"] body,
-                html[data-theme="dark"] #root,
-                html[data-theme="dark"] .Panel,
-                html[data-theme="dark"] .Group {
-                    background: #0a0a1a !important;
+                /* 🛡️ ЗАЩИТА БАННЕРА И ПЛЕЕРА от затемнения */
+                #root[data-theme="dark"] .gradient-banner,
+                #root.theme-dark .gradient-banner {
+                    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
+                    background-size: 400% 400% !important;
+                }
+
+                #root[data-theme="dark"] .player-card,
+                #root.theme-dark .player-card {
+                    background: url(/background.png) center/cover !important;
+                    filter: brightness(0.8);
                 }
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
-        </Panel>
+        </Panel >
     );
 };
