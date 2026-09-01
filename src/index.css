@@ -109,6 +109,20 @@ html.theme-dark {
     }
 }
 
+@keyframes modalGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 /* === СКРОЛЛБАР === */
 ::-webkit-scrollbar {
     width: 6px;
@@ -328,7 +342,7 @@ html.theme-dark .station-icon {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* ️ ЗАЩИТА БАННЕРА И ПЛЕЕРА в тёмной теме */
+/* ЗАЩИТА БАННЕРА И ПЛЕЕРА в тёмной теме */
 body.theme-dark .gradient-banner,
 html.theme-dark .gradient-banner {
     background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
@@ -420,56 +434,32 @@ html.theme-light ::-webkit-scrollbar-thumb {
 
 /* === МОДАЛЬНЫЕ ОКНА — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
 
-@keyframes modalGradient {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Фон модальных окон */
-body.theme-dark .ModalPage__in,
-body.theme-dark .ModalPage,
-body.theme-dark .ModalRoot,
-html.theme-dark .ModalPage__in,
-html.theme-dark .ModalPage,
-html.theme-dark .ModalRoot {
+/* Фон всех модальных окон */
+.ModalPage__in,
+.ModalPage,
+.ModalRoot {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite;
-    color: #ffffff !important;
 }
 
 /* Header модалок */
-body.theme-dark .ModalPage__header,
-html.theme-dark .ModalPage__header {
+.ModalPage__header {
     background: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-body.theme-dark .ModalPage__header-in,
-body.theme-dark .ModalPage__header .Subhead,
-html.theme-dark .ModalPage__header-in,
-html.theme-dark .ModalPage__header .Subhead {
+.ModalPage__header-in,
+.ModalPage__header .Subhead {
     color: #ffffff !important;
     font-weight: 600;
 }
 
 /* Ячейки внутри модалок */
-body.theme-dark .ModalPage .Cell,
-body.theme-dark .ModalPage .Group,
-body.theme-dark .ModalPage .Div,
-html.theme-dark .ModalPage .Cell,
-html.theme-dark .ModalPage .Group,
-html.theme-dark .ModalPage .Div {
+.ModalPage .Cell,
+.ModalPage .Group,
+.ModalPage .Div {
     background: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(8px);
     color: #ffffff !important;
@@ -478,61 +468,51 @@ html.theme-dark .ModalPage .Div {
     margin: 4px 8px;
 }
 
-body.theme-dark .ModalPage .Cell:hover,
-html.theme-dark .ModalPage .Cell:hover {
+.ModalPage .Cell:hover {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Текст в модалках */
-body.theme-dark .ModalPage .Subhead,
-body.theme-dark .ModalPage .Text,
-html.theme-dark .ModalPage .Subhead,
-html.theme-dark .ModalPage .Text {
+.ModalPage .Subhead,
+.ModalPage .Text {
     color: #ffffff !important;
 }
 
-body.theme-dark .ModalPage .Caption,
-html.theme-dark .ModalPage .Caption {
+.ModalPage .Caption {
     color: #d4d4ff !important;
 }
 
 /* Кнопки в модалках */
-body.theme-dark .ModalPage .Button,
-html.theme-dark .ModalPage .Button {
+.ModalPage .Button {
     color: #ffffff !important;
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Поиск в модалках */
-body.theme-dark .ModalPage input,
-body.theme-dark .ModalPage .Search,
-html.theme-dark .ModalPage input,
-html.theme-dark .ModalPage .Search {
+.ModalPage input,
+.ModalPage .Search {
     background: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
 }
 
-body.theme-dark .ModalPage input::placeholder,
-html.theme-dark .ModalPage input::placeholder {
+.ModalPage input::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* Скроллбар в модалках */
-body.theme-dark .ModalPage ::-webkit-scrollbar-track,
-html.theme-dark .ModalPage ::-webkit-scrollbar-track {
+.ModalPage ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-body.theme-dark .ModalPage ::-webkit-scrollbar-thumb,
-html.theme-dark .ModalPage ::-webkit-scrollbar-thumb {
+.ModalPage ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
 }
 
-/* === СПИСОК СТАНЦИЙ — ТОЖЕ СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
+/* === СПИСОК СТАНЦИЙ — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
 
 body.theme-dark .station-list-container,
 html.theme-dark .station-list-container {
