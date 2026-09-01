@@ -417,3 +417,183 @@ body.theme-light ::-webkit-scrollbar-thumb,
 html.theme-light ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
 }
+
+/* === МОДАЛЬНЫЕ ОКНА — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
+
+@keyframes modalGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Фон модальных окон */
+body.theme-dark .ModalPage__in,
+body.theme-dark .ModalPage,
+body.theme-dark .ModalRoot,
+html.theme-dark .ModalPage__in,
+html.theme-dark .ModalPage,
+html.theme-dark .ModalRoot {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite;
+    color: #ffffff !important;
+}
+
+/* Header модалок */
+body.theme-dark .ModalPage__header,
+html.theme-dark .ModalPage__header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body.theme-dark .ModalPage__header-in,
+body.theme-dark .ModalPage__header .Subhead,
+html.theme-dark .ModalPage__header-in,
+html.theme-dark .ModalPage__header .Subhead {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Ячейки внутри модалок */
+body.theme-dark .ModalPage .Cell,
+body.theme-dark .ModalPage .Group,
+body.theme-dark .ModalPage .Div,
+html.theme-dark .ModalPage .Cell,
+html.theme-dark .ModalPage .Group,
+html.theme-dark .ModalPage .Div {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    margin: 4px 8px;
+}
+
+body.theme-dark .ModalPage .Cell:hover,
+html.theme-dark .ModalPage .Cell:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Текст в модалках */
+body.theme-dark .ModalPage .Subhead,
+body.theme-dark .ModalPage .Text,
+html.theme-dark .ModalPage .Subhead,
+html.theme-dark .ModalPage .Text {
+    color: #ffffff !important;
+}
+
+body.theme-dark .ModalPage .Caption,
+html.theme-dark .ModalPage .Caption {
+    color: #d4d4ff !important;
+}
+
+/* Кнопки в модалках */
+body.theme-dark .ModalPage .Button,
+html.theme-dark .ModalPage .Button {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Поиск в модалках */
+body.theme-dark .ModalPage input,
+body.theme-dark .ModalPage .Search,
+html.theme-dark .ModalPage input,
+html.theme-dark .ModalPage .Search {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+body.theme-dark .ModalPage input::placeholder,
+html.theme-dark .ModalPage input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Скроллбар в модалках */
+body.theme-dark .ModalPage ::-webkit-scrollbar-track,
+html.theme-dark .ModalPage ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.theme-dark .ModalPage ::-webkit-scrollbar-thumb,
+html.theme-dark .ModalPage ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+}
+
+/* === СПИСОК СТАНЦИЙ — ТОЖЕ СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
+
+body.theme-dark .station-list-container,
+html.theme-dark .station-list-container {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite;
+    border-radius: 16px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+body.theme-dark .station-list-container .station-cell,
+html.theme-dark .station-list-container .station-cell {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    margin: 4px 0;
+    color: #ffffff !important;
+}
+
+body.theme-dark .station-list-container .station-cell:hover,
+html.theme-dark .station-list-container .station-cell:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateX(4px);
+}
+
+body.theme-dark .station-list-container .station-cell.active,
+html.theme-dark .station-list-container .station-cell.active {
+    background: rgba(255, 102, 179, 0.3) !important;
+    border-left: 3px solid #ff66b3 !important;
+    box-shadow: 0 4px 16px rgba(255, 102, 179, 0.3);
+}
+
+body.theme-dark .station-list-container .station-title,
+html.theme-dark .station-list-container .station-title {
+    color: #ffffff !important;
+}
+
+body.theme-dark .station-list-container .station-genre,
+body.theme-dark .station-list-container .station-desc,
+html.theme-dark .station-list-container .station-genre,
+html.theme-dark .station-list-container .station-desc {
+    color: #d4d4ff !important;
+}
+
+/* Поиск станций в тёмной теме */
+body.theme-dark .Search,
+body.theme-dark input[type="search"],
+html.theme-dark .Search,
+html.theme-dark input[type="search"] {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+}
+
+body.theme-dark .Search::placeholder,
+body.theme-dark input::placeholder,
+html.theme-dark .Search::placeholder,
+html.theme-dark input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
