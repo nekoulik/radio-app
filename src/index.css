@@ -343,14 +343,61 @@ body {
     background: rgba(255, 102, 179, 0.5);
 }
 
-/* === УЛЬТРА-СИЛЬНЫЕ СЕЛЕКТОРЫ ДЛЯ VK === */
-#root[data-theme="dark"] .station-cell .Subhead,
-#root[data-theme="dark"] .station-cell .Text,
-#root[data-theme="dark"] .station-cell span,
-#root[data-theme="dark"] .station-cell div {
+/* Тёмная тема */
+#root.theme-dark,
+#root.theme-dark *,
+#root.theme-dark .Panel,
+#root.theme-dark .Group,
+#root.theme-dark .Cell,
+#root.theme-dark .Subhead,
+#root.theme-dark .Text,
+#root.theme-dark .Caption {
+    color: #ffffff !important;
+    background: #0a0a1a !important;
+}
+
+#root.theme-dark .station-title,
+#root.theme-dark .station-title *,
+#root.theme-dark .station-title span {
     color: #ffffff !important;
 }
 
-#root[data-theme="dark"] .station-cell .Caption {
+#root.theme-dark .station-genre,
+#root.theme-dark .station-desc,
+#root.theme-dark .station-genre *,
+#root.theme-dark .station-desc * {
     color: #b0b0b0 !important;
+}
+
+#root.theme-dark .active-title {
+    color: #ff66b3 !important;
+}
+
+#root.theme-dark .station-cell:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+#root.theme-dark .station-cell.active {
+    background: rgba(255, 102, 179, 0.2) !important;
+}
+
+/* Светлая тема */
+#root.theme-light,
+#root.theme-light .Panel,
+#root.theme-light .Group,
+#root.theme-light .Cell {
+    background: #f5f5f5 !important;
+}
+
+#root.theme-light .station-title,
+#root.theme-light .station-title *,
+#root.theme-light .station-title span {
+    color: #000000 !important;
+}
+
+#root.theme-light .station-genre,
+#root.theme-light .station-desc,
+#root.theme-light .station-genre *,
+#root.theme-light .station-desc * {
+    color: #555555 !important;
 }

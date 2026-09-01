@@ -3,17 +3,22 @@ import { useState, useEffect } from 'react';
 export const useTheme = () => {
     const [isDarkTheme, setIsDarkTheme] = useState(() => {
         const savedTheme = localStorage.getItem('theme');
-        return savedTheme ? savedTheme === 'dark' : false; // По умолчанию СВЕТЛАЯ
+        return savedTheme ? savedTheme === 'dark' : false;
     });
 
     useEffect(() => {
         localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
 
-        // Применяем к #root (работает в iframe VK)
         const root = document.getElementById('root');
         if (root) {
-            root.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
-            console.log('Theme applied to #root:', isDarkTheme ? 'dark' : 'light');
+            if (isDarkTheme) {
+                root.classList.remove('theme-light');
+                root.classList.add('theme-dark');
+            } else {
+                root.classList.remove('theme-dark');
+                root.classList.add('theme-light');
+            }
+            console.log('Theme class applied:', isDarkTheme ? 'theme-dark' : 'theme-light');
         }
     }, [isDarkTheme]);
 
