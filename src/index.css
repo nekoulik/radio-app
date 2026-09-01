@@ -1,6 +1,7 @@
 :root {
     --vkui--color_background: #0a0a1a;
     --vkui--color_text_primary: #ffffff;
+    --vkui--color_text_secondary: #b0b0b0;
 }
 
 body {
@@ -18,6 +19,8 @@ body {
 * {
     box-sizing: border-box;
 }
+
+/* === АНИМАЦИИ === */
 
 /* Анимация пульсации для логотипа */
 @keyframes pulse {
@@ -66,6 +69,39 @@ body {
     }
 }
 
+/* Анимация пульсации иконки станции */
+@keyframes iconPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 102, 179, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(255, 102, 179, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 102, 179, 0);
+    }
+}
+
+/* Анимация пульсации текста */
+@keyframes textPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* === СКРОЛЛБАР === */
+
 /* Кастомный скроллбар для списка станций */
 ::-webkit-scrollbar {
     width: 6px;
@@ -94,6 +130,8 @@ body {
     scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.1);
 }
 
+/* === СТИЛИ СТАНЦИЙ (БАЗОВЫЕ / ТЁМНАЯ ТЕМА) === */
+
 /* Карточка станции */
 .station-cell {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -110,7 +148,7 @@ body {
 /* Активная станция */
 .station-cell.active {
     background: rgba(255, 102, 179, 0.15) !important;
-    border-left: 3px solid #ff66b3;
+    border-left: 3px solid #ff66b3 !important;
 }
 
 /* Иконка станции */
@@ -132,41 +170,12 @@ body {
     box-shadow: 0 0 0 0 rgba(255, 102, 179, 0.7);
 }
 
-@keyframes iconPulse {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(255, 102, 179, 0.7);
-    }
-
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(255, 102, 179, 0);
-    }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(255, 102, 179, 0);
-    }
-}
-
 /* Индикатор воспроизведения */
 .play-indicator {
     font-size: 12px;
-    color: #ff66b3;
+    color: #ff66b3 !important;
     font-weight: 600;
     animation: textPulse 1.5s infinite;
-}
-
-@keyframes textPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
 }
 
 /* Кнопка избранного */
@@ -195,25 +204,23 @@ body {
 }
 
 .station-title {
-    color: #ffffff;
+    color: #ffffff !important;
     line-height: 1.3;
     word-break: break-word;
     overflow-wrap: break-word;
+    font-weight: 500;
 }
 
-.station-genre {
-    color: #99A2AD;
-    font-size: 11px;
-    line-height: 1.3;
-}
-
+.station-genre,
 .station-desc {
-    color: #99A2AD;
+    color: #b0b0b0 !important;
     font-size: 11px;
     line-height: 1.3;
     display: block;
-    margin-top: 1px;
+    margin-top: 2px;
 }
+
+/* === ЭКРАН "СЕЙЧАС ИГРАЕТ" === */
 
 /* Принудительная темная тема для экрана "Сейчас играет" */
 .now-playing-modal .ModalPage__in {
@@ -230,56 +237,70 @@ body {
     color: #ffffff !important;
 }
 
-/* Скрываем стандартную полосу прокрутки VKUI, если она мешает */
+/* Скрываем стандартную полосу прокрутки VKUI */
 .now-playing-modal::-webkit-scrollbar {
     display: none;
 }
 
-/* === Стили для списка станций (Адаптивные) === */
+/* === ПЕРЕОПРЕДЕЛЕНИЕ VKUI ПЕРЕМЕННЫХ (ТЁМНАЯ ТЕМА) === */
 
-/* Базовые стили (Тёмная тема) */
-.station-title {
-    color: #ffffff !important;
+[data-theme="dark"] {
+    --vkui--color_text_primary: #ffffff !important;
+    --vkui--color_text_secondary: #b0b0b0 !important;
+    --vkui--color_background: #0a0a1a !important;
+    --vkui--color_background_content: #1a1a2e !important;
 }
 
-.station-genre,
-.station-desc {
-    color: #939393 !important;
-    display: block;
+/* === СВЕТЛАЯ ТЕМА === */
+
+[data-theme="light"] {
+    --vkui--color_text_primary: #000000 !important;
+    --vkui--color_text_secondary: #333333 !important;
+    --vkui--color_background: #f5f5f5 !important;
+    --vkui--color_background_content: #ffffff !important;
 }
 
-.station-desc {
-    margin-top: 2px;
-}
-
-.station-cell.active {
-    background: rgba(255, 102, 179, 0.1) !important;
-}
-
-.active-title {
-    color: #ff66b3 !important;
-}
-
-.play-indicator {
-    color: #4BB34B;
-    font-size: 14px;
-}
-
-/* === Переопределение для Светлой темы === */
 [data-theme="light"] .station-title {
     color: #000000 !important;
+    font-weight: 600;
 }
 
 [data-theme="light"] .station-genre,
 [data-theme="light"] .station-desc {
-    color: #666666 !important;
-    /* Более тёмный серый для читаемости */
+    color: #333333 !important;
+    font-weight: 400;
+}
+
+[data-theme="light"] .station-cell {
+    background: #ffffff !important;
+}
+
+[data-theme="light"] .station-cell:hover {
+    background: #f5f5f5 !important;
 }
 
 [data-theme="light"] .station-cell.active {
     background: rgba(255, 102, 179, 0.15) !important;
+    border-left: 3px solid #ff66b3 !important;
+}
+
+[data-theme="light"] .active-title {
+    color: #d63384 !important;
 }
 
 [data-theme="light"] .play-indicator {
-    color: #4BB34B;
+    color: #4BB34B !important;
+}
+
+[data-theme="light"] .station-icon {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Скроллбар для светлой темы */
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 102, 179, 0.6);
 }
