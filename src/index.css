@@ -234,3 +234,52 @@ body {
 .now-playing-modal::-webkit-scrollbar {
     display: none;
 }
+
+/* === Стили для списка станций (Адаптивные) === */
+
+/* Базовые стили (Тёмная тема) */
+.station-title {
+    color: #ffffff !important;
+}
+
+.station-genre,
+.station-desc {
+    color: #939393 !important;
+    display: block;
+}
+
+.station-desc {
+    margin-top: 2px;
+}
+
+.station-cell.active {
+    background: rgba(255, 102, 179, 0.1) !important;
+}
+
+.active-title {
+    color: #ff66b3 !important;
+}
+
+.play-indicator {
+    color: #4BB34B;
+    font-size: 14px;
+}
+
+/* === Переопределение для Светлой темы === */
+[data-theme="light"] .station-title {
+    color: #000000 !important;
+}
+
+[data-theme="light"] .station-genre,
+[data-theme="light"] .station-desc {
+    color: #666666 !important;
+    /* Более тёмный серый для читаемости */
+}
+
+[data-theme="light"] .station-cell.active {
+    background: rgba(255, 102, 179, 0.15) !important;
+}
+
+[data-theme="light"] .play-indicator {
+    color: #4BB34B;
+}

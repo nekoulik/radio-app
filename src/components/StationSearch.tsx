@@ -28,7 +28,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
         return stations.filter(station =>
             station.name.toLowerCase().includes(query) ||
             station.genre.toLowerCase().includes(query) ||
-            (station.description && station.description.toLowerCase().includes(query)) // <-- Добавлена проверка
+            (station.description && station.description.toLowerCase().includes(query))
         );
     }, [stations, searchQuery]);
 
@@ -38,7 +38,8 @@ export const StationSearch: React.FC<StationSearchProps> = ({
 
     return (
         <>
-            <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)' }}>
+            {/* Убрали жесткий фон, теперь он адаптивный или прозрачный */}
+            <div style={{ padding: '12px 16px', background: 'transparent' }}>
                 <Search
                     value={searchQuery}
                     onChange={handleSearchChange}
@@ -51,7 +52,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                 <List>
                     {filteredStations.length === 0 ? (
                         <div style={{ padding: '20px', textAlign: 'center' }}>
-                            <Caption style={{ color: '#99A2AD' }}>
+                            <Caption style={{ color: 'var(--text-secondary)' }}>
                                 Станции не найдены
                             </Caption>
                         </div>
@@ -68,16 +69,16 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                     before={
                                         <div
                                             className={`station-icon ${isActive ? 'pulsing' : ''}`}
-                                            style={{ background: station.color }} // <-- Вернули цвет!
+                                            style={{ background: station.color, color: '#fff' }}
                                         >
                                             🎵
                                         </div>
                                     }
                                     after={
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {isActive && (
-                                                <span className="play-indicator">
-                                                    {isPlaying ? '▶' : ''}
+                                            {isActive && isPlaying && (
+                                                <span className="play-indicator" style={{ color: 'var(--text-primary)' }}>
+                                                    ▶
                                                 </span>
                                             )}
 
@@ -87,6 +88,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                                     e.stopPropagation();
                                                     toggleFavorite(station.id);
                                                 }}
+                                                style={{ fontSize: '20px', cursor: 'pointer' }}
                                             >
                                                 {fav ? '❤️' : '🤍'}
                                             </div>
@@ -121,9 +123,9 @@ export const StationSearch: React.FC<StationSearchProps> = ({
             <div style={{
                 padding: '8px 16px',
                 textAlign: 'center',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
+                borderTop: '1px solid var(--border-color)', /* <-- Используем переменную */
             }}>
-                <Caption style={{ color: '#99A2AD' }}>
+                <Caption style={{ color: 'var(--text-secondary)' }}>
                     {filteredStations.length} из {stations.length} станций
                     {searchQuery && ` (поиск: "${searchQuery}")`}
                 </Caption>

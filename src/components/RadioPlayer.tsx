@@ -814,11 +814,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --player-overlay: rgba(0, 0, 0, 0.5);
                 }
                 [data-theme="light"] {
-                    --bg-primary: #ffffff;
+                    --bg-primary: #f5f5f5;
                     --text-primary: #000000;
-                    --text-secondary: #818c99;
-                    --border-color: rgba(0, 0, 0, 0.1);
-                    --player-overlay: rgba(255, 255, 255, 0.4);
+                    --text-secondary: #666666;
+                    --border-color: rgba(0, 0, 0, 0.15);
+                    --player-overlay: rgba(255, 255, 255, 0.85);
                 }
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
