@@ -493,27 +493,27 @@ html.theme-dark input::placeholder {
 /* ================================================================= */
 
 /* Внешние контейнеры — ПРОЗРАЧНЫЕ */
-.ModalRoot,
-.vkuiModalRoot,
-body .ModalRoot,
-body .ModalPage,
-html.theme-dark .ModalRoot,
-html.theme-dark .ModalPage,
-html.theme-light .ModalRoot,
-html.theme-light .ModalPage,
-div.ModalRoot,
-div.vkuiModalRoot {
+.ModalRoot:not(.now-playing-modal),
+.vkuiModalRoot:not(.now-playing-modal),
+body .ModalRoot:not(.now-playing-modal),
+body .ModalPage:not(.now-playing-modal),
+html.theme-dark .ModalRoot:not(.now-playing-modal),
+html.theme-dark .ModalPage:not(.now-playing-modal),
+html.theme-light .ModalRoot:not(.now-playing-modal),
+html.theme-light .ModalPage:not(.now-playing-modal),
+div.ModalRoot:not(.now-playing-modal),
+div.vkuiModalRoot:not(.now-playing-modal) {
     background: transparent !important;
 }
 
-/* Градиент ТОЛЬКО на внутреннее содержимое модалки */
-.ModalPage__in,
-.vkuiModalPage__in,
-body .ModalPage__in,
-html.theme-dark .ModalPage__in,
-html.theme-light .ModalPage__in,
-div.ModalPage__in,
-div.vkuiModalPage__in {
+/* Градиент ТОЛЬКО на обычные модалки (НЕ на now-playing) */
+.ModalPage__in:not(.now-playing-modal .ModalPage__in),
+.vkuiModalPage__in:not(.now-playing-modal .vkuiModalPage__in),
+body .ModalPage__in:not(.now-playing-modal .ModalPage__in),
+html.theme-dark .ModalPage__in:not(.now-playing-modal .ModalPage__in),
+html.theme-light .ModalPage__in:not(.now-playing-modal .ModalPage__in),
+div.ModalPage__in:not(.now-playing-modal .ModalPage__in),
+div.vkuiModalPage__in:not(.now-playing-modal .vkuiModalPage__in) {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite !important;
@@ -521,28 +521,28 @@ div.vkuiModalPage__in {
     overflow: hidden;
 }
 
-/* Header — только внутри модалки */
-.ModalPage__header,
-.vkuiModalPage__header {
+/* Header — только для обычных модалок */
+.ModalPage__header:not(.now-playing-modal .ModalPage__header),
+.vkuiModalPage__header:not(.now-playing-modal .vkuiModalPage__header) {
     background: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(10px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-.ModalPage__header-in,
-.vkuiModalPage__header-in,
-.ModalPage__header .Subhead {
+.ModalPage__header-in:not(.now-playing-modal .ModalPage__header-in),
+.vkuiModalPage__header-in:not(.now-playing-modal .vkuiModalPage__header-in),
+.ModalPage__header:not(.now-playing-modal .ModalPage__header) .Subhead {
     color: #ffffff !important;
     font-weight: 600;
 }
 
-/* Ячейки внутри модалок */
-.ModalPage .Cell,
-.ModalPage .Group,
-.ModalPage .Div,
-.vkuiModalPage .Cell,
-.vkuiModalPage .Group,
-.vkuiModalPage .Div {
+/* Ячейки внутри обычных модалок */
+.ModalPage:not(.now-playing-modal) .Cell,
+.ModalPage:not(.now-playing-modal) .Group,
+.ModalPage:not(.now-playing-modal) .Div,
+.vkuiModalPage:not(.now-playing-modal) .Cell,
+.vkuiModalPage:not(.now-playing-modal) .Group,
+.vkuiModalPage:not(.now-playing-modal) .Div {
     background: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(8px) !important;
     color: #ffffff !important;
@@ -551,56 +551,56 @@ div.vkuiModalPage__in {
     margin: 4px 8px;
 }
 
-.ModalPage .Cell:hover,
-.vkuiModalPage .Cell:hover {
+.ModalPage:not(.now-playing-modal) .Cell:hover,
+.vkuiModalPage:not(.now-playing-modal) .Cell:hover {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Текст в модалках */
-.ModalPage .Subhead,
-.ModalPage .Text,
-.vkuiModalPage .Subhead,
-.vkuiModalPage .Text {
+/* Текст в обычных модалках */
+.ModalPage:not(.now-playing-modal) .Subhead,
+.ModalPage:not(.now-playing-modal) .Text,
+.vkuiModalPage:not(.now-playing-modal) .Subhead,
+.vkuiModalPage:not(.now-playing-modal) .Text {
     color: #ffffff !important;
 }
 
-.ModalPage .Caption,
-.vkuiModalPage .Caption {
+.ModalPage:not(.now-playing-modal) .Caption,
+.vkuiModalPage:not(.now-playing-modal) .Caption {
     color: #d4d4ff !important;
 }
 
-/* Кнопки в модалках */
-.ModalPage .Button,
-.vkuiModalPage .Button {
+/* Кнопки в обычных модалках */
+.ModalPage:not(.now-playing-modal) .Button,
+.vkuiModalPage:not(.now-playing-modal) .Button {
     color: #ffffff !important;
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Поиск и textarea */
-.ModalPage input,
-.ModalPage .Search,
-.ModalPage textarea,
-.vkuiModalPage input,
-.vkuiModalPage .Search,
-.vkuiModalPage textarea {
+/* Поиск и textarea в обычных модалках */
+.ModalPage:not(.now-playing-modal) input,
+.ModalPage:not(.now-playing-modal) .Search,
+.ModalPage:not(.now-playing-modal) textarea,
+.vkuiModalPage:not(.now-playing-modal) input,
+.vkuiModalPage:not(.now-playing-modal) .Search,
+.vkuiModalPage:not(.now-playing-modal) textarea {
     background: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     border-radius: 8px;
 }
 
-.ModalPage input::placeholder,
-.ModalPage textarea::placeholder {
+.ModalPage:not(.now-playing-modal) input::placeholder,
+.ModalPage:not(.now-playing-modal) textarea::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* Скроллбар */
-.ModalPage ::-webkit-scrollbar-track {
+/* Скроллбар в обычных модалках */
+.ModalPage:not(.now-playing-modal) ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.ModalPage ::-webkit-scrollbar-thumb {
+.ModalPage:not(.now-playing-modal) ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
 }
