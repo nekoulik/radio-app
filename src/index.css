@@ -134,18 +134,35 @@ body {
 
 /* === ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (не меняются) === */
 
-/* Баннер — радужный градиент */
+/* Баннер — с фоновой картинкой */
 .gradient-banner {
-    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
-    background-size: 400% 400% !important;
-    animation: gradientShift 8s ease infinite;
+    background: url(/banner-bg.png) center/cover !important;
     color: #ffffff !important;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Затемнение баннера для читаемости текста */
+.gradient-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.gradient-banner>* {
+    position: relative;
+    z-index: 2;
 }
 
 /* Плеер — с картинкой */
 .player-card {
     background: url(/background.png) center/cover !important;
-    filter: brightness(0.8);
 }
 
 /* Список станций — фиолетовый градиент */
@@ -310,4 +327,54 @@ body {
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
+}
+
+/* === СТИЛИ ЭКВАЛАЙЗЕРА (внутри белой модалки) === */
+
+/* Кнопки пресетов */
+.equalizer-presets button,
+#equalizer button {
+    background: #f5f5f5 !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    border-radius: 10px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.equalizer-presets button:hover,
+#equalizer button:hover {
+    background: #2D81E0 !important;
+    color: #ffffff !important;
+    border-color: #2D81E0 !important;
+}
+
+.equalizer-presets button.active,
+#equalizer button.active {
+    background: #2D81E0 !important;
+    color: #ffffff !important;
+    border-color: #2D81E0 !important;
+}
+
+/* Область визуализации */
+.equalizer-visualizer,
+#equalizer canvas,
+#equalizer .visualizer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Подпись под визуализацией */
+#equalizer .Caption,
+#equalizer caption {
+    color: #99A2AD !important;
+    font-size: 13px !important;
+}
+
+/* Заголовки внутри эквалайзера */
+#equalizer .Subhead,
+#equalizer .Text {
+    color: #000000 !important;
 }
