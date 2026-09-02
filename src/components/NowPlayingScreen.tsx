@@ -32,8 +32,8 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                 className="now-playing-modal"
                 // ✅ ДОБАВЛЕНО: Принудительный тёмный фон
                 style={{
-                    background: '#0a0a1a !important',
-                    minHeight: '100vh'
+                    background: '#f5f5fa !important',
+                    minHeight: '60vh'
                 }}
                 header={
                     <ModalPageHeader
