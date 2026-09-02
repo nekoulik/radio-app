@@ -23,7 +23,6 @@ import {
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
-// Импортируем функцию загрузки и тип станции
 import { fetchRadioStations, RadioStation } from '../data/radioStations';
 import { StationSearch } from './StationSearch';
 import { Visualizer } from './Visualizer';
@@ -37,19 +36,14 @@ interface RadioPlayerProps {
 }
 
 export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
-    // Состояния для станций
     const [stations, setStations] = useState<RadioStation[]>([]);
     const [isLoadingStations, setIsLoadingStations] = useState(true);
-
-    // Состояние плеера
     const [currentStationId, setCurrentStationId] = useState<string | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(0.8);
     const [isLoading, setIsLoading] = useState(false);
     const [listeningHistory, setListeningHistory] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
-
-    // Состояния интерфейса
     const [sleepTimeMinutes, setSleepTimeMinutes] = useState<number | null>(null);
     const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -61,37 +55,29 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    // Находим текущую станцию в загруженном списке
     const currentStation = stations.find(s => s.id === currentStationId);
-
     const { toggleFavorite, isFavorite } = useFavorites();
 
-    // Refs для Web Audio API (Эквалайзер)
     const audioContextRef = useRef<AudioContext | null>(null);
     const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
     const bassFilterRef = useRef<BiquadFilterNode | null>(null);
     const boundAudioElementRef = useRef<HTMLAudioElement | null>(null);
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
-
     const { isDarkTheme, toggleTheme } = useTheme();
 
-    // 1. Загрузка станций и истории при монтировании
     useEffect(() => {
         const loadData = async () => {
             setIsLoadingStations(true);
             try {
                 const loadedStations = await fetchRadioStations();
                 setStations(loadedStations);
-
                 const savedStationId = localStorage.getItem('lastStationId');
                 if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
                     setCurrentStationId(savedStationId);
                 } else if (loadedStations.length > 0) {
                     setCurrentStationId(loadedStations[0].id);
                 }
-
                 const savedHistory = localStorage.getItem('listeningHistory');
                 if (savedHistory) {
                     try {
@@ -114,69 +100,50 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const initAudioContext = (audioElement: HTMLAudioElement) => {
         try {
             const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-
             if (!audioContextRef.current) {
                 audioContextRef.current = new AudioCtx();
             }
             const ctx = audioContextRef.current;
-
             if (boundAudioElementRef.current === audioElement && sourceRef.current) {
-                if (ctx.state === 'suspended') {
-                    ctx.resume();
-                }
+                if (ctx.state === 'suspended') ctx.resume();
                 return;
             }
-
             if (sourceRef.current) {
-                try {
-                    sourceRef.current.disconnect();
-                } catch (e) { }
+                try { sourceRef.current.disconnect(); } catch (e) { }
             }
-
             const source = ctx.createMediaElementSource(audioElement);
             const bass = ctx.createBiquadFilter();
             bass.type = 'lowshelf';
             bass.frequency.value = 200;
-
             const treble = ctx.createBiquadFilter();
             treble.type = 'highshelf';
             treble.frequency.value = 2000;
-
             const analyser = ctx.createAnalyser();
             analyser.fftSize = 64;
-
             source.connect(bass);
             bass.connect(treble);
             treble.connect(analyser);
             analyser.connect(ctx.destination);
-
             boundAudioElementRef.current = audioElement;
             sourceRef.current = source;
             bassFilterRef.current = bass;
             trebleFilterRef.current = treble;
             analyserRef.current = analyser;
-
-            if (ctx.state === 'suspended') {
-                ctx.resume();
-            }
+            if (ctx.state === 'suspended') ctx.resume();
         } catch (err) {
             console.error("Ошибка инициализации AudioContext:", err);
         }
     };
 
-    // 3. Управление аудио потоком
     useEffect(() => {
         if (!currentStation) return;
-
         let errorTimer: ReturnType<typeof setTimeout> | undefined;
         let retryCount = 0;
         const MAX_RETRIES = 2;
-
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.src = '';
         }
-
         const audio = new Audio(currentStation!.streamUrl);
         audio.crossOrigin = "anonymous";
         audio.preload = 'none';
@@ -189,7 +156,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     console.warn('Поток загружается дольше 30 секунд...');
                 }
             }, 30000);
-
             errorTimer = setTimeout(() => {
                 clearTimeout(warningTimer);
                 if (isLoading && !isPlaying) {
@@ -202,16 +168,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         const handleError = () => {
             if (error) return;
             if (errorTimer) clearTimeout(errorTimer);
-
             if (retryCount < MAX_RETRIES) {
                 retryCount++;
                 setTimeout(() => {
                     if (audioRef.current && audioRef.current.src === audio.src) {
                         audioRef.current.load();
                         audioRef.current.play().catch(e => {
-                            if (e.name !== 'AbortError') {
-                                console.error('Retry failed:', e);
-                            }
+                            if (e.name !== 'AbortError') console.error('Retry failed:', e);
                         });
                     }
                 }, 2000);
@@ -233,20 +196,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             }
             initAudioContext(audio);
         });
-
         audio.addEventListener('pause', () => {
             if (errorTimer) clearTimeout(errorTimer);
             setIsPlaying(false);
         });
-
         audio.addEventListener('waiting', () => {
             setIsLoading(true);
             startErrorTimer();
         });
-
         audio.addEventListener('error', handleError);
         audio.addEventListener('stalled', handleError);
-
         startErrorTimer();
         audioRef.current = audio;
 
@@ -257,9 +216,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     }, [currentStationId]);
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = volume;
-        }
+        if (audioRef.current) audioRef.current.volume = volume;
     }, [volume]);
 
     useEffect(() => {
@@ -304,7 +261,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         setSleepTimeMinutes(minutes);
         setTimeLeftSeconds(minutes ? minutes * 60 : null);
     };
-
     const formatTime = (totalSeconds: number | null) => {
         if (totalSeconds === null) return '';
         const m = Math.floor(totalSeconds / 60);
@@ -315,7 +271,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const switchStation = (direction: 'next' | 'prev') => {
         if (stations.length === 0) return;
         const currentIndex = stations.findIndex(s => s.id === currentStationId);
-        let newIndex = direction === 'next'
+        const newIndex = direction === 'next'
             ? (currentIndex + 1) % stations.length
             : (currentIndex - 1 + stations.length) % stations.length;
         handleStationSelect(stations[newIndex]);
@@ -354,14 +310,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setError(null);
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
-
             setListeningHistory(prevHistory => {
                 const newHistory = [station.id, ...prevHistory.filter(id => id !== station.id)].slice(0, 10);
                 localStorage.setItem('listeningHistory', JSON.stringify(newHistory));
                 return newHistory;
             });
             localStorage.setItem('lastStationId', station.id);
-
             setTimeout(() => {
                 if (audioRef.current) {
                     setIsLoading(true);
@@ -415,43 +369,31 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         );
     }
 
+    // ✅ СТИЛЬ ДЛЯ HEADER МОДАЛОК (только header, без градиента!)
     const modalHeaderStyle = {
         background: 'rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(10px)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
     };
 
+    // ✅ ПРОЗРАЧНЫЙ СТИЛЬ ДЛЯ САМОЙ МОДАЛКИ (градиент берётся из index.css)
+    const modalTransparentStyle = {
+        background: 'transparent'
+    };
+
     return (
         <Panel id={id}>
             {/* 1. Модальное окно: Поделиться */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
-                <ModalPage
-                    id="share"
-                    style={{ background: 'transparent' }}  // ← ПРОЗРАЧНЫЙ ФОН!
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>}
-                            style={modalHeaderStyle}
-                        >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>Поделиться</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsShareModalOpen(false)}
-                >
+                <ModalPage id="share" style={modalTransparentStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>Поделиться</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsShareModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
                         <Caption style={{ color: '#e0e0ff', marginBottom: '12px', display: 'block' }}>Скопируйте текст:</Caption>
-                        <Textarea
-                            value={shareText}
-                            onChange={(e) => setShareText(e.target.value)}
-                            rows={6}
-                            style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px' }}
-                        />
-                        <Button
-                            size="l"
-                            mode="primary"
-                            style={{ width: '100%', background: copySuccess ? '#4BB34B' : 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }}
-                            onClick={copyShareText}
-                        >
+                        <Textarea value={shareText} onChange={(e) => setShareText(e.target.value)} rows={6} style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px' }} />
+                        <Button size="l" mode="primary" style={{ width: '100%', background: copySuccess ? '#4BB34B' : 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={copyShareText}>
                             {copySuccess ? '✅ Скопировано!' : '📋 Копировать текст'}
                         </Button>
                     </Div>
@@ -460,30 +402,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             {/* 2. Модальное окно: Общий чат */}
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
-                <ModalPage
-                    id="chat-invite"
-                    style={{ background: 'transparent' }}  // ← ПРОЗРАЧНЫЙ ФОН!
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>}
-                            style={modalHeaderStyle}
-                        >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>💬 Общий чат</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsChatModalOpen(false)}
-                >
+                <ModalPage id="chat-invite" style={modalTransparentStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>💬 Общий чат</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsChatModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
                         <Subhead style={{ marginBottom: '12px', color: '#ffffff' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
                         <Caption style={{ color: '#e0e0ff', display: 'block', marginBottom: '20px' }}>Общайтесь, делитесь треками и предлагайте идеи!</Caption>
-                        <Button
-                            size="l"
-                            mode="primary"
-                            style={{ width: '100%', background: 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }}
-                            Component="a"
-                            href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
-                            target="_blank"
-                        >
+                        <Button size="l" mode="primary" style={{ width: '100%', background: 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} Component="a" href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak=" target="_blank">
                             Присоединиться →
                         </Button>
                     </Div>
@@ -492,19 +419,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             {/* 3. Модальное окно: История */}
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
-                <ModalPage
-                    id="history"
-                    style={{ background: 'transparent' }}  // ← ПРОЗРАЧНЫЙ ФОН!
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>}
-                            style={modalHeaderStyle}
-                        >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>📜 История прослушиваний</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsHistoryModalOpen(false)}
-                >
+                <ModalPage id="history" style={modalTransparentStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}> История прослушиваний</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsHistoryModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
@@ -516,23 +435,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 const station = stations.find(s => s.id === stationId);
                                 if (!station) return null;
                                 return (
-                                    <Cell
-                                        key={station.id}
-                                        before={<div style={{ fontSize: '24px', color: '#ffffff' }}>{index + 1}</div>}
-                                        onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }}
-                                        subtitle={station.genre}
-                                        style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', margin: '4px 0', backdropFilter: 'blur(8px)' }}
-                                        after={
-                                            <Button
-                                                size="s"
-                                                mode="primary"
-                                                style={{ background: station.color, color: '#fff' }}
-                                                onClick={(e) => { e.stopPropagation(); handleStationSelect(station); setIsHistoryModalOpen(false); }}
-                                            >
-                                                ▶
-                                            </Button>
-                                        }
-                                    >
+                                    <Cell key={station.id} before={<div style={{ fontSize: '24px', color: '#ffffff' }}>{index + 1}</div>} onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }} subtitle={station.genre} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', margin: '4px 0', backdropFilter: 'blur(8px)' }} after={<Button size="s" mode="primary" style={{ background: station.color, color: '#fff' }} onClick={(e) => { e.stopPropagation(); handleStationSelect(station); setIsHistoryModalOpen(false); }}>▶</Button>}>
                                         <div style={{ color: '#ffffff', fontWeight: 500 }}>{station.name}</div>
                                     </Cell>
                                 );
@@ -540,12 +443,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         )}
                         {listeningHistory.length > 0 && (
                             <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
-                                <Button
-                                    size="l"
-                                    mode="secondary"
-                                    style={{ width: '100%', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }}
-                                    onClick={() => { localStorage.removeItem('listeningHistory'); setListeningHistory([]); setIsHistoryModalOpen(false); }}
-                                >
+                                <Button size="l" mode="secondary" style={{ width: '100%', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={() => { localStorage.removeItem('listeningHistory'); setListeningHistory([]); setIsHistoryModalOpen(false); }}>
                                     🗑️ Очистить историю
                                 </Button>
                             </Div>
@@ -556,19 +454,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             {/* 4. Модальное окно: Эквалайзер */}
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
-                <ModalPage
-                    id="equalizer"
-                    style={{ background: 'transparent' }}  // ← ПРОЗРАЧНЫЙ ФОН!
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>}
-                            style={modalHeaderStyle}
-                        >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>Настройки звука</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsEqOpen(false)}
-                >
+                <ModalPage id="equalizer" style={modalTransparentStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>Настройки звука</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsEqOpen(false)}>
                     <Equalizer onPresetChange={applyEqPreset} analyserNode={analyserRef.current} />
                 </ModalPage>
             </ModalRoot>
@@ -698,6 +588,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
-        </Panel >
+        </Panel>
     );
 };
