@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { List, Cell, Subhead, Caption, Search } from '@vkontakte/vkui';
+import React, { useState } from 'react';
+import { Cell, Search } from '@vkontakte/vkui';
 import { RadioStation } from '../data/radioStations';
 
 interface StationSearchProps {
@@ -9,6 +9,10 @@ interface StationSearchProps {
     onStationSelect: (station: RadioStation) => void;
     isFavorite: (id: string) => boolean;
     toggleFavorite: (id: string) => void;
+    stationRatings?: { [key: string]: number };
+    onRating?: (stationId: string, rating: number) => void;
+    hoveredRating?: { stationId: string; rating: number } | null;
+    setHoveredRating?: (rating: { stationId: string; rating: number } | null) => void;
 }
 
 export const StationSearch: React.FC<StationSearchProps> = ({
@@ -18,118 +22,95 @@ export const StationSearch: React.FC<StationSearchProps> = ({
     onStationSelect,
     isFavorite,
     toggleFavorite,
+    stationRatings,
+    onRating,
+    hoveredRating,
+    setHoveredRating,
 }) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [query, setQuery] = useState('');
 
-    const filteredStations = useMemo(() => {
-        if (!searchQuery.trim()) return stations;
-
-        const query = searchQuery.toLowerCase().trim();
-        return stations.filter(station =>
-            station.name.toLowerCase().includes(query) ||
-            station.genre.toLowerCase().includes(query) ||
-            (station.description && station.description.toLowerCase().includes(query))
-        );
-    }, [stations, searchQuery]);
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-    };
+    const filteredStations = stations.filter(station =>
+        station.name.toLowerCase().includes(query.toLowerCase()) ||
+        station.genre.toLowerCase().includes(query.toLowerCase())
+    );
 
     return (
-        <>
-            {/* Убрали жесткий фон, теперь он адаптивный или прозрачный */}
-            <div style={{ padding: '12px 16px', background: 'transparent' }}>
-                <Search
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    placeholder="Поиск станций..."
-                    style={{ margin: 0 }}
-                />
-            </div>
+        <div className="station-list-container" style={{ margin: '0 16px 16px' }}>
+            <Search
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Поиск станции..."
+                style={{ marginBottom: '12px' }}
+            />
 
-            <div className="station-list-container">
-                <List>
-                    {filteredStations.length === 0 ? (
-                        <div style={{ padding: '20px', textAlign: 'center' }}>
-                            <Caption style={{ color: 'var(--text-secondary)' }}>
-                                Станции не найдены
-                            </Caption>
-                        </div>
-                    ) : (
-                        filteredStations.map((station) => {
-                            const isActive = station.id === currentStationId;
-                            const fav = isFavorite(station.id);
+            {filteredStations.map(station => {
+                const rating = stationRatings?.[station.id] || 0;
+                const currentRating = hoveredRating?.stationId === station.id ? hoveredRating.rating : rating;
 
-                            return (
-                                <Cell
-                                    key={station.id}
-                                    onClick={() => onStationSelect(station)}
-                                    className={`station-cell ${isActive ? 'active' : ''}`}
-                                    before={
-                                        <div
-                                            className={`station-icon ${isActive ? 'pulsing' : ''}`}
-                                            style={{ background: station.color, color: '#fff' }}
-                                        >
-                                            🎵
-                                        </div>
-                                    }
-                                    after={
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {isActive && isPlaying && (
-                                                <span className="play-indicator" style={{ color: 'var(--text-primary)' }}>
-                                                    ▶
-                                                </span>
-                                            )}
+                return (
+                    <Cell
+                        key={station.id}
+                        className={`station-cell ${currentStationId === station.id ? 'active' : ''}`}
+                        onClick={() => onStationSelect(station)}
+                        before={
+                            <div className={`station-icon ${currentStationId === station.id && isPlaying ? 'pulsing' : ''}`} style={{ background: station.color }}>
+                                {currentStationId === station.id && isPlaying ? '🎵' : '📻'}
+                            </div>
+                        }
+                        subtitle={
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <span className="station-genre">{station.genre}</span>
 
-                                            <div
-                                                className="favorite-btn"
+                                {/* Блок рейтинга */}
+                                {onRating && setHoveredRating && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <span
+                                                key={star}
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleFavorite(station.id);
+                                                    e.stopPropagation(); // Чтобы не срабатывал клик по ячейке
+                                                    onRating(station.id, star);
                                                 }}
-                                                style={{ fontSize: '20px', cursor: 'pointer' }}
+                                                onMouseEnter={() => setHoveredRating({ stationId: station.id, rating: star })}
+                                                onMouseLeave={() => setHoveredRating(null)}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    color: star <= currentRating ? '#FFD700' : 'rgba(255,255,255,0.3)',
+                                                    transition: 'all 0.2s ease',
+                                                    filter: star <= currentRating ? 'drop-shadow(0 0 4px rgba(255,215,0,0.8))' : 'none',
+                                                }}
                                             >
-                                                {fav ? '❤️' : '🤍'}
-                                            </div>
-                                        </div>
-                                    }
-                                    multiline
-                                >
-                                    <Subhead
-                                        weight={isActive ? '2' : '1'}
-                                        className={isActive ? 'active-title' : 'station-title'}
-                                    >
-                                        {station.name}
-                                    </Subhead>
-
-                                    <div style={{ marginTop: '2px' }}>
-                                        <Caption className="station-genre">
-                                            {station.genre}
-                                        </Caption>
-                                        {station.description && (
-                                            <Caption className="station-desc">
-                                                {station.description}
-                                            </Caption>
+                                                ★
+                                            </span>
+                                        ))}
+                                        {rating > 0 && (
+                                            <span style={{ fontSize: '11px', color: '#FFD700', fontWeight: 600 }}>
+                                                {rating}/5
+                                            </span>
                                         )}
                                     </div>
-                                </Cell>
-                            );
-                        })
-                    )}
-                </List>
-            </div>
-
-            <div style={{
-                padding: '8px 16px',
-                textAlign: 'center',
-                borderTop: '1px solid var(--border-color)', /* <-- Используем переменную */
-            }}>
-                <Caption style={{ color: 'var(--text-secondary)' }}>
-                    {filteredStations.length} из {stations.length} станций
-                    {searchQuery && ` (поиск: "${searchQuery}")`}
-                </Caption>
-            </div>
-        </>
+                                )}
+                            </div>
+                        }
+                        after={
+                            <div
+                                className="favorite-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleFavorite(station.id);
+                                }}
+                            >
+                                {isFavorite(station.id) ? '❤️' : '🤍'}
+                            </div>
+                        }
+                    >
+                        <div className={`station-title ${currentStationId === station.id ? 'active-title' : ''}`}>
+                            {station.name}
+                        </div>
+                    </Cell>
+                );
+            })}
+        </div>
     );
 };

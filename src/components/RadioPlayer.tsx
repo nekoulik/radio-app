@@ -63,6 +63,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
 
+    const [stationRatings, setStationRatings] = useState<{ [key: string]: number }>({});
+    const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
+
     useEffect(() => {
         const loadData = async () => {
             setIsLoadingStations(true);
@@ -84,6 +87,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         localStorage.removeItem('listeningHistory');
                     }
                 }
+
+                const savedRatings = localStorage.getItem('stationRatings');
+                if (savedRatings) {
+                    try {
+                        setStationRatings(JSON.parse(savedRatings));
+                    } catch (e) {
+                        console.error("Failed to parse station ratings", e);
+                    }
+                }
+
             } catch (err) {
                 console.error("Failed to load stations", err);
                 setError("Не удалось загрузить список станций");
@@ -320,6 +333,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 }
             }, 300);
         }
+    };
+
+    const handleRating = (stationId: string, rating: number) => {
+        setStationRatings(prev => {
+            const newRatings = { ...prev, [stationId]: rating };
+            localStorage.setItem('stationRatings', JSON.stringify(newRatings));
+            return newRatings;
+        });
     };
 
     const applyEqPreset = (preset: string) => {
@@ -815,7 +836,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 {/* Список станций */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
-                    <StationSearch stations={stations} currentStationId={currentStationId} isPlaying={isPlaying} onStationSelect={handleStationSelect} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
+                    <StationSearch
+                        stations={stations}
+                        currentStationId={currentStationId}
+                        isPlaying={isPlaying}
+                        onStationSelect={handleStationSelect}
+                        isFavorite={isFavorite}
+                        toggleFavorite={toggleFavorite}
+                        stationRatings={stationRatings}
+                        onRating={handleRating}
+                        hoveredRating={hoveredRating}
+                        setHoveredRating={setHoveredRating}
+                    />
                 </Group>
 
                 {/* Ссылки и поддержка */}
