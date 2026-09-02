@@ -65,6 +65,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const [stationRatings, setStationRatings] = useState<{ [key: string]: number }>({});
     const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -336,11 +337,28 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     const handleRating = (stationId: string, rating: number) => {
+        if (stationRatings[stationId]) {
+            alert('Вы уже проголосовали за эту станцию!');
+            return;
+        }
+
         setStationRatings(prev => {
             const newRatings = { ...prev, [stationId]: rating };
             localStorage.setItem('stationRatings', JSON.stringify(newRatings));
             return newRatings;
         });
+    };
+
+    // Функция для получения станций, отсортированных по рейтингу
+    const getStationsByRating = () => {
+        return stations
+            .map(station => ({
+                ...station,
+                rating: stationRatings[station.id] || 0,
+                votes: stationRatings[station.id] ? 1 : 0 // В будущем можно считать количество голосов
+            }))
+            .filter(station => station.rating > 0)
+            .sort((a, b) => b.rating - a.rating);
     };
 
     const applyEqPreset = (preset: string) => {
@@ -659,6 +677,85 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* 5. Модальное окно: Рейтинг станций */}
+            <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
+                <ModalPage
+                    id="rating"
+                    style={{ background: 'transparent' }}
+                    header={
+                        <ModalPageHeader
+                            before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
+                        >
+                            <span style={{ color: '#000000', fontWeight: 600 }}> Рейтинг станций</span>
+                        </ModalPageHeader>
+                    }
+                    onClose={() => setIsRatingModalOpen(false)}
+                >
+                    <Div style={{ padding: '20px' }}>
+                        {getStationsByRating().length === 0 ? (
+                            <Div style={{ textAlign: 'center', padding: '32px 0' }}>
+                                <Subhead weight="2" style={{ color: '#000000', fontSize: '16px' }}>Пока нет оценок</Subhead>
+                                <Caption style={{ color: '#99A2AD', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                    Будьте первым, кто оценит станции!
+                                </Caption>
+                            </Div>
+                        ) : (
+                            getStationsByRating().map((station, index) => (
+                                <Cell
+                                    key={station.id}
+                                    before={
+                                        <div style={{
+                                            fontSize: '24px',
+                                            fontWeight: 'bold',
+                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#99A2AD',
+                                            minWidth: '32px',
+                                            textAlign: 'center'
+                                        }}>
+                                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                                        </div>
+                                    }
+                                    subtitle={
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <span style={{ fontSize: '12px', color: '#99A2AD' }}>{station.genre}</span>
+                                        </div>
+                                    }
+                                    style={{
+                                        background: index < 3 ? 'rgba(255,215,0,0.1)' : '#f5f5f5',
+                                        borderRadius: '12px',
+                                        margin: '6px 0',
+                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(0,0,0,0.05)'
+                                    }}
+                                    onClick={() => {
+                                        handleStationSelect(station);
+                                        setIsRatingModalOpen(false);
+                                    }}
+                                >
+                                    <div style={{ color: '#000000', fontWeight: 600, fontSize: '15px' }}>
+                                        {station.name}
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <span
+                                                key={star}
+                                                style={{
+                                                    fontSize: '14px',
+                                                    color: star <= station.rating ? '#FFD700' : 'rgba(0,0,0,0.2)',
+                                                }}
+                                            >
+                                                ★
+                                            </span>
+                                        ))}
+                                        <span style={{ fontSize: '12px', color: '#FFD700', fontWeight: 600, marginLeft: '4px' }}>
+                                            {station.rating}/5
+                                        </span>
+                                    </div>
+                                </Cell>
+                            ))
+                        )}
+                    </Div>
+                </ModalPage>
+            </ModalRoot>
+
             {/* Полноэкранный плеер */}
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
 
@@ -703,7 +800,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </div>
                 </Div>
 
-                {/* Ячейки меню */}
                 {/* Красивые цветные кнопки меню */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', padding: '12px 16px' }}>
                     {/* Поделиться */}
@@ -820,6 +916,36 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         <div style={{ fontSize: '32px', marginBottom: '8px' }}>📜</div>
                         <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>История</div>
                         <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Прослушиваний</div>
+                    </div>
+
+                    {/*  Рейтинг станций (НОВАЯ КНОПКА) */}
+                    <div
+                        onClick={() => setIsRatingModalOpen(true)}
+                        style={{
+                            background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                            borderRadius: '16px',
+                            padding: '20px 16px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(255, 215, 0, 0.4)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            gridColumn: 'span 2', // На всю ширину
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(255, 215, 0, 0.6)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 215, 0, 0.4)';
+                        }}
+                    >
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🏆</div>
+                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>Рейтинг станций</div>
+                        <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '11px' }}>Топ популярных</div>
                     </div>
                 </div>
 

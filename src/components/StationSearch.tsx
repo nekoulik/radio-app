@@ -45,7 +45,10 @@ export const StationSearch: React.FC<StationSearchProps> = ({
 
             {filteredStations.map(station => {
                 const rating = stationRatings?.[station.id] || 0;
-                const currentRating = hoveredRating?.stationId === station.id ? hoveredRating.rating : rating;
+                const hasVoted = !!stationRatings?.[station.id];
+                const currentRating = hoveredRating?.stationId === station.id
+                    ? hoveredRating.rating
+                    : rating;
 
                 return (
                     <Cell
@@ -53,7 +56,10 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                         className={`station-cell ${currentStationId === station.id ? 'active' : ''}`}
                         onClick={() => onStationSelect(station)}
                         before={
-                            <div className={`station-icon ${currentStationId === station.id && isPlaying ? 'pulsing' : ''}`} style={{ background: station.color }}>
+                            <div
+                                className={`station-icon ${currentStationId === station.id && isPlaying ? 'pulsing' : ''}`}
+                                style={{ background: station.color }}
+                            >
                                 {currentStationId === station.id && isPlaying ? '🎵' : '📻'}
                             </div>
                         }
@@ -68,25 +74,46 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                             <span
                                                 key={star}
                                                 onClick={(e) => {
-                                                    e.stopPropagation(); // Чтобы не срабатывал клик по ячейке
+                                                    e.stopPropagation();
+                                                    // Защита от повторного голосования
+                                                    if (hasVoted) {
+                                                        alert('Вы уже проголосовали за эту станцию!');
+                                                        return;
+                                                    }
                                                     onRating(station.id, star);
                                                 }}
-                                                onMouseEnter={() => setHoveredRating({ stationId: station.id, rating: star })}
-                                                onMouseLeave={() => setHoveredRating(null)}
+                                                onMouseEnter={() => {
+                                                    if (!hasVoted) {
+                                                        setHoveredRating({ stationId: station.id, rating: star });
+                                                    }
+                                                }}
+                                                onMouseLeave={() => {
+                                                    if (!hasVoted) {
+                                                        setHoveredRating(null);
+                                                    }
+                                                }}
                                                 style={{
-                                                    cursor: 'pointer',
+                                                    cursor: hasVoted ? 'not-allowed' : 'pointer',
                                                     fontSize: '14px',
                                                     color: star <= currentRating ? '#FFD700' : 'rgba(255,255,255,0.3)',
                                                     transition: 'all 0.2s ease',
                                                     filter: star <= currentRating ? 'drop-shadow(0 0 4px rgba(255,215,0,0.8))' : 'none',
+                                                    opacity: hasVoted ? 0.85 : 1,
                                                 }}
+                                                title={hasVoted ? 'Вы уже проголосовали' : 'Нажмите, чтобы оценить'}
                                             >
                                                 ★
                                             </span>
                                         ))}
                                         {rating > 0 && (
-                                            <span style={{ fontSize: '11px', color: '#FFD700', fontWeight: 600 }}>
-                                                {rating}/5
+                                            <span style={{
+                                                fontSize: '11px',
+                                                color: '#FFD700',
+                                                fontWeight: 600,
+                                                marginLeft: '4px',
+                                                textShadow: '0 0 6px rgba(255,215,0,0.5)',
+                                            }}>
+                                                {rating}/5 {hasVoted ? '✓' : ''}
                                             </span>
                                         )}
                                     </div>
@@ -100,6 +127,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                     e.stopPropagation();
                                     toggleFavorite(station.id);
                                 }}
+                                title={isFavorite(station.id) ? 'Убрать из избранного' : 'Добавить в избранное'}
                             >
                                 {isFavorite(station.id) ? '❤️' : '🤍'}
                             </div>
@@ -111,6 +139,17 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                     </Cell>
                 );
             })}
+
+            {filteredStations.length === 0 && (
+                <div style={{
+                    textAlign: 'center',
+                    padding: '24px 16px',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '14px',
+                }}>
+                    😔 Станции не найдены
+                </div>
+            )}
         </div>
     );
 };
