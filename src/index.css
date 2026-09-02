@@ -365,8 +365,3 @@ body.theme-dark .station-list-container .station-genre,
 body.theme-dark .station-list-container .station-desc {
     color: #d4d4ff !important;
 }
-
-body.theme-dark *,
-html.theme-dark * {
-    background: transparent !important;
-}
