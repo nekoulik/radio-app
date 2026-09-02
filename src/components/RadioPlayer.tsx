@@ -740,23 +740,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 }
                 #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
                 #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
-                
+    
                 .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
                 .now-playing-modal .ModalPage__header { background: transparent !important; border-bottom: none !important; }
                 .now-playing-modal .ModalPage__header-in { color: #ffffff !important; }
                 .now-playing-modal::-webkit-scrollbar { display: none; }
 
-                .gradient-banner {
-                    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
-                    background-size: 400% 400% !important;
-                    animation: gradientShift 8s ease infinite;
-                }
                 .player-card {
                     background: url(/background.png) center/cover !important;
                 }
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-                @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
         </Panel>

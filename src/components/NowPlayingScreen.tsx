@@ -54,19 +54,16 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         padding: '32px 16px',
                         textAlign: 'center'
                     }}>
-                        {/* Большая визуализация */}
+                        {/* Большая визуализация с фоновой картинкой */}
                         <div style={{
                             width: '260px',
                             height: '260px',
                             marginBottom: '32px',
                             borderRadius: '24px',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            background: `url(/now-playing.png) center/cover`,
                             boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
                             position: 'relative',
                             overflow: 'hidden',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
                         }}>
                             {/* Визуализация поверх картинки */}
                             <div style={{
@@ -86,7 +83,6 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 />
                             </div>
                         </div>
-
                         {/* Информация о станции */}
                         <Subhead style={{
                             color: '#ffffff !important',
