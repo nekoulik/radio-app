@@ -29,7 +29,6 @@ import { Visualizer } from './Visualizer';
 import { useFavorites } from '../hooks/useFavorites';
 import { NowPlayingScreen } from './NowPlayingScreen';
 import { Equalizer } from './Equalizer';
-import { useTheme } from '../hooks/useTheme';
 
 interface RadioPlayerProps {
     id: string;
@@ -64,7 +63,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const boundAudioElementRef = useRef<HTMLAudioElement | null>(null);
     const trebleFilterRef = useRef<BiquadFilterNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
-    const { isDarkTheme, toggleTheme } = useTheme();
 
     useEffect(() => {
         const loadData = async () => {
@@ -515,7 +513,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Cell before={<div style={{ fontSize: '24px' }}>💬</div>} onClick={() => setIsChatModalOpen(true)} subtitle="Общайтесь с другими слушателями">Общий чат</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>🎛️</div>} onClick={() => setIsEqOpen(true)} subtitle="Настройте басы и высокие частоты">Эквалайзер</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>📜</div>} onClick={() => setIsHistoryModalOpen(true)} subtitle="Посмотреть историю прослушиваний">История прослушивания</Cell>
-                <Cell before={<div style={{ fontSize: '24px' }}>{isDarkTheme ? '🌙' : '☀️'}</div>} onClick={toggleTheme} subtitle={isDarkTheme ? 'Тёмная тема активна' : 'Светлая тема активна'}>Тема оформления</Cell>
 
                 {/* Ошибка */}
                 {error && (
