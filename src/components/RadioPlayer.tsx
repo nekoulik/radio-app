@@ -18,7 +18,6 @@ import {
 import {
     Icon28PlayOutline,
     Icon28PauseOutline,
-    Icon28CopyOutline,
     Icon24Dismiss,
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
@@ -684,10 +683,124 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </Div>
 
                 {/* Ячейки меню */}
-                <Cell before={<Icon28CopyOutline />} onClick={handleShare} subtitle="Отправить приложение другу">Поделиться</Cell>
-                <Cell before={<div style={{ fontSize: '24px' }}>💬</div>} onClick={() => setIsChatModalOpen(true)} subtitle="Общайтесь с другими слушателями">Общий чат</Cell>
-                <Cell before={<div style={{ fontSize: '24px' }}>🎛️</div>} onClick={() => setIsEqOpen(true)} subtitle="Настройте басы и высокие частоты">Эквалайзер</Cell>
-                <Cell before={<div style={{ fontSize: '24px' }}>📜</div>} onClick={() => setIsHistoryModalOpen(true)} subtitle="Посмотреть историю прослушиваний">История прослушивания</Cell>
+                {/* Красивые цветные кнопки меню */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', padding: '12px 16px' }}>
+                    {/* Поделиться */}
+                    <div
+                        onClick={handleShare}
+                        style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            borderRadius: '16px',
+                            padding: '20px 16px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(102, 126, 234, 0.3)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(102, 126, 234, 0.3)';
+                        }}
+                    >
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📤</div>
+                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>Поделиться</div>
+                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Отправить другу</div>
+                    </div>
+
+                    {/* Общий чат */}
+                    <div
+                        onClick={() => setIsChatModalOpen(true)}
+                        style={{
+                            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                            borderRadius: '16px',
+                            padding: '20px 16px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(245, 87, 108, 0.3)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(245, 87, 108, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(245, 87, 108, 0.3)';
+                        }}
+                    >
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>💬</div>
+                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>Общий чат</div>
+                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Общайтесь</div>
+                    </div>
+
+                    {/* Эквалайзер */}
+                    <div
+                        onClick={() => setIsEqOpen(true)}
+                        style={{
+                            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                            borderRadius: '16px',
+                            padding: '20px 16px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(79, 172, 254, 0.3)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(79, 172, 254, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(79, 172, 254, 0.3)';
+                        }}
+                    >
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎛️</div>
+                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>Эквалайзер</div>
+                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Настройка звука</div>
+                    </div>
+
+                    {/* История */}
+                    <div
+                        onClick={() => setIsHistoryModalOpen(true)}
+                        style={{
+                            background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                            borderRadius: '16px',
+                            padding: '20px 16px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(250, 112, 154, 0.3)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 24px rgba(250, 112, 154, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(250, 112, 154, 0.3)';
+                        }}
+                    >
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📜</div>
+                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>История</div>
+                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Прослушиваний</div>
+                    </div>
+                </div>
 
                 {/* Ошибка */}
                 {error && (
