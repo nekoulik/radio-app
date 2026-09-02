@@ -134,13 +134,14 @@ body {
 
 /* === ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (не меняются) === */
 
-/* Баннер — с фоновой картинкой */
+/* Баннер — с фоновой картинкой (та же, что у плеера) */
 .gradient-banner {
-    background: url(/banner-bg.png) center/cover !important;
+    background: url(/background.png) center/cover !important;
     color: #ffffff !important;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
     position: relative;
     overflow: hidden;
+    padding: 40px 16px !important;
 }
 
 /* Затемнение баннера для читаемости текста */
@@ -151,7 +152,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 102, 179, 0.4), rgba(102, 204, 255, 0.4));
     z-index: 1;
 }
 
