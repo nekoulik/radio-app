@@ -820,9 +820,53 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 {/* Ссылки и поддержка */}
                 <Separator />
-                <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}><Subhead>Ссылки</Subhead><Button size="s" mode="tertiary" Component="a" href="https://vk.com/im?sel=-239834224" target="_blank" style={{ color: '#99A2AD' }}>🛠️ Поддержка</Button></div>}>
-                    <Cell Component="a" href="https://vk.ru/ani__wave" target="_blank" before={<div style={{ fontSize: '28px' }}>🌸</div>} subtitle="Общайтесь, делитесь треками и предлагайте идеи!" after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>} style={{ background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)', borderRadius: '8px', margin: '8px 16px', border: '1px solid rgba(255, 102, 179, 0.2)' }}>
-                        <Subhead weight="2" style={{ color: '#ffffff' }}>Наше сообщество</Subhead>
+                <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
+                    <Subhead style={{ color: '#000000', fontWeight: 600 }}>Ссылки</Subhead>
+                    <Button
+                        size="s"
+                        mode="primary"
+                        Component="a"
+                        href="https://vk.com/im?sel=-239834224"
+                        target="_blank"
+                        style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontWeight: 600,
+                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                        }}
+                    >
+                        🛠️ Поддержка
+                    </Button>
+                </div>}>
+                    <Cell
+                        Component="a"
+                        href="https://vk.ru/ani__wave"
+                        target="_blank"
+                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
+                        subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
+                        after={<div style={{ fontSize: '20px', color: 'rgba(255,255,255,0.8)' }}></div>}
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(255, 102, 179, 0.2), rgba(102, 204, 255, 0.2))',
+                            borderRadius: '12px',
+                            margin: '8px 16px',
+                            border: '1px solid rgba(255, 102, 179, 0.3)',
+                            transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 102, 179, 0.3), rgba(102, 204, 255, 0.3))';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 102, 179, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 102, 179, 0.2), rgba(102, 204, 255, 0.2))';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }}
+                    >
+                        <Subhead weight="2" style={{ color: '#000000', fontWeight: 600 }}>Наше сообщество</Subhead>
                     </Cell>
                 </Group>
 
