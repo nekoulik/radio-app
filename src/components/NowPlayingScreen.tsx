@@ -33,7 +33,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                 // ✅ ДОБАВЛЕНО: Принудительный тёмный фон
                 style={{
                     background: '#f5f5fa !important',
-                    minHeight: '60vh'
+                    minHeight: '50vh'
                 }}
                 header={
                     <ModalPageHeader
@@ -53,7 +53,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                 }
                 onClose={onClose}
             >
-                <div className="now-playing-content" style={{ background: '#0a0a1a', minHeight: '100vh' }}>
+                <div className="now-playing-content" style={{ background: '#f5f5f8', minHeight: '100vh' }}>
                     <Div style={{
                         display: 'flex',
                         flexDirection: 'column',
