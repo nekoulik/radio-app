@@ -492,17 +492,10 @@ html.theme-dark input::placeholder {
 /* === МОДАЛЬНЫЕ ОКНА — ФИНАЛЬНАЯ ВЕРСИЯ (БЕЗ ДУБЛИКАТОВ) === */
 /* ================================================================= */
 
-/* 1. Внешние контейнеры модалок — ПРОЗРАЧНЫЕ */
+/* 1. Внешние контейнеры — прозрачные */
 .ModalRoot,
 .vkuiModalRoot,
-body .ModalRoot,
-body .ModalPage,
-html.theme-dark .ModalRoot,
-html.theme-dark .ModalPage,
-html.theme-light .ModalRoot,
-html.theme-light .ModalPage,
-div.ModalRoot,
-div.vkuiModalRoot {
+.ModalPage {
     background: transparent !important;
 }
 
@@ -516,7 +509,7 @@ div.vkuiModalRoot {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6) !important;
-    z-index: 1;
+    z-index: 1000;
 }
 
 /* 3. Центрирование модалки */
@@ -530,17 +523,13 @@ div.vkuiModalRoot {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 2 !important;
+    z-index: 1001 !important;
+    pointer-events: none;
 }
 
-/* 4. Внутреннее содержимое — карточка с градиентом */
+/* 4. Внутреннее содержимое — карточка с градиентом (ограниченный размер) */
 .ModalPage__in,
-.vkuiModalPage__in,
-body .ModalPage__in,
-html.theme-dark .ModalPage__in,
-html.theme-light .ModalPage__in,
-div.ModalPage__in,
-div.vkuiModalPage__in {
+.vkuiModalPage__in {
     max-width: 600px !important;
     max-height: 80vh !important;
     width: 90% !important;
@@ -548,14 +537,15 @@ div.vkuiModalPage__in {
     border-radius: 16px !important;
     overflow: hidden !important;
     position: relative !important;
-    z-index: 3 !important;
+    z-index: 1002 !important;
+    pointer-events: auto !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite !important;
 }
 
-/* 5. НО экран "Сейчас играет" — на весь экран, тёмный */
+/* 5. НО экран "Сейчас играет" — на весь экран, тёмный (без оверлея) */
 .now-playing-modal .ModalPage__in {
     max-width: 100% !important;
     max-height: 100vh !important;
