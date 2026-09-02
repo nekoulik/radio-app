@@ -489,227 +489,49 @@ html.theme-dark input::placeholder {
 }
 
 /* ================================================================= */
-/* === МОДАЛЬНЫЕ ОКНА — АБСОЛЮТНЫЙ ПРИОРИТЕТ (В САМОМ КОНЦЕ ФАЙЛА) === */
+/* === МОДАЛЬНЫЕ ОКНА — ТОЛЬКО ВНУТРЕННЕЕ СОДЕРЖИМОЕ === */
 /* ================================================================= */
 
-body .ModalRoot .ModalPage__in,
-body .ModalRoot .ModalPage,
-body.theme-dark .ModalRoot .ModalPage__in,
-body.theme-dark .ModalRoot .ModalPage,
-html.theme-dark .ModalRoot .ModalPage__in,
-html.theme-dark .ModalRoot .ModalPage,
-#root .ModalPage__in,
-#root .ModalPage {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-}
-
-body .ModalPage__header,
-body.theme-dark .ModalPage__header,
-html.theme-dark .ModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-body .ModalPage__header-in,
-body .ModalPage__header .Subhead,
-body.theme-dark .ModalPage__header-in,
-body.theme-dark .ModalPage__header .Subhead,
-html.theme-dark .ModalPage__header-in,
-html.theme-dark .ModalPage__header .Subhead {
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-body .ModalPage .Cell,
-body .ModalPage .Group,
-body .ModalPage .Div,
-body.theme-dark .ModalPage .Cell,
-body.theme-dark .ModalPage .Group,
-body.theme-dark .ModalPage .Div,
-html.theme-dark .ModalPage .Cell,
-html.theme-dark .ModalPage .Group,
-html.theme-dark .ModalPage .Div {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px;
-    margin: 4px 8px;
-}
-
-body .ModalPage .Cell:hover,
-body.theme-dark .ModalPage .Cell:hover,
-html.theme-dark .ModalPage .Cell:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-
-body .ModalPage .Subhead,
-body .ModalPage .Text,
-body .ModalPage .Caption,
-body.theme-dark .ModalPage .Subhead,
-body.theme-dark .ModalPage .Text,
-body.theme-dark .ModalPage .Caption,
-html.theme-dark .ModalPage .Subhead,
-html.theme-dark .ModalPage .Text,
-html.theme-dark .ModalPage .Caption {
-    color: #ffffff !important;
-}
-
-body .ModalPage .Caption,
-body.theme-dark .ModalPage .Caption,
-html.theme-dark .ModalPage .Caption {
-    color: #d4d4ff !important;
-}
-
-body .ModalPage .Button,
-body.theme-dark .ModalPage .Button,
-html.theme-dark .ModalPage .Button {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-body .ModalPage input,
-body .ModalPage .Search,
-body .ModalPage textarea,
-body.theme-dark .ModalPage input,
-body.theme-dark .ModalPage .Search,
-body.theme-dark .ModalPage textarea,
-html.theme-dark .ModalPage input,
-html.theme-dark .ModalPage .Search,
-html.theme-dark .ModalPage textarea {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 8px;
-}
-
-body .ModalPage input::placeholder,
-body .ModalPage textarea::placeholder,
-body.theme-dark .ModalPage input::placeholder,
-body.theme-dark .ModalPage textarea::placeholder,
-html.theme-dark .ModalPage input::placeholder,
-html.theme-dark .ModalPage textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-body .ModalPage ::-webkit-scrollbar-track,
-body.theme-dark .ModalPage ::-webkit-scrollbar-track,
-html.theme-dark .ModalPage ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-body .ModalPage ::-webkit-scrollbar-thumb,
-body.theme-dark .ModalPage ::-webkit-scrollbar-thumb,
-html.theme-dark .ModalPage ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 3px;
-}
-
-/* === МОДАЛЬНЫЕ ОКНА В СВЕТЛОЙ ТЕМЕ — ТОЖЕ С ГРАДИЕНТОМ === */
-
-body.theme-light .ModalPage__in,
-body.theme-light .ModalPage,
-body.theme-light .ModalRoot,
-html.theme-light .ModalPage__in,
-html.theme-light .ModalPage,
-html.theme-light .ModalRoot {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-}
-
-body.theme-light .ModalPage__header,
-html.theme-light .ModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-body.theme-light .ModalPage__header-in,
-body.theme-light .ModalPage__header .Subhead,
-html.theme-light .ModalPage__header-in,
-html.theme-light .ModalPage__header .Subhead {
-    color: #ffffff !important;
-}
-
-body.theme-light .ModalPage .Cell,
-body.theme-light .ModalPage .Group,
-body.theme-light .ModalPage .Div,
-html.theme-light .ModalPage .Cell,
-html.theme-light .ModalPage .Group,
-html.theme-light .ModalPage .Div {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-body.theme-light .ModalPage .Subhead,
-body.theme-light .ModalPage .Text,
-body.theme-light .ModalPage .Caption,
-html.theme-light .ModalPage .Subhead,
-html.theme-light .ModalPage .Text,
-html.theme-light .ModalPage .Caption {
-    color: #ffffff !important;
-}
-
-body.theme-light .ModalPage .Caption,
-html.theme-light .ModalPage .Caption {
-    color: #d4d4ff !important;
-}
-
-body.theme-light .ModalPage .Button,
-html.theme-light .ModalPage .Button {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-body.theme-light .ModalPage input,
-body.theme-light .ModalPage .Search,
-body.theme-light .ModalPage textarea,
-html.theme-light .ModalPage input,
-html.theme-light .ModalPage .Search,
-html.theme-light .ModalPage textarea {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-body.theme-light .ModalPage input::placeholder,
-html.theme-light .ModalPage input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* === УНИВЕРСАЛЬНЫЕ СТИЛИ МОДАЛОК (работают в любой теме) === */
-
-/* Фон всех модальных окон */
-.ModalPage__in,
-.ModalPage,
+/* Внешние контейнеры — ПРОЗРАЧНЫЕ */
 .ModalRoot,
-.vkuiModalRoot .ModalPage__in,
-.vkuiModalRoot .ModalPage {
+.vkuiModalRoot,
+body .ModalRoot,
+body .ModalPage,
+html.theme-dark .ModalRoot,
+html.theme-dark .ModalPage,
+html.theme-light .ModalRoot,
+html.theme-light .ModalPage,
+div.ModalRoot,
+div.vkuiModalRoot {
+    background: transparent !important;
+}
+
+/* Градиент ТОЛЬКО на внутреннее содержимое модалки */
+.ModalPage__in,
+.vkuiModalPage__in,
+body .ModalPage__in,
+html.theme-dark .ModalPage__in,
+html.theme-light .ModalPage__in,
+div.ModalPage__in,
+div.vkuiModalPage__in {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite !important;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-/* Header модалок */
+/* Header — только внутри модалки */
 .ModalPage__header,
-.vkuiModalRoot .ModalPage__header {
+.vkuiModalPage__header {
     background: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(10px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .ModalPage__header-in,
-.ModalPage__header .Subhead,
-.vkuiModalRoot .ModalPage__header-in,
-.vkuiModalRoot .ModalPage__header .Subhead {
+.vkuiModalPage__header-in,
+.ModalPage__header .Subhead {
     color: #ffffff !important;
     font-weight: 600;
 }
@@ -718,9 +540,9 @@ html.theme-light .ModalPage input::placeholder {
 .ModalPage .Cell,
 .ModalPage .Group,
 .ModalPage .Div,
-.vkuiModalRoot .ModalPage .Cell,
-.vkuiModalRoot .ModalPage .Group,
-.vkuiModalRoot .ModalPage .Div {
+.vkuiModalPage .Cell,
+.vkuiModalPage .Group,
+.vkuiModalPage .Div {
     background: rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(8px) !important;
     color: #ffffff !important;
@@ -730,40 +552,38 @@ html.theme-light .ModalPage input::placeholder {
 }
 
 .ModalPage .Cell:hover,
-.vkuiModalRoot .ModalPage .Cell:hover {
+.vkuiModalPage .Cell:hover {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Текст в модалках */
 .ModalPage .Subhead,
 .ModalPage .Text,
-.ModalPage .Caption,
-.vkuiModalRoot .ModalPage .Subhead,
-.vkuiModalRoot .ModalPage .Text,
-.vkuiModalRoot .ModalPage .Caption {
+.vkuiModalPage .Subhead,
+.vkuiModalPage .Text {
     color: #ffffff !important;
 }
 
 .ModalPage .Caption,
-.vkuiModalRoot .ModalPage .Caption {
+.vkuiModalPage .Caption {
     color: #d4d4ff !important;
 }
 
 /* Кнопки в модалках */
 .ModalPage .Button,
-.vkuiModalRoot .ModalPage .Button {
+.vkuiModalPage .Button {
     color: #ffffff !important;
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Поиск и textarea в модалках */
+/* Поиск и textarea */
 .ModalPage input,
 .ModalPage .Search,
 .ModalPage textarea,
-.vkuiModalRoot .ModalPage input,
-.vkuiModalRoot .ModalPage .Search,
-.vkuiModalRoot .ModalPage textarea {
+.vkuiModalPage input,
+.vkuiModalPage .Search,
+.vkuiModalPage textarea {
     background: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
@@ -771,53 +591,16 @@ html.theme-light .ModalPage input::placeholder {
 }
 
 .ModalPage input::placeholder,
-.ModalPage textarea::placeholder,
-.vkuiModalRoot .ModalPage input::placeholder,
-.vkuiModalRoot .ModalPage textarea::placeholder {
+.ModalPage textarea::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* Скроллбар в модалках */
-.ModalPage ::-webkit-scrollbar-track,
-.vkuiModalRoot .ModalPage ::-webkit-scrollbar-track {
+/* Скроллбар */
+.ModalPage ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.ModalPage ::-webkit-scrollbar-thumb,
-.vkuiModalRoot .ModalPage ::-webkit-scrollbar-thumb {
+.ModalPage ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
-}
-
-/* === АБСОЛЮТНО МАКСИМАЛЬНАЯ СПЕЦИФИЧНОСТЬ === */
-
-div.ModalRoot div.ModalPage__in,
-div.ModalRoot div.ModalPage,
-div.vkuiModalRoot div.vkuiModalPage__in,
-div.vkuiModalRoot div.vkuiModalPage,
-div[id*="modal"] div[class*="ModalPage"],
-div[class*="ModalRoot"] div[class*="ModalPage__in"] {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-}
-
-div.ModalRoot div.ModalPage__header,
-div.vkuiModalRoot div.vkuiModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-div.ModalRoot div.ModalPage__header-in,
-div.vkuiModalRoot div.vkuiModalPage__header-in {
-    color: #ffffff !important;
-}
-
-div.ModalRoot div.Cell,
-div.ModalRoot div.Group,
-div.ModalRoot div.Div,
-div.vkuiModalRoot div.vkuiCell,
-div.vkuiModalRoot div.vkuiGroup {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
 }
