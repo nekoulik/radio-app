@@ -232,28 +232,33 @@ body {
     font-size: 11px;
 }
 
-/* Поле поиска станций — в стиле фиолетового градиента */
+/* Поле поиска станций — в стиле фиолетового градиента с белым текстом */
 .Search,
 input[type="search"],
 input[placeholder*="Поиск"] {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)) !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5)) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    /* Белый текст */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
     border-radius: 12px !important;
     backdrop-filter: blur(10px) !important;
+    font-weight: 500 !important;
+    /* Чуть жирнее шрифт */
 }
 
 .Search::placeholder,
 input[type="search"]::placeholder,
 input[placeholder*="Поиск"]::placeholder {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    /* Почти белый placeholder */
+    font-weight: 500 !important;
 }
 
 .Search:focus,
 input[type="search"]:focus,
 input[placeholder*="Поиск"]:focus {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4)) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6)) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
     outline: none !important;
 }
 
@@ -418,4 +423,43 @@ input[placeholder*="Поиск"]:focus {
 #equalizer .Subhead,
 #equalizer .Text {
     color: #000000 !important;
+}
+
+/* === БЛОК "ССЫЛКИ" — СТИЛИЗОВАННАЯ КНОПКА === */
+
+/* Ссылка на сообщество */
+.Cell[href*="vk.ru"],
+.Cell[href*="vk.com"] {
+    background: linear-gradient(135deg, rgba(255, 102, 179, 0.15), rgba(102, 204, 255, 0.15)) !important;
+    border: 1px solid rgba(255, 102, 179, 0.3) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    margin: 8px 16px !important;
+}
+
+.Cell[href*="vk.ru"]:hover,
+.Cell[href*="vk.com"]:hover {
+    background: linear-gradient(135deg, rgba(255, 102, 179, 0.25), rgba(102, 204, 255, 0.25)) !important;
+    border-color: rgba(255, 102, 179, 0.5) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(255, 102, 179, 0.3) !important;
+}
+
+/* Иконка цветка */
+.Cell[href*="vk.ru"]>div:first-child,
+.Cell[href*="vk.com"]>div:first-child {
+    font-size: 28px !important;
+}
+
+/* Текст ссылки */
+.Cell[href*="vk.ru"] .Subhead,
+.Cell[href*="vk.com"] .Subhead {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Подпись */
+.Cell[href*="vk.ru"] .Caption,
+.Cell[href*="vk.com"] .Caption {
+    color: rgba(255, 255, 255, 0.85) !important;
 }
