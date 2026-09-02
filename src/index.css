@@ -166,7 +166,7 @@ body {
     background: url(/background.png) center/cover !important;
 }
 
-/* Список станций — фиолетовый градиент */
+/* Список станций — фиолетовый градиент с прокруткой */
 .station-list-container {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
@@ -175,6 +175,33 @@ body {
     padding: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+
+    /* Ограничение высоты и прокрутка */
+    max-height: 450px;
+    /* Высота для ~5 станций */
+    overflow-y: auto;
+    /* Вертикальная прокрутка */
+    overflow-x: hidden;
+    /* Запрет горизонтальной прокрутки */
+}
+
+/* Стили для скроллбара внутри списка */
+.station-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.station-list-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.station-list-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+}
+
+.station-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .station-list-container .station-cell {
@@ -205,16 +232,29 @@ body {
     font-size: 11px;
 }
 
-.station-list-container .Search,
-.station-list-container input[type="search"] {
-    background: rgba(255, 255, 255, 0.15) !important;
+/* Поле поиска станций — в стиле фиолетового градиента */
+.Search,
+input[type="search"],
+input[placeholder*="Поиск"] {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px) !important;
 }
 
-.station-list-container .Search::placeholder {
+.Search::placeholder,
+input[type="search"]::placeholder,
+input[placeholder*="Поиск"]::placeholder {
     color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.Search:focus,
+input[type="search"]:focus,
+input[placeholder*="Поиск"]:focus {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4)) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    outline: none !important;
 }
 
 /* Модальные окна — белые */
