@@ -489,14 +489,12 @@ html.theme-dark input::placeholder {
 }
 
 /* ================================================================= */
-/* === МОДАЛЬНЫЕ ОКНА — ТОЛЬКО ВНУТРЕННЕЕ СОДЕРЖИМОЕ === */
+/* === МОДАЛЬНЫЕ ОКНА — ФИНАЛЬНАЯ ВЕРСИЯ (БЕЗ ДУБЛИКАТОВ) === */
 /* ================================================================= */
 
-/* 1. ВСЕ внешние контейнеры модалок — ПРОЗРАЧНЫЕ */
+/* 1. Внешние контейнеры модалок — ПРОЗРАЧНЫЕ */
 .ModalRoot,
-.ModalPage,
 .vkuiModalRoot,
-.vkuiModalPage,
 body .ModalRoot,
 body .ModalPage,
 html.theme-dark .ModalRoot,
@@ -504,13 +502,38 @@ html.theme-dark .ModalPage,
 html.theme-light .ModalRoot,
 html.theme-light .ModalPage,
 div.ModalRoot,
-div.ModalPage,
-div.vkuiModalRoot,
-div.vkuiModalPage {
+div.vkuiModalRoot {
     background: transparent !important;
 }
 
-/* 2. Градиент ТОЛЬКО на внутреннее содержимое (НЕ для now-playing) */
+/* 2. Оверлей (затемнение фона за модалкой) */
+.ModalRoot::before,
+.vkuiModalRoot::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 1;
+}
+
+/* 3. Центрирование модалки */
+.ModalPage,
+.vkuiModalPage {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2 !important;
+}
+
+/* 4. Внутреннее содержимое — карточка с градиентом */
 .ModalPage__in,
 .vkuiModalPage__in,
 body .ModalPage__in,
@@ -518,21 +541,34 @@ html.theme-dark .ModalPage__in,
 html.theme-light .ModalPage__in,
 div.ModalPage__in,
 div.vkuiModalPage__in {
+    max-width: 600px !important;
+    max-height: 80vh !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    z-index: 3 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite !important;
-    border-radius: 16px !important;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 3. НО экран "Сейчас играет" — тёмный (переопределение) */
+/* 5. НО экран "Сейчас играет" — на весь экран, тёмный */
 .now-playing-modal .ModalPage__in {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    width: 100% !important;
     background: #0a0a1a !important;
-    min-height: 100vh;
     border-radius: 0 !important;
     box-shadow: none !important;
     animation: none !important;
+    min-height: 100vh;
+}
+
+.now-playing-modal::before {
+    display: none !important;
 }
 
 .now-playing-modal .ModalPage__header {
@@ -548,7 +584,7 @@ div.vkuiModalPage__in {
     display: none;
 }
 
-/* 4. Header модалок */
+/* 6. Header модалок */
 .ModalPage__header,
 .vkuiModalPage__header {
     background: rgba(255, 255, 255, 0.1) !important;
@@ -563,7 +599,7 @@ div.vkuiModalPage__in {
     font-weight: 600;
 }
 
-/* 5. Ячейки внутри модалок */
+/* 7. Ячейки внутри модалок */
 .ModalPage .Cell,
 .ModalPage .Group,
 .ModalPage .Div,
@@ -583,7 +619,7 @@ div.vkuiModalPage__in {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* 6. Текст в модалках */
+/* 8. Текст в модалках */
 .ModalPage .Subhead,
 .ModalPage .Text,
 .vkuiModalPage .Subhead,
@@ -596,7 +632,7 @@ div.vkuiModalPage__in {
     color: #d4d4ff !important;
 }
 
-/* 7. Кнопки в модалках */
+/* 9. Кнопки в модалках */
 .ModalPage .Button,
 .vkuiModalPage .Button {
     color: #ffffff !important;
@@ -604,7 +640,7 @@ div.vkuiModalPage__in {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* 8. Поиск и textarea */
+/* 10. Поиск и textarea */
 .ModalPage input,
 .ModalPage .Search,
 .ModalPage textarea,
@@ -622,7 +658,7 @@ div.vkuiModalPage__in {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* 9. Скроллбар */
+/* 11. Скроллбар */
 .ModalPage ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
 }
@@ -630,68 +666,4 @@ div.vkuiModalPage__in {
 .ModalPage ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 3px;
-}
-
-/* Оверлей (фон за модалкой) — полупрозрачный чёрный */
-.ModalRoot::before,
-.vkuiModalRoot::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6) !important;
-    z-index: 1;
-}
-
-/* Центрирование модалки */
-.ModalPage,
-.vkuiModalPage {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2 !important;
-}
-
-/* Внутреннее содержимое — ограниченная карточка */
-.ModalPage__in,
-.vkuiModalPage__in {
-    max-width: 600px !important;
-    max-height: 80vh !important;
-    width: 90% !important;
-    margin: 0 auto !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
-    position: relative !important;
-    z-index: 3 !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Градиент только на карточку модалки */
-.ModalPage__in,
-.vkuiModalPage__in {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-}
-
-/* NowPlayingScreen — на весь экран, тёмный */
-.now-playing-modal .ModalPage__in {
-    max-width: 100% !important;
-    max-height: 100vh !important;
-    width: 100% !important;
-    background: #0a0a1a !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    animation: none !important;
-}
-
-.now-playing-modal::before {
-    display: none !important;
 }

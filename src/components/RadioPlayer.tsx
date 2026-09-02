@@ -85,7 +85,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 const loadedStations = await fetchRadioStations();
                 setStations(loadedStations);
 
-                // Проверяем, есть ли сохранённая станция
                 const savedStationId = localStorage.getItem('lastStationId');
                 if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
                     setCurrentStationId(savedStationId);
@@ -93,14 +92,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     setCurrentStationId(loadedStations[0].id);
                 }
 
-                // ✅ Безопасно загружаем историю прослушивания
                 const savedHistory = localStorage.getItem('listeningHistory');
                 if (savedHistory) {
                     try {
                         setListeningHistory(JSON.parse(savedHistory));
                     } catch (e) {
                         console.error("Failed to parse listening history", e);
-                        localStorage.removeItem('listeningHistory'); // Очищаем битые данные
+                        localStorage.removeItem('listeningHistory');
                     }
                 }
             } catch (err) {
@@ -117,34 +115,25 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         try {
             const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
 
-            // 1. Создаем контекст только один раз
             if (!audioContextRef.current) {
                 audioContextRef.current = new AudioCtx();
             }
             const ctx = audioContextRef.current;
 
-            // 2. 🔥 ГЛАВНОЕ ИСПРАВЛЕНИЕ:
-            // Если этот аудио-элемент УЖЕ подключен, мы НЕ создаем источник заново.
-            // Мы просто убеждаемся, что контекст запущен (например, после паузы).
             if (boundAudioElementRef.current === audioElement && sourceRef.current) {
                 if (ctx.state === 'suspended') {
                     ctx.resume();
                 }
-                return; // Выходим, чтобы не вызывать ошибку браузера!
+                return;
             }
 
-            // 3. Если элемент новый (сменилась станция), отключаем старый
             if (sourceRef.current) {
                 try {
                     sourceRef.current.disconnect();
-                } catch (e) {
-                    // Игнорируем ошибки
-                }
+                } catch (e) { }
             }
 
-            // 4. Создаем источник ТОЛЬКО для нового аудио-элемента
             const source = ctx.createMediaElementSource(audioElement);
-
             const bass = ctx.createBiquadFilter();
             bass.type = 'lowshelf';
             bass.frequency.value = 200;
@@ -161,18 +150,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             treble.connect(analyser);
             analyser.connect(ctx.destination);
 
-            // 5. Запоминаем, какой элемент мы подключили
             boundAudioElementRef.current = audioElement;
             sourceRef.current = source;
             bassFilterRef.current = bass;
             trebleFilterRef.current = treble;
             analyserRef.current = analyser;
 
-            // 6. Убеждаемся, что контекст работает
             if (ctx.state === 'suspended') {
                 ctx.resume();
             }
-
         } catch (err) {
             console.error("Ошибка инициализации AudioContext:", err);
         }
@@ -184,7 +170,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
         let errorTimer: ReturnType<typeof setTimeout> | undefined;
         let retryCount = 0;
-        const MAX_RETRIES = 2; // Максимум 2 попытки перед показом ошибки
+        const MAX_RETRIES = 2;
 
         if (audioRef.current) {
             audioRef.current.pause();
@@ -196,22 +182,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         audio.preload = 'none';
         audio.volume = volume;
 
-        // --- ЛОГИКА ТАЙМЕРА ОШИБКИ ---
-        // Внутри startErrorTimer добавьте промежуточный чекпоинт:
         const startErrorTimer = () => {
             if (errorTimer) clearTimeout(errorTimer);
-
-            // Промежуточное уведомление через 30 сек (опционально)
             const warningTimer = setTimeout(() => {
                 if (isLoading && !isPlaying && !error) {
                     console.warn('Поток загружается дольше 30 секунд...');
-                    // Можно показать мягкое уведомление, но не блокирующую ошибку
                 }
             }, 30000);
 
-            // Основная ошибка через 60 сек
             errorTimer = setTimeout(() => {
-                clearTimeout(warningTimer); // Очищаем предупреждение
+                clearTimeout(warningTimer);
                 if (isLoading && !isPlaying) {
                     setError(`Не удалось загрузить поток "${currentStation.name}" за 60 сек.`);
                     setIsLoading(false);
@@ -220,24 +200,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         };
 
         const handleError = () => {
-            // Если таймер ошибки уже сработал и показал сообщение — не пытаемся перезапускать
             if (error) return;
-
             if (errorTimer) clearTimeout(errorTimer);
 
-            // Пробуем перезапустить поток автоматически (до 2 раз)
             if (retryCount < MAX_RETRIES) {
                 retryCount++;
-                console.log(`Попытка перезапуска потока #${retryCount}...`);
-
-                // Небольшая задержка перед повторной попыткой
                 setTimeout(() => {
-                    // ВАЖНО: Проверяем, актуален ли ещё этот аудио-элемент
-                    // Если пользователь переключил станцию, audioRef.current будет другим (или null)
                     if (audioRef.current && audioRef.current.src === audio.src) {
                         audioRef.current.load();
                         audioRef.current.play().catch(e => {
-                            // Игнорируем AbortError, так как он возникает при переключении станции
                             if (e.name !== 'AbortError') {
                                 console.error('Retry failed:', e);
                             }
@@ -245,7 +216,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     }
                 }, 2000);
             } else {
-                // Все попытки исчерпаны — показываем ошибку
                 setError(`Ошибка воспроизведения "${currentStation.name}". Попробуйте другую станцию.`);
                 setIsLoading(false);
                 setIsPlaying(false);
@@ -255,16 +225,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         audio.addEventListener('playing', () => {
             if (errorTimer) clearTimeout(errorTimer);
             retryCount = 0;
-
             setIsPlaying(true);
             setIsLoading(false);
             setError(null);
-
             if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
                 audioContextRef.current.resume();
             }
-
-            // ✅ Всегда инициализируем/обновляем контекст для текущего аудио
             initAudioContext(audio);
         });
 
@@ -279,11 +245,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         });
 
         audio.addEventListener('error', handleError);
-        audio.addEventListener('stalled', handleError); // Добавляем обработку "зависания"
+        audio.addEventListener('stalled', handleError);
 
-        // Запускаем таймер сразу
         startErrorTimer();
-
         audioRef.current = audio;
 
         return () => {
@@ -298,7 +262,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     }, [volume]);
 
-    // Таймер сна
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined;
         if (sleepTimeMinutes !== null && timeLeftSeconds !== null && timeLeftSeconds > 0) {
@@ -317,7 +280,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         return () => { if (timer) clearInterval(timer); };
     }, [sleepTimeMinutes, timeLeftSeconds]);
 
-    // Функции управления
     const togglePlay = async () => {
         if (!audioRef.current) return;
         try {
@@ -338,7 +300,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     const handleVolumeChange = (value: number) => setVolume(value / 100);
-
     const handleSleepTimer = (minutes: number | null) => {
         setSleepTimeMinutes(minutes);
         setTimeLeftSeconds(minutes ? minutes * 60 : null);
@@ -354,67 +315,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const switchStation = (direction: 'next' | 'prev') => {
         if (stations.length === 0) return;
         const currentIndex = stations.findIndex(s => s.id === currentStationId);
-        let newIndex;
-
-        if (direction === 'next') {
-            newIndex = (currentIndex + 1) % stations.length;
-        } else {
-            newIndex = (currentIndex - 1 + stations.length) % stations.length;
-        }
-
-        const newStation = stations[newIndex];
-        handleStationSelect(newStation);
+        let newIndex = direction === 'next'
+            ? (currentIndex + 1) % stations.length
+            : (currentIndex - 1 + stations.length) % stations.length;
+        handleStationSelect(stations[newIndex]);
     };
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-                return;
-            }
-
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
             switch (e.code) {
-                case 'Space':
-                    e.preventDefault();
-                    togglePlay();
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    switchStation('next');
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    switchStation('prev');
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    setVolume(prev => Math.min(prev + 0.1, 1));
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    setVolume(prev => Math.max(prev - 0.1, 0));
-                    break;
-                case 'KeyM':
-                    e.preventDefault();
-                    setVolume(prev => prev === 0 ? 0.8 : 0);
-                    break;
+                case 'Space': e.preventDefault(); togglePlay(); break;
+                case 'ArrowRight': e.preventDefault(); switchStation('next'); break;
+                case 'ArrowLeft': e.preventDefault(); switchStation('prev'); break;
+                case 'ArrowUp': e.preventDefault(); setVolume(prev => Math.min(prev + 0.1, 1)); break;
+                case 'ArrowDown': e.preventDefault(); setVolume(prev => Math.max(prev - 0.1, 0)); break;
+                case 'KeyM': e.preventDefault(); setVolume(prev => prev === 0 ? 0.8 : 0); break;
             }
         };
-
         window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, [togglePlay, switchStation]);
 
     const playRandomStation = () => {
         if (stations.length === 0) return;
-        const availableStations = stations.filter(s => s.id !== currentStationId);
-        if (availableStations.length === 0) return;
-
-        const randomIndex = Math.floor(Math.random() * availableStations.length);
-        const randomStation = availableStations[randomIndex];
-        handleStationSelect(randomStation);
+        const available = stations.filter(s => s.id !== currentStationId);
+        if (available.length === 0) return;
+        handleStationSelect(available[Math.floor(Math.random() * available.length)]);
     };
 
     const handleStationSelect = (station: RadioStation) => {
@@ -428,14 +355,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setSleepTimeMinutes(null);
             setTimeLeftSeconds(null);
 
-            // 💾 Безопасно обновляем историю, используя предыдущее состояние
             setListeningHistory(prevHistory => {
                 const newHistory = [station.id, ...prevHistory.filter(id => id !== station.id)].slice(0, 10);
                 localStorage.setItem('listeningHistory', JSON.stringify(newHistory));
                 return newHistory;
             });
-
-            // 💾 Сохраняем последнюю станцию
             localStorage.setItem('lastStationId', station.id);
 
             setTimeout(() => {
@@ -449,29 +373,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const applyEqPreset = (preset: string) => {
         if (!bassFilterRef.current || !trebleFilterRef.current) return;
-        switch (preset) {
-            case 'bass':
-                bassFilterRef.current.gain.value = 15;
-                trebleFilterRef.current.gain.value = -5;
-                break;
-            case 'vocal':
-                bassFilterRef.current.gain.value = -5;
-                trebleFilterRef.current.gain.value = 5;
-                break;
-            case 'flat':
-            default:
-                bassFilterRef.current.gain.value = 0;
-                trebleFilterRef.current.gain.value = 0;
-                break;
-        }
+        if (preset === 'bass') { bassFilterRef.current.gain.value = 15; trebleFilterRef.current.gain.value = -5; }
+        else if (preset === 'vocal') { bassFilterRef.current.gain.value = -5; trebleFilterRef.current.gain.value = 5; }
+        else { bassFilterRef.current.gain.value = 0; trebleFilterRef.current.gain.value = 0; }
     };
 
     const handleShare = async () => {
         try {
             await bridge.send('VKWebAppShare', { link: 'https://vk.com/app54729099' });
         } catch (err) {
-            const text = `🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`;
-            setShareText(text);
+            setShareText(`🎵 Слушаю ${currentStation?.name} на AniWave Radio!\n\nAnime Radio • J-Pop • Lo-Fi • OST\nhttps://vk.com/app54729099`);
             setCopySuccess(false);
             setIsShareModalOpen(true);
         }
@@ -494,200 +405,93 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const openNowPlaying = () => setIsNowPlayingOpen(true);
 
-    // Если станции еще грузятся, показываем спиннер
     if (isLoadingStations) {
         return (
             <Panel id={id}>
                 <Div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <div style={{
-                        width: '40px', height: '40px',
-                        border: '4px solid rgba(255, 102, 179, 0.3)',
-                        borderTop: '4px solid #ff66b3',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                    }} />
+                    <div style={{ width: '40px', height: '40px', border: '4px solid rgba(255, 102, 179, 0.3)', borderTop: '4px solid #ff66b3', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                 </Div>
-                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
             </Panel>
         );
     }
 
+    // Общий стиль для градиента модалок
+    const modalGradientStyle = {
+        background: 'linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6)',
+        backgroundSize: '400% 400%',
+        animation: 'modalGradient 12s ease infinite',
+        color: '#ffffff'
+    };
+
+    const modalHeaderStyle = {
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+    };
+
     return (
         <Panel id={id}>
+            {/* 1. Модальное окно: Поделиться */}
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
-                <ModalPage
-                    id="share"
-                    style={{
-                        background: 'linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6)',
-                        backgroundSize: '400% 400%',
-                        animation: 'modalGradient 12s ease infinite'
-                    }}
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
-                        >
-                            <span style={{ color: '#050505' }}>Поделиться</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsShareModalOpen(false)}
-                >
+                <ModalPage id="share" style={modalGradientStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsShareModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>Поделиться</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsShareModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
-                        <Caption style={{ color: '#0a0a0a', marginBottom: '12px', display: 'block' }}>Скопируйте текст:</Caption>
-                        <Textarea
-                            value={shareText}
-                            onChange={(e) => setShareText(e.target.value)}
-                            rows={6}
-                            style={{
-                                marginBottom: '16px',
-                                background: 'rgba(255,255,255,0.15)',
-                                color: '#fff',
-                                border: '1px solid rgba(255,255,255,0.3)',
-                                borderRadius: '8px'
-                            }}
-                        />
-                        <Button
-                            size="l"
-                            mode={copySuccess ? 'primary' : 'primary'}
-                            style={{
-                                width: '100%',
-                                background: copySuccess ? '#4BB34B' : 'rgba(255,255,255,0.15)',
-                                color: '#0e0d0d',
-                                border: '1px solid rgba(255,255,255,0.3)'
-                            }}
-                            onClick={copyShareText}
-                        >
-                            {copySuccess ? '✅ Скопировано!' : ' Копировать текст'}
+                        <Caption style={{ color: '#e0e0ff', marginBottom: '12px', display: 'block' }}>Скопируйте текст:</Caption>
+                        <Textarea value={shareText} onChange={(e) => setShareText(e.target.value)} rows={6} style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px' }} />
+                        <Button size="l" mode="primary" style={{ width: '100%', background: copySuccess ? '#4BB34B' : 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={copyShareText}>
+                            {copySuccess ? '✅ Скопировано!' : '📋 Копировать текст'}
                         </Button>
                     </Div>
                 </ModalPage>
             </ModalRoot>
 
+            {/* 2. Модальное окно: Общий чат */}
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
-                <ModalPage
-                    id="chat-invite"
-                    style={{
-                        background: 'linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6)',
-                        backgroundSize: '400% 400%',
-                        animation: 'modalGradient 12s ease infinite'
-                    }}
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(14, 13, 13, 0.1)', backdropFilter: 'blur(10px)' }}
-                        >
-                            <span style={{ color: '#050505' }}>💬 Общий чат</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsChatModalOpen(false)}
-                >
+                <ModalPage id="chat-invite" style={modalGradientStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>💬 Общий чат</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsChatModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
-                        <Subhead style={{ marginBottom: '12px', color: '#080808' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
-                        <Caption style={{ color: '#070707', display: 'block', marginBottom: '20px' }}>Общайтесь, делитесь треками и предлагайте идеи!</Caption>
-                        <Button
-                            size="l"
-                            mode="primary"
-                            style={{
-                                width: '100%',
-                                background: 'rgba(8, 8, 8, 0.15)',
-                                color: '#080808',
-                                border: '1px solid rgba(7, 7, 7, 0.3)'
-                            }}
-                            Component="a"
-                            href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
-                            target="_blank"
-                        >
+                        <Subhead style={{ marginBottom: '12px', color: '#ffffff' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
+                        <Caption style={{ color: '#e0e0ff', display: 'block', marginBottom: '20px' }}>Общайтесь, делитесь треками и предлагайте идеи!</Caption>
+                        <Button size="l" mode="primary" style={{ width: '100%', background: 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} Component="a" href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak=" target="_blank">
                             Присоединиться →
                         </Button>
                     </Div>
                 </ModalPage>
             </ModalRoot>
 
+            {/* 3. Модальное окно: История */}
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
-                <ModalPage
-                    id="history"
-                    style={{
-                        background: 'linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6)',
-                        backgroundSize: '400% 400%',
-                        animation: 'modalGradient 12s ease infinite'
-                    }}
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
-                        >
-                            <span style={{ color: '#0c0c0c' }}>📜 История прослушиваний</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsHistoryModalOpen(false)}
-                >
+                <ModalPage id="history" style={modalGradientStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>📜 История прослушиваний</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsHistoryModalOpen(false)}>
                     <Div style={{ padding: '16px' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead style={{ color: '#d4d4ff' }}>История пуста</Subhead>
-                                <Caption style={{ color: '#d4d4ff', display: 'block', marginTop: '8px' }}>
-                                    Начните слушать радио, чтобы увидеть историю
-                                </Caption>
+                                <Subhead style={{ color: '#e0e0ff' }}>История пуста</Subhead>
+                                <Caption style={{ color: '#e0e0ff', display: 'block', marginTop: '8px' }}>Начните слушать радио, чтобы увидеть историю</Caption>
                             </Div>
                         ) : (
                             listeningHistory.map((stationId, index) => {
                                 const station = stations.find(s => s.id === stationId);
                                 if (!station) return null;
-
                                 return (
-                                    <Cell
-                                        key={station.id}
-                                        before={<div style={{ fontSize: '24px', color: '#0a0a0a' }}>{index + 1}</div>}
-                                        onClick={() => {
-                                            handleStationSelect(station);
-                                            setIsHistoryModalOpen(false);
-                                        }}
-                                        subtitle={station.genre}
-                                        style={{
-                                            background: 'rgba(255,255,255,0.08)',
-                                            border: '1px solid rgba(255,255,255,0.15)',
-                                            borderRadius: '12px',
-                                            margin: '4px 0',
-                                            backdropFilter: 'blur(8px)'
-                                        }}
-                                        after={
-                                            <Button
-                                                size="s"
-                                                mode="primary"
-                                                style={{ background: station.color, color: '#fff' }}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleStationSelect(station);
-                                                    setIsHistoryModalOpen(false);
-                                                }}
-                                            >
-                                                ▶
-                                            </Button>
-                                        }
-                                    >
-                                        <div style={{ color: '#fff' }}>{station.name}</div>
+                                    <Cell key={station.id} before={<div style={{ fontSize: '24px', color: '#ffffff' }}>{index + 1}</div>} onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }} subtitle={station.genre} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', margin: '4px 0', backdropFilter: 'blur(8px)' }} after={<Button size="s" mode="primary" style={{ background: station.color, color: '#fff' }} onClick={(e) => { e.stopPropagation(); handleStationSelect(station); setIsHistoryModalOpen(false); }}>▶</Button>}>
+                                        <div style={{ color: '#ffffff', fontWeight: 500 }}>{station.name}</div>
                                     </Cell>
                                 );
                             })
                         )}
-
                         {listeningHistory.length > 0 && (
-                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(10, 10, 10, 0.2)', paddingTop: '16px' }}>
-                                <Button
-                                    size="l"
-                                    mode="secondary"
-                                    style={{
-                                        width: '100%',
-                                        background: 'rgba(10, 10, 10, 0.15)',
-                                        color: '#070707',
-                                        border: '1px solid rgba(8, 8, 8, 0.3)'
-                                    }}
-                                    onClick={() => {
-                                        localStorage.removeItem('listeningHistory');
-                                        setListeningHistory([]);
-                                        setIsHistoryModalOpen(false);
-                                    }}
-                                >
+                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '16px' }}>
+                                <Button size="l" mode="secondary" style={{ width: '100%', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }} onClick={() => { localStorage.removeItem('listeningHistory'); setListeningHistory([]); setIsHistoryModalOpen(false); }}>
                                     🗑️ Очистить историю
                                 </Button>
                             </Div>
@@ -696,76 +500,37 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
+            {/* 4. Модальное окно: Эквалайзер */}
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
-                <ModalPage
-                    id="equalizer"
-                    style={{
-                        background: 'linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6)',
-                        backgroundSize: '400% 400%',
-                        animation: 'modalGradient 12s ease infinite'
-                    }}
-                    header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
-                            style={{ background: 'rgba(8, 8, 8, 0.1)', backdropFilter: 'blur(10px)' }}
-                        >
-                            <span style={{ color: '#0f0e0e' }}>Настройки звука</span>
-                        </ModalPageHeader>
-                    }
-                    onClose={() => setIsEqOpen(false)}
-                >
+                <ModalPage id="equalizer" style={modalGradientStyle} header={
+                    <ModalPageHeader before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#fff' }} /></Button>} style={modalHeaderStyle}>
+                        <span style={{ color: '#ffffff', fontWeight: 600 }}>Настройки звука</span>
+                    </ModalPageHeader>
+                } onClose={() => setIsEqOpen(false)}>
                     <Equalizer onPresetChange={applyEqPreset} analyserNode={analyserRef.current} />
                 </ModalPage>
             </ModalRoot>
 
-            {/* 2. Полноэкранный плеер */}
+            {/* Полноэкранный плеер */}
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
 
-            {/* Баннер — добавлен className */}
-            <div
-                className="gradient-banner"
-                style={{
-                    padding: '30px 16px',
-                    textAlign: 'center',
-                    background: 'linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb)',
-                    backgroundSize: '400% 400%',
-                    animation: 'gradientShift 8s ease infinite',
-                    color: '#fff'
-                }}
-            >
+            {/* Баннер */}
+            <div className="gradient-banner" style={{ padding: '30px 16px', textAlign: 'center', color: '#fff' }}>
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
                 <div style={{ fontSize: '15px', marginTop: '6px' }}>Anime • J-Pop • Lo-Fi • OST</div>
             </div>
 
-            {/* 5. Основной контент */}
+            {/* Основной контент */}
             <Group>
                 {/* Плеер */}
-                <Div
-                    className="player-card"
-                    style={{
-                        textAlign: 'center',
-                        padding: '32px 16px',
-                        borderRadius: '12px',
-                        margin: '12px 0',
-                        background: 'url(/background.png) center/cover',
-                        filter: 'brightness(0.8)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        minHeight: '400px',
-                        cursor: 'pointer',
-                        color: 'var(--text-primary)'
-                    }}
-                    onClick={openNowPlaying}
-                >
+                <Div className="player-card" style={{ textAlign: 'center', padding: '32px 16px', borderRadius: '12px', margin: '12px 0', position: 'relative', overflow: 'hidden', minHeight: '400px', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={openNowPlaying}>
                     <div style={{ position: 'absolute', inset: 0, background: 'var(--player-overlay)', zIndex: 0 }} />
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <Div style={{ marginBottom: '24px' }}><Visualizer isPlaying={isPlaying} color={currentStation?.color} /></Div>
                         <Subhead style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}> {currentStation?.name || 'Выберите станцию'} </Subhead>
                         <Caption style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>
                             {currentStation?.genre}
-                            {isLoading && !isPlaying && (
-                                <span style={{ marginLeft: '8px', opacity: 0.7 }}>• Загрузка...</span>
-                            )}
+                            {isLoading && !isPlaying && <span style={{ marginLeft: '8px', opacity: 0.7 }}>• Загрузка...</span>}
                         </Caption>
 
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
@@ -782,37 +547,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Div>
 
                         <Div style={{ marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
-                            <Caption style={{ color: 'var(--text-primary)', marginBottom: '12px', display: 'block' }}>
-                                Таймер сна {timeLeftSeconds ? `• ${formatTime(timeLeftSeconds)}` : 'выкл'}
-                            </Caption>
+                            <Caption style={{ color: 'var(--text-primary)', marginBottom: '12px', display: 'block' }}>Таймер сна {timeLeftSeconds ? `• ${formatTime(timeLeftSeconds)}` : 'выкл'}</Caption>
                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
                                 {[15, 30, 60].map(min => (
-                                    <Button
-                                        key={min}
-                                        size="s"
-                                        mode={sleepTimeMinutes === min ? 'primary' : 'outline'}
-                                        style={{
-                                            background: sleepTimeMinutes === min ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)',
-                                            color: 'var(--text-primary)',
-                                            border: '1px solid var(--border-color)'
-                                        }}
-                                        onClick={(e) => { e.stopPropagation(); handleSleepTimer(min); }}
-                                    >
-                                        {min} мин
-                                    </Button>
+                                    <Button key={min} size="s" mode={sleepTimeMinutes === min ? 'primary' : 'outline'} style={{ background: sleepTimeMinutes === min ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }} onClick={(e) => { e.stopPropagation(); handleSleepTimer(min); }}>{min} мин</Button>
                                 ))}
-                                <Button
-                                    size="s"
-                                    mode="outline"
-                                    style={{
-                                        background: !sleepTimeMinutes ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)',
-                                        color: 'var(--text-primary)',
-                                        border: '1px solid var(--border-color)'
-                                    }}
-                                    onClick={(e) => { e.stopPropagation(); handleSleepTimer(null); }}
-                                >
-                                    Выкл
-                                </Button>
+                                <Button size="s" mode="outline" style={{ background: !sleepTimeMinutes ? 'rgba(255,102,179,0.4)' : 'var(--player-overlay)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }} onClick={(e) => { e.stopPropagation(); handleSleepTimer(null); }}>Выкл</Button>
                             </div>
                         </Div>
                     </div>
@@ -822,113 +562,43 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Cell before={<Icon28CopyOutline />} onClick={handleShare} subtitle="Отправить приложение другу">Поделиться</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>💬</div>} onClick={() => setIsChatModalOpen(true)} subtitle="Общайтесь с другими слушателями">Общий чат</Cell>
                 <Cell before={<div style={{ fontSize: '24px' }}>🎛️</div>} onClick={() => setIsEqOpen(true)} subtitle="Настройте басы и высокие частоты">Эквалайзер</Cell>
-
-                {/* 🕐 Кнопка открытия полной истории */}
-                <Cell
-                    before={<div style={{ fontSize: '24px' }}>📜</div>}
-                    onClick={() => setIsHistoryModalOpen(true)}
-                    subtitle="Посмотреть историю прослушиваний"
-                >
-                    История прослушивания
-                </Cell>
-
-                {/* 🌓 Переключатель темы */}
-                <Cell
-                    before={<div style={{ fontSize: '24px' }}>{isDarkTheme ? '🌙' : '☀️'}</div>}
-                    onClick={toggleTheme}
-                    subtitle={isDarkTheme ? 'Тёмная тема активна' : 'Светлая тема активна'}
-                >
-                    Тема оформления
-                </Cell>
+                <Cell before={<div style={{ fontSize: '24px' }}>📜</div>} onClick={() => setIsHistoryModalOpen(true)} subtitle="Посмотреть историю прослушиваний">История прослушивания</Cell>
+                <Cell before={<div style={{ fontSize: '24px' }}>{isDarkTheme ? '🌙' : '☀️'}</div>} onClick={toggleTheme} subtitle={isDarkTheme ? 'Тёмная тема активна' : 'Светлая тема активна'}>Тема оформления</Cell>
 
                 {/* Ошибка */}
-                {
-                    error && (
-                        <Group>
-                            <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
-                                <Subhead weight="2" style={{ color: '#F44336' }}>Ошибка воспроизведения</Subhead>
-                                <Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption>
-                                <Button
-                                    size="m"
-                                    mode="secondary"
-                                    onClick={() => {
-                                        setError(null);
-                                        setIsLoading(true);
-                                        togglePlay();
-                                    }}
-                                >
-                                    Попробовать снова
-                                </Button>
-                            </Div>
-                        </Group>
-                    )
-                }
+                {error && (
+                    <Group>
+                        <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
+                            <Subhead weight="2" style={{ color: '#F44336' }}>Ошибка воспроизведения</Subhead>
+                            <Caption style={{ color: '#F44336', display: 'block', margin: '8px 0' }}>{error}</Caption>
+                            <Button size="m" mode="secondary" onClick={() => { setError(null); setIsLoading(true); togglePlay(); }}>Попробовать снова</Button>
+                        </Div>
+                    </Group>
+                )}
 
                 {/* Список станций */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
-                    <StationSearch
-                        stations={stations}
-                        currentStationId={currentStationId}
-                        isPlaying={isPlaying}
-                        onStationSelect={handleStationSelect}
-                        isFavorite={isFavorite}
-                        toggleFavorite={toggleFavorite}
-                    />
+                    <StationSearch stations={stations} currentStationId={currentStationId} isPlaying={isPlaying} onStationSelect={handleStationSelect} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
                 </Group>
 
                 {/* Ссылки и поддержка */}
                 <Separator />
-                <Group header={
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
-                        <Subhead>Ссылки</Subhead>
-                        <Button
-                            size="s"
-                            mode="tertiary"
-                            Component="a"
-                            href="https://vk.com/im?sel=-239834224"
-                            target="_blank"
-                            style={{ color: '#99A2AD' }}
-                        >
-                            🛠️ Поддержка
-                        </Button>
-                    </div>
-                }>
-                    <Cell
-                        Component="a"
-                        href="https://vk.ru/ani__wave"
-                        target="_blank"
-                        before={<div style={{ fontSize: '28px' }}>🌸</div>}
-                        subtitle="Общайтесь, делитесь треками и предлагайте идеи!"
-                        after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>}
-                        style={{
-                            background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)',
-                            borderRadius: '8px',
-                            margin: '8px 16px',
-                            border: '1px solid rgba(255, 102, 179, 0.2)'
-                        }}
-                    >
+                <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}><Subhead>Ссылки</Subhead><Button size="s" mode="tertiary" Component="a" href="https://vk.com/im?sel=-239834224" target="_blank" style={{ color: '#99A2AD' }}>🛠️ Поддержка</Button></div>}>
+                    <Cell Component="a" href="https://vk.ru/ani__wave" target="_blank" before={<div style={{ fontSize: '28px' }}>🌸</div>} subtitle="Общайтесь, делитесь треками и предлагайте идеи!" after={<div style={{ fontSize: '20px', color: '#99A2AD' }}>➜</div>} style={{ background: 'linear-gradient(90deg, rgba(255, 102, 179, 0.1) 0%, rgba(102, 204, 255, 0.1) 100%)', borderRadius: '8px', margin: '8px 16px', border: '1px solid rgba(255, 102, 179, 0.2)' }}>
                         <Subhead weight="2" style={{ color: '#ffffff' }}>Наше сообщество</Subhead>
                     </Cell>
                 </Group>
 
                 <Separator />
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>О радио</Subhead>}>
-                    <Cell multiline>
-                        <Text>
-                            AniWave — это лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST из
-                            любимых аниме 24/7.
-                        </Text>
-                    </Cell>
+                    <Cell multiline><Text>AniWave — это лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST из любимых аниме 24/7.</Text></Cell>
                     <Div style={{ padding: '12px 16px', borderTop: '1px solid var(--border-color)' }}>
-                        <Caption style={{ color: 'var(--text-secondary)', textAlign: 'center', display: 'block' }}>
-                            💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)
-                        </Caption>
+                        <Caption style={{ color: 'var(--text-secondary)', textAlign: 'center', display: 'block' }}>💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)</Caption>
                     </Div>
                 </Group>
-            </Group >
+            </Group>
 
             <style>{`
-                /* По умолчанию СВЕТЛАЯ тема (под светлый фон VK) */
                 :root {
                     --bg-primary: #f5f5f5;
                     --text-primary: #000000;
@@ -936,10 +606,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --border-color: rgba(0, 0, 0, 0.1);
                     --player-overlay: rgba(255, 255, 255, 0.85);
                 }
-
-                /* Тёмная тема приложения */
-                #root[data-theme="dark"],
-                #root.theme-dark {
+                #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
                     --text-secondary: #b0b0b0;
@@ -947,64 +614,28 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --player-overlay: rgba(0, 0, 0, 0.5);
                     background: #0a0a1a !important;
                 }
+                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
+                #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
+                
+                .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
+                .now-playing-modal .ModalPage__header { background: transparent !important; border-bottom: none !important; }
+                .now-playing-modal .ModalPage__header-in { color: #ffffff !important; }
+                .now-playing-modal::-webkit-scrollbar { display: none; }
 
-                #root[data-theme="dark"] .Panel,
-                #root.theme-dark .Panel,
-                #root[data-theme="dark"] .Group,
-                #root.theme-dark .Group {
-                    background: transparent !important;
-                }
-
-                #root[data-theme="dark"] .Cell,
-                #root.theme-dark .Cell {
-                    background: #1a1a2e !important;
-                }
-
-                /* Экран "Сейчас играет" всегда тёмный */
-                .now-playing-modal .ModalPage__in {
-                    background: #0a0a1a !important;
-                    min-height: 100vh;
-                }
-                .now-playing-modal .ModalPage__header {
-                    background: transparent !important;
-                    border-bottom: none !important;
-                }
-                .now-playing-modal .ModalPage__header-in {
-                    color: #ffffff !important;
-                }
-                .now-playing-modal::-webkit-scrollbar {
-                    display: none;
-                }
-
-                /* 🛡️ ЗАЩИТА БАННЕРА И ПЛЕЕРА от затемнения */
-                #root[data-theme="dark"] .gradient-banner,
-                #root.theme-dark .gradient-banner {
+                .gradient-banner {
                     background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
                     background-size: 400% 400% !important;
+                    animation: gradientShift 8s ease infinite;
                 }
-
-                #root[data-theme="dark"] .player-card,
-                #root.theme-dark .player-card {
+                .player-card {
                     background: url(/background.png) center/cover !important;
                     filter: brightness(0.8);
                 }
 
-                /* Анимации */
-                @keyframes spin { 
-                    0% { transform: rotate(0deg); } 
-                    100% { transform: rotate(360deg); } 
-                }
-                @keyframes gradientShift { 
-                    0% { background-position: 0% 50%; } 
-                    50% { background-position: 100% 50%; } 
-                    100% { background-position: 0% 50%; } 
-                }
-                @keyframes modalGradient { 
-                    0% { background-position: 0% 50%; } 
-                    50% { background-position: 100% 50%; } 
-                    100% { background-position: 0% 50%; } 
-                }
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+                @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>
-        </Panel >
+        </Panel>
     );
 };
