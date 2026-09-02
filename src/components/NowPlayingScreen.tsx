@@ -11,7 +11,7 @@ interface NowPlayingScreenProps {
     isPlaying: boolean;
     onTogglePlay: () => void;
     onSwitchStation: (direction: 'next' | 'prev') => void;
-    onRandomStation?: () => void;
+    onRandomStation?: () => void; // <-- Новый пропс
 }
 
 export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
@@ -30,11 +30,6 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
             <ModalPage
                 id="now-playing"
                 className="now-playing-modal"
-                // ✅ ДОБАВЛЕНО: Принудительный тёмный фон
-                style={{
-                    background: '#f5f5fa !important',
-                    minHeight: '50vh'
-                }}
                 header={
                     <ModalPageHeader
                         before={
@@ -42,18 +37,14 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 <Icon24Dismiss style={{ color: '#fff' }} />
                             </Button>
                         }
-                        style={{
-                            background: 'transparent !important',
-                            color: '#fff',
-                            borderBottom: 'none !important'
-                        }}
+                        style={{ background: 'transparent', color: '#fff' }}
                     >
                         <span style={{ color: '#ffffff' }}>Сейчас играет</span>
                     </ModalPageHeader>
                 }
                 onClose={onClose}
             >
-                <div className="now-playing-content" style={{ background: '#f5f5f8', minHeight: '100vh' }}>
+                <div className="now-playing-content">
                     <Div style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -61,8 +52,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                         justifyContent: 'center',
                         height: '100%',
                         padding: '32px 16px',
-                        textAlign: 'center',
-                        background: '#0a0a1a'
+                        textAlign: 'center'
                     }}>
                         {/* Большая визуализация */}
                         <div style={{
@@ -101,7 +91,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
 
                         {/* Крупные кнопки управления */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-                            {/* Кнопка "Предыдущий" */}
+                            {/* Кнопка "Предыдущий" - теперь круглая */}
                             <Button
                                 size="l"
                                 mode="tertiary"
@@ -147,7 +137,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 )}
                             </Button>
 
-                            {/* Кнопка "Следующий" */}
+                            {/* Кнопка "Следующий" - теперь круглая */}
                             <Button
                                 size="l"
                                 mode="tertiary"
@@ -168,7 +158,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                                 <span style={{ fontSize: '24px', color: '#2D81E0' }}>⏭</span>
                             </Button>
 
-                            {/*  Кнопка "Случайная станция" */}
+                            {/* 🎲 Кнопка "Случайная станция" */}
                             {onRandomStation && (
                                 <Button
                                     size="l"
