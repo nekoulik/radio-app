@@ -489,13 +489,20 @@ html.theme-dark input::placeholder {
 }
 
 /* ================================================================= */
-/* === МОДАЛЬНЫЕ ОКНА — ФИНАЛЬНАЯ ВЕРСИЯ (БЕЗ ДУБЛИКАТОВ) === */
+/* === МОДАЛЬНЫЕ ОКНА — ФИНАЛЬНАЯ ВЕРСИЯ (В САМОМ КОНЦЕ ФАЙЛА) === */
 /* ================================================================= */
 
 /* 1. Внешние контейнеры — прозрачные */
 .ModalRoot,
 .vkuiModalRoot,
-.ModalPage {
+body .ModalRoot,
+body .ModalPage,
+html.theme-dark .ModalRoot,
+html.theme-dark .ModalPage,
+html.theme-light .ModalRoot,
+html.theme-light .ModalPage,
+div.ModalRoot,
+div.vkuiModalRoot {
     background: transparent !important;
 }
 
@@ -509,7 +516,7 @@ html.theme-dark input::placeholder {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6) !important;
-    z-index: 1000;
+    z-index: 1;
 }
 
 /* 3. Центрирование модалки */
@@ -523,13 +530,17 @@ html.theme-dark input::placeholder {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1001 !important;
-    pointer-events: none;
+    z-index: 2 !important;
 }
 
 /* 4. Внутреннее содержимое — карточка с градиентом (ограниченный размер) */
 .ModalPage__in,
-.vkuiModalPage__in {
+.vkuiModalPage__in,
+body .ModalPage__in,
+html.theme-dark .ModalPage__in,
+html.theme-light .ModalPage__in,
+div.ModalPage__in,
+div.vkuiModalPage__in {
     max-width: 600px !important;
     max-height: 80vh !important;
     width: 90% !important;
@@ -537,15 +548,14 @@ html.theme-dark input::placeholder {
     border-radius: 16px !important;
     overflow: hidden !important;
     position: relative !important;
-    z-index: 1002 !important;
-    pointer-events: auto !important;
+    z-index: 3 !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite !important;
 }
 
-/* 5. НО экран "Сейчас играет" — на весь экран, тёмный (без оверлея) */
+/* 5. НО экран "Сейчас играет" — на весь экран, тёмный (переопределение) */
 .now-playing-modal .ModalPage__in {
     max-width: 100% !important;
     max-height: 100vh !important;
