@@ -132,7 +132,7 @@ body {
     background: rgba(255, 102, 179, 0.7);
 }
 
-/* === ЭЛЕМЕНТЫ, КОТОРЫЕ НЕ МЕНЯЮТСЯ (всегда одинаковые) === */
+/* === ЭЛЕМЕНТЫ, КОТОРЫЕ НЕ МЕНЯЮТСЯ === */
 
 /* Баннер — всегда радужный */
 .gradient-banner {
@@ -148,57 +148,10 @@ body {
     filter: brightness(0.8);
 }
 
-/* Модальные окна (История, Чат, Поделиться, Эквалайзер) — всегда с градиентом */
-.ModalPage__in {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-    border-radius: 16px !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
-}
-
-.ModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-.ModalPage__header-in,
-.ModalPage__header .Subhead {
-    color: #ffffff !important;
-}
-
-.ModalPage .Cell,
-.ModalPage .Group,
-.ModalPage .Div {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px;
-    margin: 4px 8px;
-}
-
-.ModalPage .Subhead,
-.ModalPage .Text {
-    color: #ffffff !important;
-}
-
-.ModalPage .Caption {
-    color: #d4d4ff !important;
-}
-
-.ModalPage .Button {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
 /* Экран "Сейчас играет" — всегда тёмный */
 .now-playing-modal .ModalPage__in {
     background: #0a0a1a !important;
     min-height: 100vh;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    animation: none !important;
 }
 
 .now-playing-modal .ModalPage__header {
@@ -209,87 +162,122 @@ body {
     color: #ffffff !important;
 }
 
-/* === ФОН ПРИЛОЖЕНИЯ (меняется при смене темы) === */
+/* === МОДАЛЬНЫЕ ОКНА — ВСЕГДА БЕЛЫЕ === */
+.ModalPage__in {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+}
 
-/* Светлая тема */
-body.theme-light {
+.ModalPage__header {
+    background: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.ModalPage__header-in,
+.ModalPage__header .Subhead {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+.ModalPage .Cell,
+.ModalPage .Group,
+.ModalPage .Div {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px;
+    margin: 4px 8px;
+}
+
+.ModalPage .Cell:hover {
     background: #f5f5f5 !important;
 }
 
-body.theme-light .Panel,
-body.theme-light .Group {
-    background: transparent !important;
-}
-
-body.theme-light .Cell {
-    background: #ffffff !important;
-}
-
-body.theme-light .station-title {
+.ModalPage .Subhead,
+.ModalPage .Text {
     color: #000000 !important;
 }
 
-body.theme-light .station-genre,
-body.theme-light .station-desc {
+.ModalPage .Caption {
     color: #555555 !important;
 }
 
-body.theme-light .Subhead,
-body.theme-light .Text {
+.ModalPage .Button {
     color: #000000 !important;
+    background: #f5f5f5 !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
 }
 
-body.theme-light .Caption {
-    color: #555555 !important;
+.ModalPage input,
+.ModalPage .Search,
+.ModalPage textarea {
+    background: #f5f5f5 !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px;
 }
 
-/* Тёмная тема */
-body.theme-dark {
-    background: #0a0a1a !important;
+.ModalPage input::placeholder {
+    color: #999999 !important;
 }
 
-body.theme-dark .Panel,
-body.theme-dark .Group {
-    background: transparent !important;
+/* === СПИСОК СТАНЦИЙ — ВСЕГДА С ГРАДИЕНТОМ === */
+.station-list-container {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite;
+    border-radius: 16px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 }
 
-body.theme-dark .Cell {
-    background: #1a1a2e !important;
+.station-list-container .station-cell {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    margin: 4px 0;
 }
 
-body.theme-dark .station-title {
+.station-list-container .station-cell:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateX(4px);
+}
+
+.station-list-container .station-cell.active {
+    background: rgba(255, 102, 179, 0.3) !important;
+    border-left: 3px solid #ff66b3 !important;
+}
+
+.station-list-container .station-title {
     color: #ffffff !important;
+    font-weight: 600;
 }
 
-body.theme-dark .station-genre,
-body.theme-dark .station-desc {
-    color: #b0b0b0 !important;
+.station-list-container .station-genre,
+.station-list-container .station-desc {
+    color: #d4d4ff !important;
+    font-size: 11px;
 }
 
-body.theme-dark .Subhead,
-body.theme-dark .Text {
+.station-list-container .Search,
+.station-list-container input[type="search"] {
+    background: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
 }
 
-body.theme-dark .Caption {
-    color: #b0b0b0 !important;
+.station-list-container .Search::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* === СТИЛИ СТАНЦИЙ === */
+/* === СТИЛИ СТАНЦИЙ (общие) === */
 .station-cell {
     transition: all 0.2s;
     border-left: 3px solid transparent;
     cursor: pointer;
-}
-
-.station-cell:hover {
-    background: rgba(0, 0, 0, 0.05) !important;
-    transform: translateX(4px);
-}
-
-.station-cell.active {
-    background: rgba(255, 102, 179, 0.15) !important;
-    border-left: 3px solid #ff66b3 !important;
 }
 
 .station-icon {
@@ -324,44 +312,7 @@ body.theme-dark .Caption {
     transform: scale(1.2);
 }
 
-.station-title {
-    color: #000000 !important;
-    font-weight: 600;
-}
-
-.station-genre,
-.station-desc {
-    color: #555555 !important;
-    font-size: 11px;
-}
-
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
-}
-
-/* === СПИСОК СТАНЦИЙ — градиент в тёмной теме === */
-body.theme-dark .station-list-container {
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite;
-    border-radius: 16px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-body.theme-dark .station-list-container .station-cell {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    margin: 4px 0;
-}
-
-body.theme-dark .station-list-container .station-title {
-    color: #ffffff !important;
-}
-
-body.theme-dark .station-list-container .station-genre,
-body.theme-dark .station-list-container .station-desc {
-    color: #d4d4ff !important;
 }
