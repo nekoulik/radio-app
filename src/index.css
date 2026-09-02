@@ -134,9 +134,9 @@ body {
 
 /* === ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ (не меняются) === */
 
-/* Баннер — с фоновой картинкой (та же, что у плеера) */
+/* Баннер — с фоновой картинкой */
 .gradient-banner {
-    background: url(/background.png) center/cover !important;
+    background: url(/banner-bg.png) center/cover !important;
     color: #ffffff !important;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
     position: relative;
@@ -152,7 +152,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 102, 179, 0.4), rgba(102, 204, 255, 0.4));
+    background: rgba(0, 0, 0, 0.3);
     z-index: 1;
 }
 

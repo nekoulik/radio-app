@@ -60,16 +60,28 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                             height: '260px',
                             marginBottom: '32px',
                             borderRadius: '24px',
-                            background: station.color,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                            background: `url(/now-playing.png) center/cover`,
                             boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                            position: 'relative',
+                            overflow: 'hidden',
                         }}>
-                            <Visualizer
-                                isPlaying={isPlaying}
-                                color="rgba(255,255,255,0.9)"
-                            />
+                            {/* Визуализация поверх картинки */}
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'rgba(0,0,0,0.3)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                <Visualizer
+                                    isPlaying={isPlaying}
+                                    color="rgba(255,255,255,0.9)"
+                                />
+                            </div>
                         </div>
 
                         {/* Информация о станции */}
