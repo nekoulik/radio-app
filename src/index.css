@@ -1,20 +1,10 @@
-/* === БАЗОВЫЕ СТИЛИ (Светлая тема по умолчанию) === */
+/* === БАЗОВЫЕ СТИЛИ === */
 body {
     margin: 0;
     padding: 0;
     background: #f5f5f5 !important;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-body.theme-light,
-html.theme-light {
-    background: #f5f5f5 !important;
-}
-
-body.theme-dark,
-html.theme-dark {
-    background: #0a0a1a !important;
 }
 
 * {
@@ -136,26 +126,160 @@ html.theme-dark {
 ::-webkit-scrollbar-thumb {
     background: rgba(255, 102, 179, 0.5);
     border-radius: 3px;
-    transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 102, 179, 0.7);
 }
 
-.station-list-container {
-    max-height: 320px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 102, 179, 0.5) rgba(0, 0, 0, 0.05);
+/* === ЭЛЕМЕНТЫ, КОТОРЫЕ НЕ МЕНЯЮТСЯ (всегда одинаковые) === */
+
+/* Баннер — всегда радужный */
+.gradient-banner {
+    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
+    background-size: 400% 400% !important;
+    animation: gradientShift 8s ease infinite;
+    color: #ffffff !important;
 }
 
-/* === СТИЛИ СТАНЦИЙ (Светлая тема по умолчанию) === */
+/* Плеер — всегда с картинкой */
+.player-card {
+    background: url(/background.png) center/cover !important;
+    filter: brightness(0.8);
+}
+
+/* Модальные окна (История, Чат, Поделиться, Эквалайзер) — всегда с градиентом */
+.ModalPage__in {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
+    background-size: 400% 400% !important;
+    animation: modalGradient 12s ease infinite !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
+}
+
+.ModalPage__header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.ModalPage__header-in,
+.ModalPage__header .Subhead {
+    color: #ffffff !important;
+}
+
+.ModalPage .Cell,
+.ModalPage .Group,
+.ModalPage .Div {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px;
+    margin: 4px 8px;
+}
+
+.ModalPage .Subhead,
+.ModalPage .Text {
+    color: #ffffff !important;
+}
+
+.ModalPage .Caption {
+    color: #d4d4ff !important;
+}
+
+.ModalPage .Button {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Экран "Сейчас играет" — всегда тёмный */
+.now-playing-modal .ModalPage__in {
+    background: #0a0a1a !important;
+    min-height: 100vh;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    animation: none !important;
+}
+
+.now-playing-modal .ModalPage__header {
+    background: transparent !important;
+}
+
+.now-playing-modal .ModalPage__header-in {
+    color: #ffffff !important;
+}
+
+/* === ФОН ПРИЛОЖЕНИЯ (меняется при смене темы) === */
+
+/* Светлая тема */
+body.theme-light {
+    background: #f5f5f5 !important;
+}
+
+body.theme-light .Panel,
+body.theme-light .Group {
+    background: transparent !important;
+}
+
+body.theme-light .Cell {
+    background: #ffffff !important;
+}
+
+body.theme-light .station-title {
+    color: #000000 !important;
+}
+
+body.theme-light .station-genre,
+body.theme-light .station-desc {
+    color: #555555 !important;
+}
+
+body.theme-light .Subhead,
+body.theme-light .Text {
+    color: #000000 !important;
+}
+
+body.theme-light .Caption {
+    color: #555555 !important;
+}
+
+/* Тёмная тема */
+body.theme-dark {
+    background: #0a0a1a !important;
+}
+
+body.theme-dark .Panel,
+body.theme-dark .Group {
+    background: transparent !important;
+}
+
+body.theme-dark .Cell {
+    background: #1a1a2e !important;
+}
+
+body.theme-dark .station-title {
+    color: #ffffff !important;
+}
+
+body.theme-dark .station-genre,
+body.theme-dark .station-desc {
+    color: #b0b0b0 !important;
+}
+
+body.theme-dark .Subhead,
+body.theme-dark .Text {
+    color: #ffffff !important;
+}
+
+body.theme-dark .Caption {
+    color: #b0b0b0 !important;
+}
+
+/* === СТИЛИ СТАНЦИЙ === */
 .station-cell {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s;
     border-left: 3px solid transparent;
     cursor: pointer;
-    background: transparent !important;
 }
 
 .station-cell:hover {
@@ -176,8 +300,6 @@ html.theme-dark {
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -194,27 +316,16 @@ html.theme-dark {
 
 .favorite-btn {
     cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
     font-size: 20px;
-    user-select: none;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s;
 }
 
 .favorite-btn:hover {
     transform: scale(1.2);
 }
 
-.favorite-btn:active {
-    transform: scale(0.9);
-}
-
 .station-title {
     color: #000000 !important;
-    line-height: 1.3;
-    word-break: break-word;
-    overflow-wrap: break-word;
     font-weight: 600;
 }
 
@@ -222,9 +333,6 @@ html.theme-dark {
 .station-desc {
     color: #555555 !important;
     font-size: 11px;
-    line-height: 1.3;
-    display: block;
-    margin-top: 2px;
 }
 
 .active-title {
@@ -232,429 +340,28 @@ html.theme-dark {
     font-weight: 700;
 }
 
-/* === ЭКРАН "СЕЙЧАС ИГРАЕТ" (всегда тёмный) === */
-.now-playing-modal .ModalPage__in {
-    background: #0a0a1a !important;
-    min-height: 100vh;
-}
-
-.now-playing-modal .ModalPage__header {
-    background: transparent !important;
-    border-bottom: none !important;
-}
-
-.now-playing-modal .ModalPage__header-in {
-    color: #ffffff !important;
-}
-
-.now-playing-modal::-webkit-scrollbar {
-    display: none;
-}
-
-/* === БАННЕР И ПЛЕЕР (НЕ МЕНЯЮТСЯ НИКОГДА) === */
-.gradient-banner {
-    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
-    background-size: 400% 400% !important;
-    animation: gradientShift 8s ease infinite;
-    color: #ffffff !important;
-}
-
-.player-card {
-    background: url(/background.png) center/cover !important;
-    filter: brightness(0.8);
-}
-
-/* === ТЁМНАЯ ТЕМА (ИСПРАВЛЕНО: убран опасный селектор *) === */
-body.theme-dark .Panel,
-body.theme-dark .Group,
-body.theme-dark .Cell,
-html.theme-dark .Panel,
-html.theme-dark .Group,
-html.theme-dark .Cell {
-    background: transparent !important;
-}
-
-body.theme-dark .Cell,
-html.theme-dark .Cell {
-    background: #1a1a2e !important;
-}
-
-body.theme-dark .Subhead,
-body.theme-dark .Text,
-body.theme-dark .Caption,
-html.theme-dark .Subhead,
-html.theme-dark .Text,
-html.theme-dark .Caption {
-    color: #ffffff !important;
-}
-
-body.theme-dark .Caption,
-html.theme-dark .Caption {
-    color: #b0b0b0 !important;
-}
-
-body.theme-dark .station-title,
-html.theme-dark .station-title {
-    color: #ffffff !important;
-}
-
-body.theme-dark .station-genre,
-body.theme-dark .station-desc,
-html.theme-dark .station-genre,
-html.theme-dark .station-desc {
-    color: #b0b0b0 !important;
-}
-
-body.theme-dark .active-title,
-html.theme-dark .active-title {
-    color: #ff66b3 !important;
-}
-
-body.theme-dark .station-cell:hover,
-html.theme-dark .station-cell:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-}
-
-body.theme-dark .station-cell.active,
-html.theme-dark .station-cell.active {
-    background: rgba(255, 102, 179, 0.2) !important;
-}
-
-body.theme-dark .play-indicator,
-html.theme-dark .play-indicator {
-    color: #ff66b3 !important;
-}
-
-body.theme-dark .station-icon,
-html.theme-dark .station-icon {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-body.theme-dark .gradient-banner,
-html.theme-dark .gradient-banner {
-    background: linear-gradient(-45deg, #ff66b3, #66ccff, #a18cd1, #fbc2eb) !important;
-    background-size: 400% 400% !important;
-    animation: gradientShift 8s ease infinite;
-    color: #ffffff !important;
-}
-
-body.theme-dark .player-card,
-html.theme-dark .player-card {
-    background: url(/background.png) center/cover !important;
-    filter: brightness(0.8);
-}
-
-body.theme-dark ::-webkit-scrollbar-track,
-html.theme-dark ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-body.theme-dark ::-webkit-scrollbar-thumb,
-html.theme-dark ::-webkit-scrollbar-thumb {
-    background: rgba(255, 102, 179, 0.6);
-}
-
-/* === СВЕТЛАЯ ТЕМА (явная) === */
-body.theme-light .Panel,
-body.theme-light .Group,
-body.theme-light .Cell,
-html.theme-light .Panel,
-html.theme-light .Group,
-html.theme-light .Cell {
-    background: transparent !important;
-}
-
-body.theme-light .Cell,
-html.theme-light .Cell {
-    background: #ffffff !important;
-}
-
-body.theme-light .station-title,
-html.theme-light .station-title {
-    color: #000000 !important;
-}
-
-body.theme-light .station-genre,
-body.theme-light .station-desc,
-html.theme-light .station-genre,
-html.theme-light .station-desc {
-    color: #555555 !important;
-}
-
-body.theme-light .active-title,
-html.theme-light .active-title {
-    color: #d63384 !important;
-}
-
-body.theme-light .Subhead,
-body.theme-light .Text,
-html.theme-light .Subhead,
-html.theme-light .Text {
-    color: #000000 !important;
-}
-
-body.theme-light .Caption,
-html.theme-light .Caption {
-    color: #555555 !important;
-}
-
-body.theme-light .station-cell:hover,
-html.theme-light .station-cell:hover {
-    background: rgba(0, 0, 0, 0.05) !important;
-}
-
-body.theme-light .station-cell.active,
-html.theme-light .station-cell.active {
-    background: rgba(255, 102, 179, 0.15) !important;
-}
-
-body.theme-light ::-webkit-scrollbar-track,
-html.theme-light ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-body.theme-light ::-webkit-scrollbar-thumb,
-html.theme-light ::-webkit-scrollbar-thumb {
-    background: rgba(255, 102, 179, 0.5);
-}
-
-/* === СПИСОК СТАНЦИЙ — СИНЕ-ФИОЛЕТОВЫЙ ГРАДИЕНТ === */
-body.theme-dark .station-list-container,
-html.theme-dark .station-list-container {
+/* === СПИСОК СТАНЦИЙ — градиент в тёмной теме === */
+body.theme-dark .station-list-container {
     background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
     background-size: 400% 400% !important;
     animation: modalGradient 12s ease infinite;
     border-radius: 16px;
     padding: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 }
 
-body.theme-dark .station-list-container .station-cell,
-html.theme-dark .station-list-container .station-cell {
+body.theme-dark .station-list-container .station-cell {
     background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     margin: 4px 0;
-    color: #ffffff !important;
 }
 
-body.theme-dark .station-list-container .station-cell:hover,
-html.theme-dark .station-list-container .station-cell:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    transform: translateX(4px);
-}
-
-body.theme-dark .station-list-container .station-cell.active,
-html.theme-dark .station-list-container .station-cell.active {
-    background: rgba(255, 102, 179, 0.3) !important;
-    border-left: 3px solid #ff66b3 !important;
-    box-shadow: 0 4px 16px rgba(255, 102, 179, 0.3);
-}
-
-body.theme-dark .station-list-container .station-title,
-html.theme-dark .station-list-container .station-title {
+body.theme-dark .station-list-container .station-title {
     color: #ffffff !important;
 }
 
 body.theme-dark .station-list-container .station-genre,
-body.theme-dark .station-list-container .station-desc,
-html.theme-dark .station-list-container .station-genre,
-html.theme-dark .station-list-container .station-desc {
+body.theme-dark .station-list-container .station-desc {
     color: #d4d4ff !important;
-}
-
-body.theme-dark .Search,
-body.theme-dark input[type="search"],
-html.theme-dark .Search,
-html.theme-dark input[type="search"] {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-}
-
-body.theme-dark .Search::placeholder,
-body.theme-dark input::placeholder,
-html.theme-dark .Search::placeholder,
-html.theme-dark input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* ================================================================= */
-/* === МОДАЛЬНЫЕ ОКНА — ИСПРАВЛЕННАЯ И УСИЛЕННАЯ ВЕРСИЯ === */
-/* ================================================================= */
-
-/* 1. Внешние контейнеры — прозрачные */
-.ModalRoot,
-.vkuiModalRoot,
-.ModalPage,
-.vkuiModalPage {
-    background: transparent !important;
-}
-
-/* 2. Оверлей (затемнение фона за модалкой) */
-.ModalRoot::before,
-.vkuiModalRoot::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6) !important;
-    z-index: 1000;
-}
-
-/* 3. Центрирование модалки */
-.ModalPage,
-.vkuiModalPage {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1001 !important;
-}
-
-/* 4. Внутреннее содержимое — карточка с градиентом (УСИЛЕННАЯ СПЕЦИФИЧНОСТЬ) */
-body.theme-dark .ModalPage__in,
-body.theme-light .ModalPage__in,
-html.theme-dark .ModalPage__in,
-html.theme-light .ModalPage__in,
-.ModalPage__in,
-.vkuiModalPage__in {
-    max-width: 600px !important;
-    max-height: 80vh !important;
-    width: 90% !important;
-    margin: 0 auto !important;
-    border-radius: 16px !important;
-    overflow: hidden !important;
-    position: relative !important;
-    z-index: 1002 !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
-    background: linear-gradient(-45deg, #667eea, #764ba2, #6B73FF, #9B59B6) !important;
-    background-size: 400% 400% !important;
-    animation: modalGradient 12s ease infinite !important;
-}
-
-/* 5. НО экран "Сейчас играет" — на весь экран, тёмный (переопределение с высокой специфичностью) */
-body.theme-dark .now-playing-modal .ModalPage__in,
-body.theme-light .now-playing-modal .ModalPage__in,
-html.theme-dark .now-playing-modal .ModalPage__in,
-html.theme-light .now-playing-modal .ModalPage__in,
-.now-playing-modal .ModalPage__in {
-    max-width: 100% !important;
-    max-height: 100vh !important;
-    width: 100% !important;
-    background: #0a0a1a !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    animation: none !important;
-    min-height: 100vh;
-}
-
-.now-playing-modal::before {
-    display: none !important;
-}
-
-.now-playing-modal .ModalPage__header {
-    background: transparent !important;
-    border-bottom: none !important;
-}
-
-.now-playing-modal .ModalPage__header-in {
-    color: #ffffff !important;
-}
-
-.now-playing-modal::-webkit-scrollbar {
-    display: none;
-}
-
-/* 6. Header модалок */
-.ModalPage__header,
-.vkuiModalPage__header {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.ModalPage__header-in,
-.vkuiModalPage__header-in,
-.ModalPage__header .Subhead {
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-/* 7. Ячейки внутри модалок */
-.ModalPage .Cell,
-.ModalPage .Group,
-.ModalPage .Div,
-.vkuiModalPage .Cell,
-.vkuiModalPage .Group,
-.vkuiModalPage .Div {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px;
-    margin: 4px 8px;
-}
-
-.ModalPage .Cell:hover,
-.vkuiModalPage .Cell:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* 8. Текст в модалках */
-.ModalPage .Subhead,
-.ModalPage .Text,
-.vkuiModalPage .Subhead,
-.vkuiModalPage .Text {
-    color: #ffffff !important;
-}
-
-.ModalPage .Caption,
-.vkuiModalPage .Caption {
-    color: #d4d4ff !important;
-}
-
-/* 9. Кнопки в модалках */
-.ModalPage .Button,
-.vkuiModalPage .Button {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* 10. Поиск и textarea */
-.ModalPage input,
-.ModalPage .Search,
-.ModalPage textarea,
-.vkuiModalPage input,
-.vkuiModalPage .Search,
-.vkuiModalPage textarea {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 8px;
-}
-
-.ModalPage input::placeholder,
-.ModalPage textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* 11. Скроллбар */
-.ModalPage ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.ModalPage ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 3px;
 }
