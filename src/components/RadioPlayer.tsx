@@ -71,6 +71,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         const loadData = async () => {
             setIsLoadingStations(true);
             try {
+                await bridge.send('VKWebAppInit').catch(console.error);
                 const loadedStations = await fetchRadioStations();
                 setStations(loadedStations);
                 const savedStationId = localStorage.getItem('lastStationId');
@@ -398,7 +399,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     if (isLoadingStations) {
         return (
             <Panel id={id}>
-                <Div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <Div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
                     <div style={{ width: '40px', height: '40px', border: '4px solid rgba(255, 102, 179, 0.3)', borderTop: '4px solid #ff66b3', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                 </Div>
             </Panel>
@@ -979,7 +980,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 {/* Ссылки и поддержка */}
                 <Separator />
                 <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
-                    <Subhead style={{ color: '#000000', fontWeight: 600 }}>Ссылки</Subhead>
+                    <Subhead style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Ссылки</Subhead>
                     <Button
                         size="s"
                         mode="primary"
@@ -1024,7 +1025,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.boxShadow = 'none';
                         }}
                     >
-                        <Subhead weight="2" style={{ color: '#000000', fontWeight: 600 }}>Наше сообщество</Subhead>
+                        <Subhead weight="2" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Наше сообщество</Subhead>
                     </Cell>
                 </Group>
 
@@ -1052,6 +1053,31 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
                     background: #0a0a1a !important;
+                }
+                
+                /* === ГАРАНТИЯ ЧИТАЕМОСТИ В МОДАЛЬНЫХ ОКНАХ === */
+                .ModalPage__in {
+                    background: #ffffff !important;
+                }
+                .ModalPage__header {
+                    background: #ffffff !important;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+                }
+                .ModalPage .Cell, 
+                .ModalPage .Group, 
+                .ModalPage .Div {
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                }
+                /* ============================================ */
+
+                .Group__header {
+                    color: var(--text-primary) !important;
+                }
+                @supports (height: 100dvh) {
+                    .loading-screen {
+                        height: 100dvh !important;
+                    }
                 }
                 #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
                 #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
