@@ -1061,7 +1061,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #cccccc;
                 }
     
-                /* ТЁМНАЯ ТЕМА VK (через атрибуты) — ЭТОГО БЛОКА НЕ ХВАТАЛО! */
+                /* ТЁМНАЯ ТЕМА VK (через атрибуты) */
                 #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
@@ -1123,15 +1123,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 #root.theme-dark .ModalPage__in {
                     background: #232324 !important;
                 }
+    
+                /* СИНЯЯ ВЕРХУШКА МОДАЛЬНЫХ ОКОН В ТЁМНОЙ ТЕМЕ */
                 #root[data-theme="dark"] .ModalPage__header,
                 #root.theme-dark .ModalPage__header {
-                    background: #232324 !important;
-                    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+                    background: #2D81E0 !important;
+                    border-bottom: none !important;
                 }
+    
                 #root[data-theme="dark"] .ModalPage__header *,
                 #root.theme-dark .ModalPage__header * {
                     color: #ffffff !important;
                 }
+    
                 #root[data-theme="dark"] .ModalPage .Div,
                 #root.theme-dark .ModalPage .Div,
                 #root[data-theme="dark"] .ModalPage .Cell,
@@ -1139,20 +1143,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     background: #232324 !important;
                     color: #ffffff !important;
                 }
+    
                 #root[data-theme="dark"] .ModalPage .Subhead,
                 #root.theme-dark .ModalPage .Subhead,
                 #root[data-theme="dark"] .ModalPage .Text,
                 #root.theme-dark .ModalPage .Text {
                     color: #ffffff !important;
                 }
+    
                 #root[data-theme="dark"] .ModalPage .Caption,
                 #root.theme-dark .ModalPage .Caption {
                     color: #939393 !important;
                 }
     
+                /* Для системной тёмной темы */
                 @media (prefers-color-scheme: dark) {
                     .ModalPage__in { background: #232324 !important; }
-                    .ModalPage__header { background: #232324 !important; }
+                    .ModalPage__header { background: #2D81E0 !important; }
                     .ModalPage__header *, .ModalPage .Subhead, .ModalPage .Text { color: #ffffff !important; }
                     .ModalPage .Caption { color: #939393 !important; }
                     .ModalPage .Div, .ModalPage .Cell { background: #232324 !important; color: #ffffff !important; }
