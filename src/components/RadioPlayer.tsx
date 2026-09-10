@@ -67,12 +67,27 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
+    // === КРИТИЧЕСКИ ВАЖНО: Инициализация VK Bridge СРАЗУ ===
+    useEffect(() => {
+        // Инициализируем VK Bridge НЕМЕДЛЕННО, до любых других операций
+        bridge.send('VKWebAppInit').catch(console.error);
+    }, []);
+
+    // Загрузка данных (после инициализации)
     useEffect(() => {
         const loadData = async () => {
             setIsLoadingStations(true);
             try {
-                await bridge.send('VKWebAppInit').catch(console.error);
-                const loadedStations = await fetchRadioStations();
+                // Добавляем таймаут для защиты от долгой загрузки
+                const timeoutPromise = new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 10000)
+                );
+
+                const loadedStations = await Promise.race([
+                    fetchRadioStations(),
+                    timeoutPromise
+                ]);
+
                 setStations(loadedStations);
                 const savedStationId = localStorage.getItem('lastStationId');
                 if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
@@ -350,13 +365,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         });
     };
 
-    // Функция для получения станций, отсортированных по рейтингу
     const getStationsByRating = () => {
         return stations
             .map(station => ({
                 ...station,
                 rating: stationRatings[station.id] || 0,
-                votes: stationRatings[station.id] ? 1 : 0 // В будущем можно считать количество голосов
+                votes: stationRatings[station.id] ? 1 : 0
             }))
             .filter(station => station.rating > 0)
             .sort((a, b) => b.rating - a.rating);
@@ -423,12 +437,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
                 >
                     <Div style={{ padding: '20px' }}>
-                        {/* Заголовок — тёмный, видимый */}
                         <Subhead weight="2" style={{ color: '#000000', marginBottom: '12px', display: 'block' }}>
                             📋 Скопируйте текст и отправьте другу:
                         </Subhead>
 
-                        {/* Поле с текстом */}
                         <Textarea
                             value={shareText}
                             onChange={(e) => setShareText(e.target.value)}
@@ -446,7 +458,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             }}
                         />
 
-                        {/* Большая красивая кнопка */}
                         <Button
                             size="l"
                             mode={copySuccess ? 'primary' : 'secondary'}
@@ -463,10 +474,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             }}
                             onClick={copyShareText}
                         >
-                            {copySuccess ? '✅ Скопировано! Можете вставлять' : '📋 Скопировать текст'}
+                            {copySuccess ? '✅ Скопировано! Можете вставлять' : ' Скопировать текст'}
                         </Button>
 
-                        {/* Подсказка */}
                         <Caption style={{
                             color: '#99A2AD',
                             display: 'block',
@@ -495,7 +505,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     onClose={() => setIsChatModalOpen(false)}
                 >
                     <Div style={{ padding: '20px' }}>
-                        {/* Приветствие */}
                         <Subhead weight="2" style={{
                             color: '#000000',
                             marginBottom: '12px',
@@ -505,7 +514,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             Добро пожаловать в чат AniWave Radio!
                         </Subhead>
 
-                        {/* Описание */}
                         <Caption style={{
                             color: '#555555',
                             display: 'block',
@@ -516,7 +524,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             Общайтесь с другими слушателями, делитесь любимыми треками и предлагайте идеи для развития радио!
                         </Caption>
 
-                        {/* Большая кнопка присоединиться */}
                         <Button
                             size="l"
                             mode="primary"
@@ -537,7 +544,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             Присоединиться к чату →
                         </Button>
 
-                        {/* Подсказка */}
                         <Caption style={{
                             color: '#99A2AD',
                             display: 'block',
@@ -569,7 +575,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
                                 <Subhead weight="2" style={{ color: '#000000', fontSize: '16px' }}>История пуста</Subhead>
-                                <Caption style={{ color: '#99A2AD', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Caption style={{ color: '#999999', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Начните слушать радио, чтобы увидеть историю
                                 </Caption>
                             </Div>
@@ -696,7 +702,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         {getStationsByRating().length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
                                 <Subhead weight="2" style={{ color: '#000000', fontSize: '16px' }}>Пока нет оценок</Subhead>
-                                <Caption style={{ color: '#99A2AD', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Caption style={{ color: '#999999', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Будьте первым, кто оценит станции!
                                 </Caption>
                             </Div>
@@ -933,7 +939,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             flexDirection: 'column',
                             alignItems: 'center',
                             textAlign: 'center',
-                            gridColumn: 'span 2', // На всю ширину
+                            gridColumn: 'span 2',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'translateY(-2px)';
@@ -1055,19 +1061,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     background: #0a0a1a !important;
                 }
                 
-                /* === ГАРАНТИЯ ЧИТАЕМОСТИ В МОДАЛЬНЫХ ОКНАХ === */
+                /* === УСИЛЕННАЯ ГАРАНТИЯ ЧИТАЕМОСТИ В МОДАЛЬНЫХ ОКНАХ === */
                 .ModalPage__in {
                     background: #ffffff !important;
+                    color: #000000 !important;
                 }
                 .ModalPage__header {
                     background: #ffffff !important;
                     border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+                }
+                .ModalPage__header-in,
+                .ModalPage__header .Subhead,
+                .ModalPage__header * {
+                    color: #000000 !important;
                 }
                 .ModalPage .Cell, 
                 .ModalPage .Group, 
                 .ModalPage .Div {
                     background: #ffffff !important;
                     color: #000000 !important;
+                }
+                .ModalPage .Subhead,
+                .ModalPage .Text,
+                .ModalPage .Caption {
+                    color: #000000 !important;
+                }
+                .ModalPage .Cell:hover {
+                    background: #f5f5f5 !important;
                 }
                 /* ============================================ */
 
