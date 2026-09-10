@@ -426,18 +426,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
-                    style={{ background: '#ffffff' }}
+                    style={{ background: '#232324' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#222222', fontWeight: 600 }}>Поделиться</span>
+                            <span style={{ color: '#ffffff', fontWeight: 600 }}>Поделиться</span>
                         </ModalPageHeader>
                     }
                     onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
                 >
-                    <Div style={{ padding: '20px', background: '#ffffff' }}>
-                        <Subhead weight="2" style={{ color: '#222222', marginBottom: '12px', display: 'block' }}>
+                    <Div style={{ padding: '20px', background: '#232324' }}>
+                        <Subhead weight="2" style={{ color: '#ffffff', marginBottom: '12px', display: 'block' }}>
                             📋 Скопируйте текст и отправьте другу:
                         </Subhead>
 
@@ -448,9 +448,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             readOnly
                             style={{
                                 marginBottom: '16px',
-                                background: '#f5f5f5',
-                                color: '#222222',
-                                border: '1px solid rgba(0, 0, 0, 0.15)',
+                                background: '#2a2a2b',
+                                color: '#ffffff',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
                                 borderRadius: '12px',
                                 padding: '12px',
                                 fontSize: '14px',
@@ -478,7 +478,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
 
                         <Caption style={{
-                            color: '#666666',
+                            color: '#939393',
                             display: 'block',
                             textAlign: 'center',
                             marginTop: '12px',
@@ -494,19 +494,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
                 <ModalPage
                     id="chat-invite"
-                    style={{ background: '#ffffff' }}
+                    style={{ background: '#232324' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#222222', fontWeight: 600 }}> Общий чат</span>
+                            <span style={{ color: '#ffffff', fontWeight: 600 }}>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsChatModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#ffffff' }}>
+                    <Div style={{ padding: '20px', background: '#232324' }}>
                         <Subhead weight="2" style={{
-                            color: '#222222',
+                            color: '#ffffff',
                             marginBottom: '12px',
                             display: 'block',
                             fontSize: '18px'
@@ -515,7 +515,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Subhead>
 
                         <Caption style={{
-                            color: '#555555',
+                            color: '#939393',
                             display: 'block',
                             marginBottom: '24px',
                             fontSize: '14px',
@@ -545,7 +545,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
 
                         <Caption style={{
-                            color: '#666666',
+                            color: '#939393',
                             display: 'block',
                             textAlign: 'center',
                             marginTop: '12px',
@@ -561,21 +561,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
                 <ModalPage
                     id="history"
-                    style={{ background: '#ffffff' }}
+                    style={{ background: '#232324' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#222222', fontWeight: 600 }}> История прослушиваний</span>
+                            <span style={{ color: '#ffffff', fontWeight: 600 }}>📜 История прослушиваний</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#ffffff' }}>
+                    <Div style={{ padding: '20px', background: '#232324' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: '#222222', fontSize: '16px' }}>История пуста</Subhead>
-                                <Caption style={{ color: '#666666', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Subhead weight="2" style={{ color: '#ffffff', fontSize: '16px' }}>История пуста</Subhead>
+                                <Caption style={{ color: '#939393', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Начните слушать радио, чтобы увидеть историю
                                 </Caption>
                             </Div>
@@ -589,7 +589,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         before={
                                             <div style={{
                                                 fontSize: '20px',
-                                                color: '#666666',
+                                                color: '#939393',
                                                 fontWeight: 600,
                                                 minWidth: '24px'
                                             }}>
@@ -601,15 +601,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             setIsHistoryModalOpen(false);
                                         }}
                                         subtitle={
-                                            <span style={{ color: '#666666', fontSize: '13px' }}>
+                                            <span style={{ color: '#939393', fontSize: '13px' }}>
                                                 {station.genre}
                                             </span>
                                         }
                                         style={{
-                                            background: '#f5f5f5',
+                                            background: '#2a2a2b',
                                             borderRadius: '12px',
                                             margin: '6px 0',
-                                            border: '1px solid rgba(0,0,0,0.05)'
+                                            border: '1px solid rgba(255,255,255,0.05)'
                                         }}
                                         after={
                                             <Button
@@ -631,7 +631,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             </Button>
                                         }
                                     >
-                                        <div style={{ color: '#222222', fontWeight: 600, fontSize: '15px' }}>
+                                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px' }}>
                                             {station.name}
                                         </div>
                                     </Cell>
@@ -639,13 +639,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             })
                         )}
                         {listeningHistory.length > 0 && (
-                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '16px' }}>
+                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
                                 <Button
                                     size="l"
                                     mode="secondary"
                                     style={{
                                         width: '100%',
-                                        background: '#f5f5f5',
+                                        background: '#2a2a2b',
                                         color: '#F44336',
                                         border: '1px solid rgba(244,67,54,0.3)',
                                         borderRadius: '12px',
@@ -670,12 +670,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
                 <ModalPage
                     id="equalizer"
-                    style={{ background: '#ffffff' }}
+                    style={{ background: '#232324' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#222222', fontWeight: 600 }}>🎛️ Настройки звука</span>
+                            <span style={{ color: '#ffffff', fontWeight: 600 }}>🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
@@ -688,21 +688,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
                 <ModalPage
                     id="rating"
-                    style={{ background: '#ffffff' }}
+                    style={{ background: '#232324' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#222222', fontWeight: 600 }}>🏆 Рейтинг станций</span>
+                            <span style={{ color: '#ffffff', fontWeight: 600 }}> Рейтинг станций</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsRatingModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#ffffff' }}>
+                    <Div style={{ padding: '20px', background: '#232324' }}>
                         {getStationsByRating().length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: '#222222', fontSize: '16px' }}>Пока нет оценок</Subhead>
-                                <Caption style={{ color: '#666666', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Subhead weight="2" style={{ color: '#ffffff', fontSize: '16px' }}>Пока нет оценок</Subhead>
+                                <Caption style={{ color: '#939393', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Будьте первым, кто оценит станции!
                                 </Caption>
                             </Div>
@@ -714,30 +714,30 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         <div style={{
                                             fontSize: '24px',
                                             fontWeight: 'bold',
-                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#666666',
+                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#939393',
                                             minWidth: '32px',
                                             textAlign: 'center'
                                         }}>
-                                            {index === 0 ? '🥇' : index === 1 ? '' : index === 2 ? '' : `#${index + 1}`}
+                                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                                         </div>
                                     }
                                     subtitle={
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <span style={{ fontSize: '12px', color: '#666666' }}>{station.genre}</span>
+                                            <span style={{ fontSize: '12px', color: '#939393' }}>{station.genre}</span>
                                         </div>
                                     }
                                     style={{
-                                        background: index < 3 ? 'rgba(255,215,0,0.1)' : '#f5f5f5',
+                                        background: index < 3 ? 'rgba(255,215,0,0.15)' : '#2a2a2b',
                                         borderRadius: '12px',
                                         margin: '6px 0',
-                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(0,0,0,0.05)'
+                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(255,255,255,0.05)'
                                     }}
                                     onClick={() => {
                                         handleStationSelect(station);
                                         setIsRatingModalOpen(false);
                                     }}
                                 >
-                                    <div style={{ color: '#222222', fontWeight: 600, fontSize: '15px' }}>
+                                    <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px' }}>
                                         {station.name}
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
@@ -746,7 +746,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                                 key={star}
                                                 style={{
                                                     fontSize: '14px',
-                                                    color: star <= station.rating ? '#FFD700' : '#cccccc',
+                                                    color: star <= station.rating ? '#FFD700' : '#555555',
                                                 }}
                                             >
                                                 ★
