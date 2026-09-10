@@ -1061,18 +1061,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #cccccc;
                 }
     
-                /* Тёмная тема VK (через атрибуты) */
+                /* ТЁМНАЯ ТЕМА VK (через атрибуты) — ЭТОГО БЛОКА НЕ ХВАТАЛО! */
                 #root[data-theme="dark"], #root.theme-dark {
-                    --bg-primary: #ffffff;
-                    --text-primary: #050505;
+                    --bg-primary: #0a0a1a;
+                    --text-primary: #ffffff;
                     --text-secondary: #b0b0b0;
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
                     background: #0a0a1a !important;
         
                     /* Цвета модальных окон для ТЁМНОЙ темы */
-                    --modal-bg: #ffffff;
-                    --modal-text: #050505;
+                    --modal-bg: #232324;
+                    --modal-text: #ffffff;
                     --modal-secondary: #939393;
                     --modal-cell-bg: #2a2a2b;
                     --modal-border: rgba(255, 255, 255, 0.1);
@@ -1094,13 +1094,20 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 .Group__header {
                     color: var(--text-primary) !important;
                 }
+    
                 @supports (height: 100dvh) {
                     .loading-screen {
                         height: 100dvh !important;
                     }
                 }
-                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
-                #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
+    
+                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, 
+                #root[data-theme="dark"] .Group, #root.theme-dark .Group { 
+                    background: transparent !important; 
+                }
+                #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { 
+                    background: #1a1a2e !important; 
+                }
 
                 .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
                 .now-playing-modal .ModalPage__header { background: transparent !important; border-bottom: none !important; }
@@ -1110,6 +1117,47 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 .player-card {
                     background: url(/background.png) center/cover !important;
                 }
+
+                /* === ПРИНУДИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН В ТЁМНОЙ ТЕМЕ === */
+                #root[data-theme="dark"] .ModalPage__in,
+                #root.theme-dark .ModalPage__in {
+                    background: #232324 !important;
+                }
+                #root[data-theme="dark"] .ModalPage__header,
+                #root.theme-dark .ModalPage__header {
+                    background: #232324 !important;
+                    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+                }
+                #root[data-theme="dark"] .ModalPage__header *,
+                #root.theme-dark .ModalPage__header * {
+                    color: #ffffff !important;
+                }
+                #root[data-theme="dark"] .ModalPage .Div,
+                #root.theme-dark .ModalPage .Div,
+                #root[data-theme="dark"] .ModalPage .Cell,
+                #root.theme-dark .ModalPage .Cell {
+                    background: #232324 !important;
+                    color: #ffffff !important;
+                }
+                #root[data-theme="dark"] .ModalPage .Subhead,
+                #root.theme-dark .ModalPage .Subhead,
+                #root[data-theme="dark"] .ModalPage .Text,
+                #root.theme-dark .ModalPage .Text {
+                    color: #ffffff !important;
+                }
+                #root[data-theme="dark"] .ModalPage .Caption,
+                #root.theme-dark .ModalPage .Caption {
+                    color: #939393 !important;
+                }
+    
+                @media (prefers-color-scheme: dark) {
+                    .ModalPage__in { background: #232324 !important; }
+                    .ModalPage__header { background: #232324 !important; }
+                    .ModalPage__header *, .ModalPage .Subhead, .ModalPage .Text { color: #ffffff !important; }
+                    .ModalPage .Caption { color: #939393 !important; }
+                    .ModalPage .Div, .ModalPage .Cell { background: #232324 !important; color: #ffffff !important; }
+                }
+                /* ============================================================ */
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
