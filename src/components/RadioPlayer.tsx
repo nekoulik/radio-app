@@ -1063,16 +1063,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     
                 /* Тёмная тема VK (через атрибуты) */
                 #root[data-theme="dark"], #root.theme-dark {
-                    --bg-primary: #0a0a1a;
-                    --text-primary: #ffffff;
+                    --bg-primary: #ffffff;
+                    --text-primary: #050505;
                     --text-secondary: #b0b0b0;
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
                     background: #0a0a1a !important;
         
                     /* Цвета модальных окон для ТЁМНОЙ темы */
-                    --modal-bg: #232324;
-                    --modal-text: #ffffff;
+                    --modal-bg: #ffffff;
+                    --modal-text: #050505;
                     --modal-secondary: #939393;
                     --modal-cell-bg: #2a2a2b;
                     --modal-border: rgba(255, 255, 255, 0.1);
