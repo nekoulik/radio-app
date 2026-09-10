@@ -426,18 +426,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
-                    style={{ background: '#232324' }}
+                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>Поделиться</span>
+                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>Поделиться</span>
                         </ModalPageHeader>
                     }
                     onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
                 >
-                    <Div style={{ padding: '20px', background: '#232324' }}>
-                        <Subhead weight="2" style={{ color: '#ffffff', marginBottom: '12px', display: 'block' }}>
+                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
+                        <Subhead weight="2" style={{ color: 'var(--modal-text)', marginBottom: '12px', display: 'block' }}>
                             📋 Скопируйте текст и отправьте другу:
                         </Subhead>
 
@@ -448,9 +448,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             readOnly
                             style={{
                                 marginBottom: '16px',
-                                background: '#2a2a2b',
-                                color: '#ffffff',
-                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                background: 'var(--modal-cell-bg)',
+                                color: 'var(--modal-text)',
+                                border: '1px solid var(--modal-border)',
                                 borderRadius: '12px',
                                 padding: '12px',
                                 fontSize: '14px',
@@ -478,7 +478,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
 
                         <Caption style={{
-                            color: '#939393',
+                            color: 'var(--modal-secondary)',
                             display: 'block',
                             textAlign: 'center',
                             marginTop: '12px',
@@ -494,19 +494,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
                 <ModalPage
                     id="chat-invite"
-                    style={{ background: '#232324' }}
+                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>💬 Общий чат</span>
+                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsChatModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#232324' }}>
+                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
                         <Subhead weight="2" style={{
-                            color: '#ffffff',
+                            color: 'var(--modal-text)',
                             marginBottom: '12px',
                             display: 'block',
                             fontSize: '18px'
@@ -515,7 +515,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Subhead>
 
                         <Caption style={{
-                            color: '#939393',
+                            color: 'var(--modal-secondary)',
                             display: 'block',
                             marginBottom: '24px',
                             fontSize: '14px',
@@ -545,7 +545,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         </Button>
 
                         <Caption style={{
-                            color: '#939393',
+                            color: 'var(--modal-secondary)',
                             display: 'block',
                             textAlign: 'center',
                             marginTop: '12px',
@@ -561,21 +561,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
                 <ModalPage
                     id="history"
-                    style={{ background: '#232324' }}
+                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>📜 История прослушиваний</span>
+                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>📜 История прослушиваний</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#232324' }}>
+                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: '#ffffff', fontSize: '16px' }}>История пуста</Subhead>
-                                <Caption style={{ color: '#939393', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Subhead weight="2" style={{ color: 'var(--modal-text)', fontSize: '16px' }}>История пуста</Subhead>
+                                <Caption style={{ color: 'var(--modal-secondary)', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Начните слушать радио, чтобы увидеть историю
                                 </Caption>
                             </Div>
@@ -589,7 +589,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         before={
                                             <div style={{
                                                 fontSize: '20px',
-                                                color: '#939393',
+                                                color: 'var(--modal-secondary)',
                                                 fontWeight: 600,
                                                 minWidth: '24px'
                                             }}>
@@ -601,15 +601,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             setIsHistoryModalOpen(false);
                                         }}
                                         subtitle={
-                                            <span style={{ color: '#939393', fontSize: '13px' }}>
+                                            <span style={{ color: 'var(--modal-secondary)', fontSize: '13px' }}>
                                                 {station.genre}
                                             </span>
                                         }
                                         style={{
-                                            background: '#2a2a2b',
+                                            background: 'var(--modal-cell-bg)',
                                             borderRadius: '12px',
                                             margin: '6px 0',
-                                            border: '1px solid rgba(255,255,255,0.05)'
+                                            border: '1px solid var(--modal-border)'
                                         }}
                                         after={
                                             <Button
@@ -631,7 +631,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             </Button>
                                         }
                                     >
-                                        <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px' }}>
+                                        <div style={{ color: 'var(--modal-text)', fontWeight: 600, fontSize: '15px' }}>
                                             {station.name}
                                         </div>
                                     </Cell>
@@ -639,13 +639,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             })
                         )}
                         {listeningHistory.length > 0 && (
-                            <Div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+                            <Div style={{ marginTop: '16px', borderTop: '1px solid var(--modal-border)', paddingTop: '16px' }}>
                                 <Button
                                     size="l"
                                     mode="secondary"
                                     style={{
                                         width: '100%',
-                                        background: '#2a2a2b',
+                                        background: 'var(--modal-cell-bg)',
                                         color: '#F44336',
                                         border: '1px solid rgba(244,67,54,0.3)',
                                         borderRadius: '12px',
@@ -670,12 +670,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
                 <ModalPage
                     id="equalizer"
-                    style={{ background: '#232324' }}
+                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}>🎛️ Настройки звука</span>
+                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
@@ -688,21 +688,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
                 <ModalPage
                     id="rating"
-                    style={{ background: '#232324' }}
+                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: '#ffffff', fontWeight: 600 }}> Рейтинг станций</span>
+                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>🏆 Рейтинг станций</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsRatingModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: '#232324' }}>
+                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
                         {getStationsByRating().length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: '#ffffff', fontSize: '16px' }}>Пока нет оценок</Subhead>
-                                <Caption style={{ color: '#939393', display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                <Subhead weight="2" style={{ color: 'var(--modal-text)', fontSize: '16px' }}>Пока нет оценок</Subhead>
+                                <Caption style={{ color: 'var(--modal-secondary)', display: 'block', marginTop: '8px', fontSize: '14px' }}>
                                     Будьте первым, кто оценит станции!
                                 </Caption>
                             </Div>
@@ -714,7 +714,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         <div style={{
                                             fontSize: '24px',
                                             fontWeight: 'bold',
-                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#939393',
+                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : 'var(--modal-secondary)',
                                             minWidth: '32px',
                                             textAlign: 'center'
                                         }}>
@@ -723,21 +723,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     }
                                     subtitle={
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <span style={{ fontSize: '12px', color: '#939393' }}>{station.genre}</span>
+                                            <span style={{ fontSize: '12px', color: 'var(--modal-secondary)' }}>{station.genre}</span>
                                         </div>
                                     }
                                     style={{
-                                        background: index < 3 ? 'rgba(255,215,0,0.15)' : '#2a2a2b',
+                                        background: index < 3 ? 'rgba(255,215,0,0.15)' : 'var(--modal-cell-bg)',
                                         borderRadius: '12px',
                                         margin: '6px 0',
-                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(255,255,255,0.05)'
+                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid var(--modal-border)'
                                     }}
                                     onClick={() => {
                                         handleStationSelect(station);
                                         setIsRatingModalOpen(false);
                                     }}
                                 >
-                                    <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px' }}>
+                                    <div style={{ color: 'var(--modal-text)', fontWeight: 600, fontSize: '15px' }}>
                                         {station.name}
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
@@ -746,7 +746,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                                 key={star}
                                                 style={{
                                                     fontSize: '14px',
-                                                    color: star <= station.rating ? '#FFD700' : '#555555',
+                                                    color: star <= station.rating ? '#FFD700' : 'var(--modal-inactive-star)',
                                                 }}
                                             >
                                                 ★
@@ -1051,7 +1051,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --text-secondary: #555555;
                     --border-color: rgba(0, 0, 0, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.25);
+        
+                    /* Цвета модальных окон для СВЕТЛОЙ темы */
+                    --modal-bg: #ffffff;
+                    --modal-text: #000000;
+                    --modal-secondary: #555555;
+                    --modal-cell-bg: #f5f5f5;
+                    --modal-border: rgba(0, 0, 0, 0.1);
+                    --modal-inactive-star: #cccccc;
                 }
+    
+                /* Тёмная тема VK (через атрибуты) */
                 #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
@@ -1059,38 +1069,28 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
                     background: #0a0a1a !important;
+        
+                    /* Цвета модальных окон для ТЁМНОЙ темы */
+                    --modal-bg: #232324;
+                    --modal-text: #ffffff;
+                    --modal-secondary: #939393;
+                    --modal-cell-bg: #2a2a2b;
+                    --modal-border: rgba(255, 255, 255, 0.1);
+                    --modal-inactive-star: #555555;
                 }
-                
-                /* === УСИЛЕННАЯ ГАРАНТИЯ ЧИТАЕМОСТИ В МОДАЛЬНЫХ ОКНАХ === */
-                .ModalPage__in {
-                    background: #ffffff !important;
-                    color: #000000 !important;
+    
+                /* Системная тёмная тема (если VK не установил атрибуты) */
+                @media (prefers-color-scheme: dark) {
+                    :root {
+                        --modal-bg: #232324;
+                        --modal-text: #ffffff;
+                        --modal-secondary: #939393;
+                        --modal-cell-bg: #2a2a2b;
+                        --modal-border: rgba(255, 255, 255, 0.1);
+                        --modal-inactive-star: #555555;
+                    }
                 }
-                .ModalPage__header {
-                    background: #ffffff !important;
-                    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-                }
-                .ModalPage__header-in,
-                .ModalPage__header .Subhead,
-                .ModalPage__header * {
-                    color: #000000 !important;
-                }
-                .ModalPage .Cell, 
-                .ModalPage .Group, 
-                .ModalPage .Div {
-                    background: #ffffff !important;
-                    color: #000000 !important;
-                }
-                .ModalPage .Subhead,
-                .ModalPage .Text,
-                .ModalPage .Caption {
-                    color: #000000 !important;
-                }
-                .ModalPage .Cell:hover {
-                    background: #f5f5f5 !important;
-                }
-                /* ============================================ */
-
+    
                 .Group__header {
                     color: var(--text-primary) !important;
                 }
@@ -1101,7 +1101,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 }
                 #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
                 #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
-    
+
                 .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
                 .now-playing-modal .ModalPage__header { background: transparent !important; border-bottom: none !important; }
                 .now-playing-modal .ModalPage__header-in { color: #ffffff !important; }
