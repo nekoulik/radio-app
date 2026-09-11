@@ -928,7 +928,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.boxShadow = 'none';
                         }}
                     >
-                        <Subhead weight="2" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Наше сообщество</Subhead>
+                        <Subhead weight="2" style={{ fontWeight: 600 }}>Наше сообщество</Subhead>
                     </Cell>
                 </Group>
 
@@ -936,7 +936,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>О радио</Subhead>}>
                     <Cell multiline><Text>AniWave — это лучшее аниме радио! Слушайте J-Pop, Lo-Fi, OST из любимых аниме 24/7.</Text></Cell>
                     <Div style={{ padding: '12px 16px', borderTop: '1px solid var(--border-color)' }}>
-                        <Caption style={{ color: 'var(--text-secondary)', textAlign: 'center', display: 'block' }}>💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)</Caption>
+                        <Caption style={{ textAlign: 'center', display: 'block' }}>💡 Горячие клавиши: Пробел (Play/Pause), ← → (станции), ↑ ↓ (громкость)</Caption>
                     </Div>
                 </Group>
             </Group>
