@@ -640,7 +640,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     key={station.id}
                                     before={
                                         <div style={{ fontSize: '24px', fontWeight: 'bold', minWidth: '32px', textAlign: 'center' }}>
-                                            {index === 0 ? '' : index === 1 ? '' : index === 2 ? '🥉' : `#${index + 1}`}
+                                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                                         </div>
                                     }
                                     subtitle={<div style={{ fontSize: '12px' }}>{station.genre}</div>}
