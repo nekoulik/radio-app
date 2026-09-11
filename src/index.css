@@ -3,11 +3,9 @@ body {
     margin: 0;
     padding: 0;
     background: var(--bg-primary, #f5f5f5) !important;
-    /* Адаптивный фон */
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--text-primary, #000000);
-    /* Адаптивный текст */
 }
 
 * {
@@ -252,58 +250,6 @@ input[placeholder*="Поиск"]:focus {
     outline: none !important;
 }
 
-/* === МОДАЛЬНЫЕ ОКНА (ИСПРАВЛЕНО: используем CSS-переменные для адаптации к теме) === */
-.ModalPage__in {
-    background: var(--modal-bg, #ffffff) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
-}
-
-.ModalPage__header {
-    background: var(--modal-bg, #ffffff) !important;
-    border-bottom: 1px solid var(--modal-border, rgba(0, 0, 0, 0.1)) !important;
-}
-
-.ModalPage__header-in,
-.ModalPage__header .Subhead {
-    color: var(--modal-text, #000000) !important;
-    font-weight: 600;
-}
-
-.ModalPage .Cell,
-.ModalPage .Group,
-.ModalPage .Div {
-    background: var(--modal-bg, #ffffff) !important;
-    color: var(--modal-text, #000000) !important;
-}
-
-.ModalPage .Cell:hover {
-    background: var(--modal-cell-bg, #f5f5f5) !important;
-}
-
-.ModalPage .Subhead,
-.ModalPage .Text {
-    color: var(--modal-text, #000000) !important;
-}
-
-.ModalPage .Caption {
-    color: var(--modal-secondary, #555555) !important;
-}
-
-/* Экран "Сейчас играет" — всегда тёмный */
-.now-playing-modal .ModalPage__in {
-    background: #0a0a1a !important;
-    min-height: 100vh;
-}
-
-.now-playing-modal .ModalPage__header {
-    background: transparent !important;
-}
-
-.now-playing-modal .ModalPage__header-in {
-    color: #ffffff !important;
-}
-
 /* === СТИЛИ СТАНЦИЙ === */
 .station-cell {
     transition: all 0.2s;
@@ -345,94 +291,16 @@ input[placeholder*="Поиск"]:focus {
 
 .station-title {
     color: var(--text-primary, #000000) !important;
-    /* Адаптивный цвет */
     font-weight: 600;
 }
 
 .station-genre,
 .station-desc {
     color: var(--text-secondary, #555555) !important;
-    /* Адаптивный цвет */
     font-size: 11px;
 }
 
 .active-title {
     color: #d63384 !important;
     font-weight: 700;
-}
-
-/* === СТИЛИ ЭКВАЛАЙЗЕРА === */
-.equalizer-presets button,
-#equalizer button {
-    background: var(--modal-cell-bg, #f5f5f5) !important;
-    color: var(--modal-text, #000000) !important;
-    border: 1px solid var(--modal-border, rgba(0, 0, 0, 0.15)) !important;
-    border-radius: 10px !important;
-    padding: 10px 20px !important;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
-}
-
-.equalizer-presets button:hover,
-#equalizer button:hover,
-.equalizer-presets button.active,
-#equalizer button.active {
-    background: #2D81E0 !important;
-    color: #ffffff !important;
-    border-color: #2D81E0 !important;
-}
-
-.equalizer-visualizer,
-#equalizer canvas,
-#equalizer .visualizer {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border-radius: 12px !important;
-    border: 1px solid var(--modal-border, rgba(0, 0, 0, 0.1)) !important;
-}
-
-#equalizer .Caption,
-#equalizer caption {
-    color: var(--modal-secondary, #99A2AD) !important;
-    font-size: 13px !important;
-}
-
-#equalizer .Subhead,
-#equalizer .Text {
-    color: var(--modal-text, #000000) !important;
-}
-
-/* === БЛОК "ССЫЛКИ" (ИСПРАВЛЕНО: контрастный текст) === */
-.Cell[href*="vk.ru"],
-.Cell[href*="vk.com"] {
-    background: linear-gradient(135deg, rgba(255, 102, 179, 0.15), rgba(102, 204, 255, 0.15)) !important;
-    border: 1px solid rgba(255, 102, 179, 0.3) !important;
-    border-radius: 12px !important;
-    transition: all 0.3s ease !important;
-    margin: 8px 16px !important;
-}
-
-.Cell[href*="vk.ru"]:hover,
-.Cell[href*="vk.com"]:hover {
-    background: linear-gradient(135deg, rgba(255, 102, 179, 0.25), rgba(102, 204, 255, 0.25)) !important;
-    border-color: rgba(255, 102, 179, 0.5) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px rgba(255, 102, 179, 0.3) !important;
-}
-
-.Cell[href*="vk.ru"]>div:first-child,
-.Cell[href*="vk.com"]>div:first-child {
-    font-size: 28px !important;
-}
-
-/* ИСПРАВЛЕНИЕ: Тёмно-фиолетовый текст отлично читается на светло-розовом фоне в любой теме */
-.Cell[href*="vk.ru"] .Subhead,
-.Cell[href*="vk.com"] .Subhead {
-    color: #764ba2 !important;
-    font-weight: 600 !important;
-}
-
-.Cell[href*="vk.ru"] .Caption,
-.Cell[href*="vk.com"] .Caption {
-    color: #555555 !important;
-    /* Или var(--text-secondary) */
 }
