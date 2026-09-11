@@ -426,21 +426,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
-                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>Поделиться</span>
+                            <span>Поделиться</span>
                         </ModalPageHeader>
                     }
                     onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
                 >
-                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
-                        <Subhead weight="2" style={{ color: 'var(--modal-text)', marginBottom: '12px', display: 'block' }}>
+                    <Div style={{ padding: '20px' }}>
+                        <Subhead weight="2" style={{ marginBottom: '12px', display: 'block' }}>
                             📋 Скопируйте текст и отправьте другу:
                         </Subhead>
-
                         <Textarea
                             value={shareText}
                             onChange={(e) => setShareText(e.target.value)}
@@ -448,16 +446,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             readOnly
                             style={{
                                 marginBottom: '16px',
-                                background: 'var(--modal-cell-bg)',
-                                color: 'var(--modal-text)',
-                                border: '1px solid var(--modal-border)',
                                 borderRadius: '12px',
                                 padding: '12px',
                                 fontSize: '14px',
                                 lineHeight: '1.5'
                             }}
                         />
-
                         <Button
                             size="l"
                             mode={copySuccess ? 'primary' : 'secondary'}
@@ -469,21 +463,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 borderRadius: '12px',
                                 padding: '14px',
                                 fontSize: '16px',
-                                fontWeight: 600,
-                                transition: 'all 0.3s ease'
+                                fontWeight: 600
                             }}
                             onClick={copyShareText}
                         >
-                            {copySuccess ? '✅ Скопировано! Можете вставлять' : '📋 Скопировать текст'}
+                            {copySuccess ? '✅ Скопировано!' : ' Скопировать текст'}
                         </Button>
-
-                        <Caption style={{
-                            color: 'var(--modal-secondary)',
-                            display: 'block',
-                            textAlign: 'center',
-                            marginTop: '12px',
-                            fontSize: '12px'
-                        }}>
+                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
                             Текст автоматически скопируется в буфер обмена
                         </Caption>
                     </Div>
@@ -494,36 +480,22 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
                 <ModalPage
                     id="chat-invite"
-                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>💬 Общий чат</span>
+                            <span>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsChatModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
-                        <Subhead weight="2" style={{
-                            color: 'var(--modal-text)',
-                            marginBottom: '12px',
-                            display: 'block',
-                            fontSize: '18px'
-                        }}>
+                    <Div style={{ padding: '20px' }}>
+                        <Subhead weight="2" style={{ marginBottom: '12px', display: 'block', fontSize: '18px' }}>
                             Добро пожаловать в чат AniWave Radio!
                         </Subhead>
-
-                        <Caption style={{
-                            color: 'var(--modal-secondary)',
-                            display: 'block',
-                            marginBottom: '24px',
-                            fontSize: '14px',
-                            lineHeight: '1.5'
-                        }}>
-                            Общайтесь с другими слушателями, делитесь любимыми треками и предлагайте идеи для развития радио!
+                        <Caption style={{ display: 'block', marginBottom: '24px', fontSize: '14px', lineHeight: '1.5' }}>
+                            Общайтесь с другими слушателями, делитесь любимыми треками и предлагайте идеи!
                         </Caption>
-
                         <Button
                             size="l"
                             mode="primary"
@@ -543,14 +515,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         >
                             Присоединиться к чату →
                         </Button>
-
-                        <Caption style={{
-                            color: 'var(--modal-secondary)',
-                            display: 'block',
-                            textAlign: 'center',
-                            marginTop: '12px',
-                            fontSize: '12px'
-                        }}>
+                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
                             Чат откроется в новом окне VK Мессенджера
                         </Caption>
                     </Div>
@@ -561,106 +526,41 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
                 <ModalPage
                     id="history"
-                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>📜 История прослушиваний</span>
+                            <span>📜 История</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
+                    <Div style={{ padding: '20px' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: 'var(--modal-text)', fontSize: '16px' }}>История пуста</Subhead>
-                                <Caption style={{ color: 'var(--modal-secondary)', display: 'block', marginTop: '8px', fontSize: '14px' }}>
-                                    Начните слушать радио, чтобы увидеть историю
+                                <Subhead weight="2" style={{ fontSize: '16px' }}>История пуста</Subhead>
+                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                    Начните слушать радио
                                 </Caption>
                             </Div>
                         ) : (
-                            listeningHistory.map((stationId, index) => {
+                            listeningHistory.map((stationId) => {
                                 const station = stations.find(s => s.id === stationId);
                                 if (!station) return null;
                                 return (
                                     <Cell
                                         key={station.id}
-                                        before={
-                                            <div style={{
-                                                fontSize: '20px',
-                                                color: 'var(--modal-secondary)',
-                                                fontWeight: 600,
-                                                minWidth: '24px'
-                                            }}>
-                                                {index + 1}
-                                            </div>
-                                        }
-                                        onClick={() => {
-                                            handleStationSelect(station);
-                                            setIsHistoryModalOpen(false);
-                                        }}
-                                        subtitle={
-                                            <span style={{ color: 'var(--modal-secondary)', fontSize: '13px' }}>
-                                                {station.genre}
-                                            </span>
-                                        }
-                                        style={{
-                                            background: 'var(--modal-cell-bg)',
-                                            borderRadius: '12px',
-                                            margin: '6px 0',
-                                            border: '1px solid var(--modal-border)'
-                                        }}
+                                        onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }}
+                                        subtitle={<span>{station.genre}</span>}
+                                        style={{ borderRadius: '12px', margin: '6px 0' }}
                                         after={
-                                            <Button
-                                                size="s"
-                                                mode="primary"
-                                                style={{
-                                                    background: '#2D81E0',
-                                                    color: '#fff',
-                                                    borderRadius: '8px',
-                                                    minWidth: '40px'
-                                                }}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleStationSelect(station);
-                                                    setIsHistoryModalOpen(false);
-                                                }}
-                                            >
-                                                ▶
-                                            </Button>
+                                            <Button size="s" mode="primary" style={{ background: '#2D81E0', borderRadius: '8px' }}>▶</Button>
                                         }
                                     >
-                                        <div style={{ color: 'var(--modal-text)', fontWeight: 600, fontSize: '15px' }}>
-                                            {station.name}
-                                        </div>
+                                        <div style={{ fontWeight: 600 }}>{station.name}</div>
                                     </Cell>
                                 );
                             })
-                        )}
-                        {listeningHistory.length > 0 && (
-                            <Div style={{ marginTop: '16px', borderTop: '1px solid var(--modal-border)', paddingTop: '16px' }}>
-                                <Button
-                                    size="l"
-                                    mode="secondary"
-                                    style={{
-                                        width: '100%',
-                                        background: 'var(--modal-cell-bg)',
-                                        color: '#F44336',
-                                        border: '1px solid rgba(244,67,54,0.3)',
-                                        borderRadius: '12px',
-                                        padding: '12px',
-                                        fontWeight: 600
-                                    }}
-                                    onClick={() => {
-                                        localStorage.removeItem('listeningHistory');
-                                        setListeningHistory([]);
-                                        setIsHistoryModalOpen(false);
-                                    }}
-                                >
-                                    🗑️ Очистить историю
-                                </Button>
-                            </Div>
                         )}
                     </Div>
                 </ModalPage>
@@ -670,12 +570,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
                 <ModalPage
                     id="equalizer"
-                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>🎛️ Настройки звука</span>
+                            <span>🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
@@ -688,22 +587,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
                 <ModalPage
                     id="rating"
-                    style={{ background: 'var(--modal-bg)' }}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
                         >
-                            <span style={{ color: 'var(--modal-text)', fontWeight: 600 }}>🏆 Рейтинг станций</span>
+                            <span>🏆 Рейтинг</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsRatingModalOpen(false)}
                 >
-                    <Div style={{ padding: '20px', background: 'var(--modal-bg)' }}>
+                    <Div style={{ padding: '20px' }}>
                         {getStationsByRating().length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
-                                <Subhead weight="2" style={{ color: 'var(--modal-text)', fontSize: '16px' }}>Пока нет оценок</Subhead>
-                                <Caption style={{ color: 'var(--modal-secondary)', display: 'block', marginTop: '8px', fontSize: '14px' }}>
-                                    Будьте первым, кто оценит станции!
+                                <Subhead weight="2" style={{ fontSize: '16px' }}>Пока нет оценок</Subhead>
+                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>
+                                    Будьте первым!
                                 </Caption>
                             </Div>
                         ) : (
@@ -711,50 +609,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 <Cell
                                     key={station.id}
                                     before={
-                                        <div style={{
-                                            fontSize: '24px',
-                                            fontWeight: 'bold',
-                                            color: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : 'var(--modal-secondary)',
-                                            minWidth: '32px',
-                                            textAlign: 'center'
-                                        }}>
-                                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                                        <div style={{ fontSize: '24px', fontWeight: 'bold', minWidth: '32px', textAlign: 'center' }}>
+                                            {index === 0 ? '' : index === 1 ? '' : index === 2 ? '🥉' : `#${index + 1}`}
                                         </div>
                                     }
-                                    subtitle={
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <span style={{ fontSize: '12px', color: 'var(--modal-secondary)' }}>{station.genre}</span>
-                                        </div>
-                                    }
-                                    style={{
-                                        background: index < 3 ? 'rgba(255,215,0,0.15)' : 'var(--modal-cell-bg)',
-                                        borderRadius: '12px',
-                                        margin: '6px 0',
-                                        border: index < 3 ? '1px solid rgba(255,215,0,0.3)' : '1px solid var(--modal-border)'
-                                    }}
-                                    onClick={() => {
-                                        handleStationSelect(station);
-                                        setIsRatingModalOpen(false);
-                                    }}
+                                    subtitle={<div style={{ fontSize: '12px' }}>{station.genre}</div>}
+                                    style={{ borderRadius: '12px', margin: '6px 0' }}
+                                    onClick={() => { handleStationSelect(station); setIsRatingModalOpen(false); }}
                                 >
-                                    <div style={{ color: 'var(--modal-text)', fontWeight: 600, fontSize: '15px' }}>
-                                        {station.name}
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                                    <div style={{ fontWeight: 600 }}>{station.name}</div>
+                                    <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                                         {[1, 2, 3, 4, 5].map((star) => (
-                                            <span
-                                                key={star}
-                                                style={{
-                                                    fontSize: '14px',
-                                                    color: star <= station.rating ? '#FFD700' : 'var(--modal-inactive-star)',
-                                                }}
-                                            >
-                                                ★
-                                            </span>
+                                            <span key={star} style={{ fontSize: '14px', color: star <= station.rating ? '#FFD700' : '#999' }}>★</span>
                                         ))}
-                                        <span style={{ fontSize: '12px', color: '#FFD700', fontWeight: 600, marginLeft: '4px' }}>
-                                            {station.rating}/5
-                                        </span>
                                     </div>
                                 </Cell>
                             ))
@@ -1045,6 +912,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </Group>
 
             <style>{`
+                /* === ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ === */
                 :root {
                     --bg-primary: #f5f5f5;
                     --text-primary: #000000;
@@ -1057,6 +925,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-cell-bg: #f5f5f5;
                     --modal-border: rgba(0, 0, 0, 0.1);
                     --modal-inactive-star: #cccccc;
+                    --modal-header-bg: #2D81E0;
+                    --modal-header-text: #ffffff;
                 }
     
                 #root[data-theme="dark"], #root.theme-dark {
@@ -1065,13 +935,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --text-secondary: #b0b0b0;
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
-                    background: #0a0a1a !important;
                     --modal-bg: #232324;
                     --modal-text: #ffffff;
                     --modal-secondary: #939393;
                     --modal-cell-bg: #2a2a2b;
                     --modal-border: rgba(255, 255, 255, 0.1);
                     --modal-inactive-star: #555555;
+                    background: #0a0a1a !important;
                 }
     
                 @media (prefers-color-scheme: dark) {
@@ -1085,77 +955,72 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     }
                 }
     
-                .Group__header {
-                    color: var(--text-primary) !important;
+                /* === МОДАЛЬНЫЕ ОКНА — ВСЕ СТИЛИ ЗДЕСЬ === */
+    
+                /* Контейнер модального окна */
+                .ModalPage__in {
+                    background: var(--modal-bg) !important;
+                    border-radius: 16px !important;
                 }
+    
+                /* Шапка модального окна — СИНЯЯ */
+                .ModalPage__header {
+                    background: var(--modal-header-bg) !important;
+                    border-bottom: none !important;
+                }
+    
+                /* Текст в шапке */
+                .ModalPage__header *,
+                .ModalPage__header .Subhead {
+                    color: var(--modal-header-text) !important;
+                    font-weight: 600;
+                }
+    
+                /* Содержимое модального окна */
+                .ModalPage .Div,
+                .ModalPage .Group,
+                .ModalPage .Cell {
+                    background: var(--modal-bg) !important;
+                    color: var(--modal-text) !important;
+                }
+    
+                /* Текст в модальном окне */
+                .ModalPage .Subhead,
+                .ModalPage .Text {
+                    color: var(--modal-text) !important;
+                }
+    
+                .ModalPage .Caption {
+                    color: var(--modal-secondary) !important;
+                }
+    
+                /* Ячейки при наведении */
+                .ModalPage .Cell:hover {
+                    background: var(--modal-cell-bg) !important;
+                }
+    
+                /* === ОСТАЛЬНЫЕ СТИЛИ === */
+                .Group__header { color: var(--text-primary) !important; }
     
                 @supports (height: 100dvh) {
-                    .loading-screen {
-                        height: 100dvh !important;
-                    }
+                    .loading-screen { height: 100dvh !important; }
                 }
     
-                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, 
+                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel,
                 #root[data-theme="dark"] .Group, #root.theme-dark .Group { 
                     background: transparent !important; 
                 }
+    
                 #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { 
                     background: #1a1a2e !important; 
                 }
 
                 .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
-                .now-playing-modal .ModalPage__header { background: transparent !important; border-bottom: none !important; }
+                .now-playing-modal .ModalPage__header { background: transparent !important; }
                 .now-playing-modal .ModalPage__header-in { color: #ffffff !important; }
                 .now-playing-modal::-webkit-scrollbar { display: none; }
 
-                .player-card {
-                    background: url(/background.png) center/cover !important;
-                }
-
-                /* === СИНЯЯ ШАПКА ДЛЯ ВСЕХ МОДАЛЬНЫХ ОКОН (как у кнопок) === */
-                .ModalPage__header {
-                    background: #2D81E0 !important;
-                    border-bottom: none !important;
-                }
-    
-                .ModalPage__header *,
-                .ModalPage__header .Subhead {
-                    color: #ffffff !important;
-                }
-    
-                #root[data-theme="dark"] .ModalPage__in,
-                #root.theme-dark .ModalPage__in {
-                    background: #232324 !important;
-                }
-    
-                #root[data-theme="dark"] .ModalPage .Div,
-                #root.theme-dark .ModalPage .Div,
-                #root[data-theme="dark"] .ModalPage .Cell,
-                #root.theme-dark .ModalPage .Cell {
-                    background: #232324 !important;
-                    color: #ffffff !important;
-                }
-    
-                #root[data-theme="dark"] .ModalPage .Subhead,
-                #root.theme-dark .ModalPage .Subhead,
-                #root[data-theme="dark"] .ModalPage .Text,
-                #root.theme-dark .ModalPage .Text {
-                    color: #ffffff !important;
-                }
-    
-                #root[data-theme="dark"] .ModalPage .Caption,
-                #root.theme-dark .ModalPage .Caption {
-                    color: #939393 !important;
-                }
-    
-                @media (prefers-color-scheme: dark) {
-                    .ModalPage__in { background: #232324 !important; }
-                    .ModalPage__header { background: #2D81E0 !important; }
-                    .ModalPage__header *, .ModalPage .Subhead, .ModalPage .Text { color: #ffffff !important; }
-                    .ModalPage .Caption { color: #939393 !important; }
-                    .ModalPage .Div, .ModalPage .Cell { background: #232324 !important; color: #ffffff !important; }
-                }
-                /* ============================================================ */
+                .player-card { background: url(/background.png) center/cover !important; }
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
