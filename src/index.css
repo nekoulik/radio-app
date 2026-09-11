@@ -304,3 +304,24 @@ input[placeholder*="Поиск"]:focus {
     color: #d63384 !important;
     font-weight: 700;
 }
+
+/* === ГАРАНТИРОВАННО СИНИЕ ШАПКИ МОДАЛЬНЫХ ОКОН === */
+.ModalPage__header {
+    background: #2D81E0 !important;
+    border-bottom: none !important;
+}
+
+/* Делаем белый цвет для всего текста и иконок внутри шапки */
+.ModalPage__header *,
+.ModalPage__header .Subhead,
+.ModalPage__header span,
+.ModalPage__header button,
+.ModalPage__header svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+
+/* Дополнительная специфичность для полноэкранного плеера */
+.now-playing-modal .ModalPage__header {
+    background: #2D81E0 !important;
+}
