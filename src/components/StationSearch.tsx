@@ -95,7 +95,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                                                 style={{
                                                     cursor: hasVoted ? 'not-allowed' : 'pointer',
                                                     fontSize: '14px',
-                                                    color: star <= currentRating ? '#FFD700' : 'rgba(255,255,255,0.3)',
+                                                    color: star <= currentRating ? '#FFD700' : 'var(--modal-inactive-star, rgba(255,255,255,0.3))',
                                                     transition: 'all 0.2s ease',
                                                     filter: star <= currentRating ? 'drop-shadow(0 0 4px rgba(255,215,0,0.8))' : 'none',
                                                     opacity: hasVoted ? 0.85 : 1,
@@ -144,7 +144,7 @@ export const StationSearch: React.FC<StationSearchProps> = ({
                 <div style={{
                     textAlign: 'center',
                     padding: '24px 16px',
-                    color: 'rgba(255,255,255,0.7)',
+                    color: 'var(--text-secondary, rgba(255,255,255,0.7))',
                     fontSize: '14px',
                 }}>
                     😔 Станции не найдены
