@@ -18,7 +18,6 @@ import {
 import {
     Icon28PlayOutline,
     Icon28PauseOutline,
-    Icon24Dismiss,
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
@@ -427,9 +426,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <ModalPage
                     id="share"
                     header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
-                        >
+                        <ModalPageHeader>
                             <span>Поделиться</span>
                         </ModalPageHeader>
                     }
@@ -481,9 +478,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <ModalPage
                     id="chat-invite"
                     header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
-                        >
+                        <ModalPageHeader>
                             <span>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
@@ -527,9 +522,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <ModalPage
                     id="history"
                     header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
-                        >
+                        <ModalPageHeader>
                             <span>📜 История</span>
                         </ModalPageHeader>
                     }
@@ -601,9 +594,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <ModalPage
                     id="equalizer"
                     header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
-                        >
+                        <ModalPageHeader>
                             <span>🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
@@ -618,9 +609,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 <ModalPage
                     id="rating"
                     header={
-                        <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
-                        >
+                        <ModalPageHeader>
                             <span>🏆 Рейтинг</span>
                         </ModalPageHeader>
                     }
