@@ -35,12 +35,11 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
                     <ModalPageHeader
                         before={
                             <Button mode="tertiary" onClick={onClose}>
-                                <Icon24Dismiss style={{ color: '#fff' }} />
+                                <Icon24Dismiss />
                             </Button>
                         }
-                        style={{ background: 'transparent', color: '#fff' }}
                     >
-                        <span style={{ color: '#ffffff' }}>Сейчас играет</span>
+                        <span>Сейчас играет</span>
                     </ModalPageHeader>
                 }
                 onClose={onClose}

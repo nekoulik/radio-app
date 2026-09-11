@@ -1077,12 +1077,27 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     background: #1a1a2e !important; 
                 }
 
-                .now-playing-modal .ModalPage__in { background: #0a0a1a !important; min-height: 100vh; }
-                .now-playing-modal .ModalPage__header { background: transparent !important; }
-                .now-playing-modal .ModalPage__header-in { color: #ffffff !important; }
-                .now-playing-modal::-webkit-scrollbar { display: none; }
+                /* === ПОЛНОЭКРАННЫЙ ПЛЕЕР === */
+                .now-playing-modal .ModalPage__in { 
+                    background: #0a0a1a !important; 
+                    min-height: 100vh; 
+                }
+                .now-playing-modal .ModalPage__header { 
+                    background: #2D81E0 !important; /* Только одно правило, без дублирования */
+                }
+                .now-playing-modal .ModalPage__header * { 
+                    color: #ffffff !important; 
+                }
+                .now-playing-modal .ModalPage__header-in { 
+                    color: #ffffff !important; 
+                }
+                .now-playing-modal::-webkit-scrollbar { 
+                    display: none; 
+                }
 
-                .player-card { background: url(/background.png) center/cover !important; }
+                .player-card { 
+                    background: url(/background.png) center/cover !important; 
+                }
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
