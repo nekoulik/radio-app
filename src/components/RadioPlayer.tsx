@@ -429,9 +429,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
+                            style={{ background: '#2D81E0' }}
+                            before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span>Поделиться</span>
+                            <span style={{ color: '#ffffff' }}>Поделиться</span>
                         </ModalPageHeader>
                     }
                     onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
@@ -484,9 +485,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
+                            style={{ background: '#2D81E0' }}
+                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span>💬 Общий чат</span>
+                            <span style={{ color: '#ffffff' }}>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsChatModalOpen(false)}
@@ -531,9 +533,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
+                            style={{ background: '#2D81E0' }}
+                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span>📜 История</span>
+                            <span style={{ color: '#ffffff' }}> История</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
@@ -606,9 +609,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
+                            style={{ background: '#2D81E0' }}
+                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span>🎛️ Настройки звука</span>
+                            <span style={{ color: '#ffffff' }}>️ Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
@@ -624,9 +628,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
-                            before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
+                            style={{ background: '#2D81E0' }}
+                            before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span>🏆 Рейтинг</span>
+                            <span style={{ color: '#ffffff' }}>🏆 Рейтинг</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsRatingModalOpen(false)}
