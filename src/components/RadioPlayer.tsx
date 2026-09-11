@@ -67,9 +67,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
+    // === ФУНКЦИЯ ДЛЯ ТАКТИЛЬНОЙ ОТДАЧИ ===
+    const triggerHaptic = (style: 'light' | 'medium' | 'heavy' = 'medium') => {
+        bridge.send('VKWebAppTapticImpactOccurred', { style }).catch(() => { });
+    };
+
+    // Дополнительная функция для событий (успех/ошибка)
+    const triggerHapticNotification = (type: 'error' | 'success' | 'warning' = 'success') => {
+        bridge.send('VKWebAppTapticNotificationOccurred', { type }).catch(() => { });
+    };
+
     // === КРИТИЧЕСКИ ВАЖНО: Инициализация VK Bridge СРАЗУ ===
     useEffect(() => {
-        // Инициализируем VK Bridge НЕМЕДЛЕННО, до любых других операций
         bridge.send('VKWebAppInit').catch(console.error);
     }, []);
 
@@ -265,6 +274,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     }, [sleepTimeMinutes, timeLeftSeconds]);
 
     const togglePlay = async () => {
+        triggerHaptic('medium');
         if (!audioRef.current) return;
         try {
             if (isPlaying) {
@@ -296,6 +306,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     const switchStation = (direction: 'next' | 'prev') => {
+        triggerHaptic('light');
         if (stations.length === 0) return;
         const currentIndex = stations.findIndex(s => s.id === currentStationId);
         const newIndex = direction === 'next'
@@ -354,9 +365,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const handleRating = (stationId: string, rating: number) => {
         if (stationRatings[stationId]) {
+            triggerHapticNotification('error'); // Вибрация ошибки
             alert('Вы уже проголосовали за эту станцию!');
             return;
         }
+
+        triggerHapticNotification('success'); // ← ДОБАВИТЬ ЭТУ СТРОКУ (приятный отклик при успехе)
 
         setStationRatings(prev => {
             const newRatings = { ...prev, [stationId]: rating };
@@ -536,7 +550,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             style={{ background: '#2D81E0' }}
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span style={{ color: '#ffffff' }}> История</span>
+                            <span style={{ color: '#ffffff' }}>📜 История</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsHistoryModalOpen(false)}
@@ -588,6 +602,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                             fontWeight: 600
                                         }}
                                         onClick={() => {
+                                            triggerHaptic('heavy');
                                             localStorage.removeItem('listeningHistory');
                                             setListeningHistory([]);
                                             setIsHistoryModalOpen(false);
@@ -612,7 +627,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             style={{ background: '#2D81E0' }}
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
-                            <span style={{ color: '#ffffff' }}>️ Настройки звука</span>
+                            <span style={{ color: '#ffffff' }}>️🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
                     onClose={() => setIsEqOpen(false)}
