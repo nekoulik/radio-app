@@ -51,6 +51,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
     const [isEqOpen, setIsEqOpen] = useState(false);
     const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+    const [userName, setUserName] = useState<string>('');
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentStation = stations.find(s => s.id === currentStationId);
@@ -76,6 +77,24 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const triggerHapticNotification = (type: 'error' | 'success' | 'warning' = 'success') => {
         bridge.send('VKWebAppTapticNotificationOccurred', { type }).catch(() => { });
     };
+
+    // === ПОЛУЧЕНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ ===
+    const fetchUserInfo = async () => {
+        try {
+            const result = await bridge.send('VKWebAppGetUserInfo');
+            if (result.first_name) {
+                setUserName(result.first_name);
+            }
+        } catch (err) {
+            console.error('Не удалось получить информацию о пользователе:', err);
+            setUserName(''); // Если не получилось, оставляем пустым
+        }
+    };
+
+    // Вызываем сразу после инициализации
+    useEffect(() => {
+        fetchUserInfo();
+    }, []);
 
     // === КРИТИЧЕСКИ ВАЖНО: Инициализация VK Bridge СРАЗУ ===
     useEffect(() => {
@@ -692,6 +711,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <div className="gradient-banner" style={{ padding: '30px 16px', textAlign: 'center', color: '#fff' }}>
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
                 <div style={{ fontSize: '15px', marginTop: '6px' }}>Anime • J-Pop • Lo-Fi • OST</div>
+                {userName && (
+                    <div style={{
+                        fontSize: '14px',
+                        marginTop: '12px',
+                        opacity: 0.9,
+                        fontWeight: 500,
+                        textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                        padding: '6px 16px',
+                        background: 'rgba(255,255,255,0.15)',
+                        borderRadius: '20px',
+                        display: 'inline-block',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.2)'
+                    }}>
+                        👋 Привет, {userName}!
+                    </div>
+                )}
             </div>
 
             {/* Основной контент */}
