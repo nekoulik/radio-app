@@ -1051,8 +1051,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --text-secondary: #555555;
                     --border-color: rgba(0, 0, 0, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.25);
-        
-                    /* Цвета модальных окон для СВЕТЛОЙ темы */
                     --modal-bg: #ffffff;
                     --modal-text: #000000;
                     --modal-secondary: #555555;
@@ -1061,7 +1059,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #cccccc;
                 }
     
-                /* ТЁМНАЯ ТЕМА VK (через атрибуты) */
                 #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
@@ -1069,8 +1066,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --border-color: rgba(255, 255, 255, 0.1);
                     --player-overlay: rgba(0, 0, 0, 0.35);
                     background: #0a0a1a !important;
-        
-                    /* Цвета модальных окон для ТЁМНОЙ темы */
                     --modal-bg: #232324;
                     --modal-text: #ffffff;
                     --modal-secondary: #939393;
@@ -1079,7 +1074,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #555555;
                 }
     
-                /* Системная тёмная тема (если VK не установил атрибуты) */
                 @media (prefers-color-scheme: dark) {
                     :root {
                         --modal-bg: #232324;
@@ -1118,22 +1112,20 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     background: url(/background.png) center/cover !important;
                 }
 
-                /* === ПРИНУДИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН В ТЁМНОЙ ТЕМЕ === */
-                #root[data-theme="dark"] .ModalPage__in,
-                #root.theme-dark .ModalPage__in {
-                    background: #232324 !important;
-                }
-    
-                /* СИНЯЯ ВЕРХУШКА МОДАЛЬНЫХ ОКОН В ТЁМНОЙ ТЕМЕ */
-                #root[data-theme="dark"] .ModalPage__header,
-                #root.theme-dark .ModalPage__header {
+                /* === СИНЯЯ ШАПКА ДЛЯ ВСЕХ МОДАЛЬНЫХ ОКОН (как у кнопок) === */
+                .ModalPage__header {
                     background: #2D81E0 !important;
                     border-bottom: none !important;
                 }
     
-                #root[data-theme="dark"] .ModalPage__header *,
-                #root.theme-dark .ModalPage__header * {
+                .ModalPage__header *,
+                .ModalPage__header .Subhead {
                     color: #ffffff !important;
+                }
+    
+                #root[data-theme="dark"] .ModalPage__in,
+                #root.theme-dark .ModalPage__in {
+                    background: #232324 !important;
                 }
     
                 #root[data-theme="dark"] .ModalPage .Div,
@@ -1156,7 +1148,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     color: #939393 !important;
                 }
     
-                /* Для системной тёмной темы */
                 @media (prefers-color-scheme: dark) {
                     .ModalPage__in { background: #232324 !important; }
                     .ModalPage__header { background: #2D81E0 !important; }
