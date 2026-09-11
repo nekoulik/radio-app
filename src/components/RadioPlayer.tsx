@@ -883,7 +883,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 {/* Ссылки и поддержка */}
                 <Separator />
                 <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
-                    <Subhead style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Ссылки</Subhead>
+                    <Subhead weight="2" style={{ fontWeight: 600 }}>Ссылки</Subhead>
                     <Button
                         size="s"
                         mode="primary"
