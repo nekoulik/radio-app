@@ -958,7 +958,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-header-bg: #2D81E0;
                     --modal-header-text: #ffffff;
                 }
-    
+
                 #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
@@ -973,7 +973,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #555555;
                     background: #0a0a1a !important;
                 }
-    
+
                 @media (prefers-color-scheme: dark) {
                     :root {
                         --modal-bg: #232324;
@@ -984,63 +984,90 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         --modal-inactive-star: #555555;
                     }
                 }
-    
-                /* === МОДАЛЬНЫЕ ОКНА — ВСЕ СТИЛИ ЗДЕСЬ === */
-    
-                /* Контейнер модального окна */
+
+                /* === МОДАЛЬНЫЕ ОКНА === */
                 .ModalPage__in {
                     background: var(--modal-bg) !important;
                     border-radius: 16px !important;
                 }
-    
-                /* Шапка модального окна — СИНЯЯ */
+
                 .ModalPage__header {
                     background: var(--modal-header-bg) !important;
                     border-bottom: none !important;
                 }
-    
-                /* Текст в шапке */
+
                 .ModalPage__header *,
                 .ModalPage__header .Subhead {
                     color: var(--modal-header-text) !important;
                     font-weight: 600;
                 }
-    
-                /* Содержимое модального окна */
+
                 .ModalPage .Div,
                 .ModalPage .Group,
                 .ModalPage .Cell {
                     background: var(--modal-bg) !important;
                     color: var(--modal-text) !important;
                 }
-    
-                /* Текст в модальном окне */
+
                 .ModalPage .Subhead,
                 .ModalPage .Text {
                     color: var(--modal-text) !important;
                 }
-    
+
                 .ModalPage .Caption {
                     color: var(--modal-secondary) !important;
                 }
-    
-                /* Ячейки при наведении */
+
                 .ModalPage .Cell:hover {
                     background: var(--modal-cell-bg) !important;
                 }
-    
+
+                /* === ЗАГОЛОВКИ ГРУПП === */
+                .Group__header {
+                    color: var(--text-primary) !important;
+                }
+
+                /* === ИСПРАВЛЕНИЕ ЗАГОЛОВКОВ В ТЁМНОЙ ТЕМЕ === */
+                #root[data-theme="dark"] .Group__header,
+                #root.theme-dark .Group__header,
+                #root[data-theme="dark"] .Group__header *,
+                #root.theme-dark .Group__header *,
+                #root[data-theme="dark"] .Group__header .Subhead,
+                #root.theme-dark .Group__header .Subhead,
+                #root[data-theme="dark"] .Group__header .Text,
+                #root.theme-dark .Group__header .Text {
+                    color: #ffffff !important;
+                }
+
+                #root[data-theme="dark"] .Group .Text,
+                #root.theme-dark .Group .Text,
+                #root[data-theme="dark"] .Group .Caption,
+                #root.theme-dark .Group .Caption {
+                    color: #b0b0b0 !important;
+                }
+
+                #root[data-theme="dark"] .Cell__main,
+                #root.theme-dark .Cell__main,
+                #root[data-theme="dark"] .Cell__children,
+                #root.theme-dark .Cell__children {
+                    color: #ffffff !important;
+                }
+
+                #root[data-theme="dark"] .Cell__subtitle,
+                #root.theme-dark .Cell__subtitle {
+                    color: #939393 !important;
+                }
+
                 /* === ОСТАЛЬНЫЕ СТИЛИ === */
-                .Group__header { color: var(--text-primary) !important; }
-    
                 @supports (height: 100dvh) {
                     .loading-screen { height: 100dvh !important; }
                 }
-    
+
                 #root[data-theme="dark"] .Panel, #root.theme-dark .Panel,
                 #root[data-theme="dark"] .Group, #root.theme-dark .Group { 
                     background: transparent !important; 
                 }
-    
+
                 #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { 
                     background: #1a1a2e !important; 
                 }
