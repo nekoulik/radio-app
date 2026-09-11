@@ -544,23 +544,53 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 </Caption>
                             </Div>
                         ) : (
-                            listeningHistory.map((stationId) => {
-                                const station = stations.find(s => s.id === stationId);
-                                if (!station) return null;
-                                return (
-                                    <Cell
-                                        key={station.id}
-                                        onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }}
-                                        subtitle={<span>{station.genre}</span>}
-                                        style={{ borderRadius: '12px', margin: '6px 0' }}
-                                        after={
-                                            <Button size="s" mode="primary" style={{ background: '#2D81E0', borderRadius: '8px' }}>▶</Button>
-                                        }
+                            <>
+                                {listeningHistory.map((stationId) => {
+                                    const station = stations.find(s => s.id === stationId);
+                                    if (!station) return null;
+                                    return (
+                                        <Cell
+                                            key={station.id}
+                                            onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }}
+                                            subtitle={<span>{station.genre}</span>}
+                                            style={{ borderRadius: '12px', margin: '6px 0' }}
+                                            after={
+                                                <Button size="s" mode="primary" style={{ background: '#2D81E0', borderRadius: '8px' }}>▶</Button>
+                                            }
+                                        >
+                                            <div style={{ fontWeight: 600 }}>{station.name}</div>
+                                        </Cell>
+                                    );
+                                })}
+
+                                {/* Кнопка очистки истории */}
+                                <Div style={{
+                                    marginTop: '16px',
+                                    borderTop: '1px solid var(--modal-border)',
+                                    paddingTop: '16px'
+                                }}>
+                                    <Button
+                                        size="l"
+                                        mode="secondary"
+                                        style={{
+                                            width: '100%',
+                                            background: 'var(--modal-cell-bg)',
+                                            color: '#F44336',
+                                            border: '1px solid rgba(244,67,54,0.3)',
+                                            borderRadius: '12px',
+                                            padding: '12px',
+                                            fontWeight: 600
+                                        }}
+                                        onClick={() => {
+                                            localStorage.removeItem('listeningHistory');
+                                            setListeningHistory([]);
+                                            setIsHistoryModalOpen(false);
+                                        }}
                                     >
-                                        <div style={{ fontWeight: 600 }}>{station.name}</div>
-                                    </Cell>
-                                );
-                            })
+                                        🗑️ Очистить историю
+                                    </Button>
+                                </Div>
+                            </>
                         )}
                     </Div>
                 </ModalPage>
