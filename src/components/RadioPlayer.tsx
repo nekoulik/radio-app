@@ -426,6 +426,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
                 <ModalPage
                     id="share"
+                    hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss /></Button>}
@@ -480,6 +481,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
                 <ModalPage
                     id="chat-invite"
+                    hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss /></Button>}
@@ -526,6 +528,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
                 <ModalPage
                     id="history"
+                    hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss /></Button>}
@@ -600,6 +603,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
                 <ModalPage
                     id="equalizer"
+                    hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss /></Button>}
@@ -617,6 +621,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
                 <ModalPage
                     id="rating"
+                    hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss /></Button>}
@@ -1078,12 +1083,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 .now-playing-modal::-webkit-scrollbar { display: none; }
 
                 .player-card { background: url(/background.png) center/cover !important; }
-                
-                .ModalDismissButton,
-                .ModalPage__close {
-                    display: none !important;
-                }
-                
+
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
             `}</style>

@@ -29,6 +29,7 @@ export const NowPlayingScreen: React.FC<NowPlayingScreenProps> = ({
         <ModalRoot activeModal={isOpen ? 'now-playing' : undefined}>
             <ModalPage
                 id="now-playing"
+                hideCloseButton={true}
                 className="now-playing-modal"
                 header={
                     <ModalPageHeader
