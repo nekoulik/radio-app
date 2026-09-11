@@ -1082,15 +1082,27 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     background: #0a0a1a !important; 
                     min-height: 100vh; 
                 }
-                .now-playing-modal .ModalPage__header { 
-                    background: #2D81E0 !important; /* Только одно правило, без дублирования */
+
+                /* МАКСИМАЛЬНО СПЕЦИФИЧНЫЕ ПРАВИЛА ДЛЯ ШАПКИ */
+                .now-playing-modal .ModalPage__header,
+                #root .now-playing-modal .ModalPage__header,
+                body .now-playing-modal .ModalPage__header {
+                    background: #2D81E0 !important;
+                    border-bottom: none !important;
                 }
-                .now-playing-modal .ModalPage__header * { 
-                    color: #ffffff !important; 
+
+                .now-playing-modal .ModalPage__header *,
+                .now-playing-modal .ModalPage__header .Subhead,
+                .now-playing-modal .ModalPage__header span,
+                #root .now-playing-modal .ModalPage__header *,
+                body .now-playing-modal .ModalPage__header * {
+                    color: #ffffff !important;
                 }
+
                 .now-playing-modal .ModalPage__header-in { 
                     color: #ffffff !important; 
                 }
+
                 .now-playing-modal::-webkit-scrollbar { 
                     display: none; 
                 }
