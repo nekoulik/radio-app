@@ -459,13 +459,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             const stationColor = currentStation?.color || '#667eea';
             let bgColor = stationColor;
 
-            // Если это CSS-градиент, извлекаем первый hex-цвет
             if (stationColor.includes('gradient')) {
                 const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
                 bgColor = match ? `#${match[1]}` : '#667eea';
             }
 
-            // Рисуем простой цветной фон
+            // Рисуем фон
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 1080, 1920);
 
@@ -488,13 +487,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 540, 1700);
 
-            // Конвертируем canvas в base64
+            // Конвертируем canvas в base64 (data URL)
             const imageData = canvas.toDataURL('image/png');
 
-            // Отправляем в VK с правильными параметрами
+            // Отправляем в VK с правильным форматом
             await bridge.send('VKWebAppShowStoryBox', {
-                blob: imageData,
-                background_type: 'image',  // ← ДОБАВИТЬ ЭТОТ ПАРАМЕТР!
+                background_type: 'image',
+                background: {
+                    image: imageData,  // data URL картинки
+                },
             } as any);
 
             triggerHapticNotification('success');
