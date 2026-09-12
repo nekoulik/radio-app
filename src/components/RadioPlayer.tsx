@@ -448,7 +448,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const shareToStory = async () => {
         try {
             // Публичный URL картинки (загрузите на imgur или свой хостинг)
-            const imageUrl = 'https://radio-app-drab.vercel.app//story-bg.png';
+            const imageUrl = '/story-bg.png';
 
             await bridge.send('VKWebAppShowStoryBox', {
                 background_type: 'image',
