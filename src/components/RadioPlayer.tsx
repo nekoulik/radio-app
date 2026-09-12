@@ -454,7 +454,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             if (!ctx) return;
 
-            // Градиентный фон
+            // Градиентный фон (рисуем на canvas)
             const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
             gradient.addColorStop(0, currentStation?.color || '#667eea');
             gradient.addColorStop(1, '#764ba2');
@@ -465,7 +465,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('🎵 Сейчас играет:', 540, 400);
+            ctx.fillText(' Сейчас играет:', 540, 400);
 
             ctx.font = 'bold 100px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText(currentStation?.name || 'AniWave Radio', 540, 600);
@@ -477,12 +477,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             // Конвертируем canvas в base64
             const imageData = canvas.toDataURL('image/png');
 
-            // Отправляем в редактор историй VK (упрощённая версия без stickers)
+            // Отправляем в редактор историй VK (только изображение, без background)
             await bridge.send('VKWebAppShowStoryBox', {
-                background: {
-                    type: 'image',
-                    image: imageData,
-                },
+                blob: imageData,
             } as any);
 
             triggerHapticNotification('success');
