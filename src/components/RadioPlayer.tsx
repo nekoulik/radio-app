@@ -426,10 +426,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
+    // === КОПИРОВАТЬ ТЕКСТ ===
     const copyShareText = async () => {
         try {
             await navigator.clipboard.writeText(shareText);
             setCopySuccess(true);
+            triggerHapticNotification('success');
         } catch (err) {
             const textarea = document.createElement('textarea');
             textarea.value = shareText;
@@ -438,6 +440,55 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             document.execCommand('copy');
             document.body.removeChild(textarea);
             setCopySuccess(true);
+            triggerHapticNotification('success');
+        }
+    };
+
+    // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (Генерация красивой картинки) ===
+    const shareToStory = async () => {
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1920;
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) return;
+
+            // Градиентный фон
+            const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+            gradient.addColorStop(0, currentStation?.color || '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1080, 1920);
+
+            // Текст с названием станции
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎵 Сейчас играет:', 540, 400);
+
+            ctx.font = 'bold 100px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(currentStation?.name || 'AniWave Radio', 540, 600);
+
+            ctx.font = '60px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillText(currentStation?.genre || '', 540, 720);
+
+            // Конвертируем canvas в base64
+            const imageData = canvas.toDataURL('image/png');
+
+            // Отправляем в редактор историй VK (упрощённая версия без stickers)
+            await bridge.send('VKWebAppShowStoryBox', {
+                background: {
+                    type: 'image',
+                    image: imageData,
+                },
+            } as any);
+
+            triggerHapticNotification('success');
+        } catch (err) {
+            console.error('Ошибка при публикации в историю:', err);
+            triggerHapticNotification('error');
         }
     };
 
@@ -487,6 +538,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 lineHeight: '1.5'
                             }}
                         />
+
+                        {/* Кнопка 1: Копировать текст */}
                         <Button
                             size="l"
                             mode={copySuccess ? 'primary' : 'secondary'}
@@ -502,8 +555,30 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             }}
                             onClick={copyShareText}
                         >
-                            {copySuccess ? '✅ Скопировано!' : ' Скопировать текст'}
+                            {copySuccess ? '✅ Скопировано!' : '📋 Скопировать текст'}
                         </Button>
+
+                        {/* Кнопка 2: Поделиться в Истории (НОВАЯ) */}
+                        <Button
+                            size="l"
+                            mode="secondary"
+                            style={{
+                                width: '100%',
+                                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '12px',
+                                padding: '14px',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                marginTop: '12px',
+                                boxShadow: '0 4px 12px rgba(245, 87, 108, 0.3)'
+                            }}
+                            onClick={shareToStory}
+                        >
+                            📖 Поделиться в Истории VK
+                        </Button>
+
                         <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
                             Текст автоматически скопируется в буфер обмена
                         </Caption>
