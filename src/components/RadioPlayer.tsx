@@ -465,7 +465,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 bgColor = match ? `#${match[1]}` : '#667eea';
             }
 
-            // Рисуем простой цветной фон (без CSS-градиента!)
+            // Рисуем простой цветной фон
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 1080, 1920);
 
@@ -491,9 +491,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             // Конвертируем canvas в base64
             const imageData = canvas.toDataURL('image/png');
 
-            // Отправляем в VK через blob
+            // Отправляем в VK с правильными параметрами
             await bridge.send('VKWebAppShowStoryBox', {
                 blob: imageData,
+                background_type: 'image',  // ← ДОБАВИТЬ ЭТОТ ПАРАМЕТР!
             } as any);
 
             triggerHapticNotification('success');
