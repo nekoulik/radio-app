@@ -447,10 +447,14 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
-            const imageUrl = '/story-bg.png';
+            // Абсолютный URL картинки (замените на ваш реальный домен)
+            const imageUrl = 'https://vk.com/app54729099/story-bg.png';
 
             await bridge.send('VKWebAppShowStoryBox', {
-                url: imageUrl,
+                background_type: 'image',
+                background: {
+                    url: imageUrl,  // ← именно url, а не image
+                },
             } as any);
 
             triggerHapticNotification('success');
