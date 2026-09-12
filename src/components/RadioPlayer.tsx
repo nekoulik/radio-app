@@ -455,11 +455,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             if (!ctx) return;
 
-            // Рисуем градиентный фон (на canvas это работает, т.к. это canvas API, а не VK)
-            const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
-            gradient.addColorStop(0, currentStation?.color || '#667eea');
-            gradient.addColorStop(1, '#764ba2');
-            ctx.fillStyle = gradient;
+            // Извлекаем первый цвет из currentStation.color (если это градиент)
+            const stationColor = currentStation?.color || '#667eea';
+            let bgColor = stationColor;
+
+            // Если это CSS-градиент, извлекаем первый hex-цвет
+            if (stationColor.includes('gradient')) {
+                const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
+                bgColor = match ? `#${match[1]}` : '#667eea';
+            }
+
+            // Рисуем простой цветной фон (без CSS-градиента!)
+            ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 1080, 1920);
 
             // Текст
@@ -476,12 +483,12 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fillText(currentStation?.genre || '', 540, 720);
 
-            // Логотип приложения внизу
+            // Логотип внизу
             ctx.font = 'bold 50px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 540, 1700);
 
-            // Конвертируем canvas в base64 (data URL)
+            // Конвертируем canvas в base64
             const imageData = canvas.toDataURL('image/png');
 
             // Отправляем в VK через blob
