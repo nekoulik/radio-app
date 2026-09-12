@@ -444,9 +444,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (Генерация красивой картинки) ===
+    // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
+            // Создаём canvas для генерации картинки
             const canvas = document.createElement('canvas');
             canvas.width = 1080;
             canvas.height = 1920;
@@ -454,17 +455,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             if (!ctx) return;
 
-            // Градиентный фон (рисуем на canvas)
-            const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+            // Рисуем градиентный фон (на canvas это работает, т.к. это canvas API, а не VK)
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
             gradient.addColorStop(0, currentStation?.color || '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 1080, 1920);
 
-            // Текст с названием станции
+            // Текст
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.textAlign = 'center';
+
+            ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText(' Сейчас играет:', 540, 400);
 
             ctx.font = 'bold 100px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -474,10 +476,15 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fillText(currentStation?.genre || '', 540, 720);
 
-            // Конвертируем canvas в base64
+            // Логотип приложения внизу
+            ctx.font = 'bold 50px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fillText('AniWave Radio', 540, 1700);
+
+            // Конвертируем canvas в base64 (data URL)
             const imageData = canvas.toDataURL('image/png');
 
-            // Отправляем в редактор историй VK (только изображение, без background)
+            // Отправляем в VK через blob
             await bridge.send('VKWebAppShowStoryBox', {
                 blob: imageData,
             } as any);
