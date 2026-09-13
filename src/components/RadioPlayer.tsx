@@ -445,15 +445,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
+    const createGradientImage = (): Promise<string> => {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1920;
+
+            const ctx = canvas.getContext('2d')!;
+            const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(0.5, '#764ba2');
+            gradient.addColorStop(1, '#f093fb');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1080, 1920);
+
+            resolve(canvas.toDataURL('image/png'));
+        });
+    };
+
     const shareToStory = async () => {
         try {
-
-            const imageUrl = '/story-bg.png';
+            const gradientImageUrl = await createGradientImage();
 
             await bridge.send('VKWebAppShowStoryBox', {
                 background_type: 'image',
                 background: {
-                    url: imageUrl,
+                    url: gradientImageUrl,
                 },
                 url: 'https://vk.com/app54729099',
             } as any);
