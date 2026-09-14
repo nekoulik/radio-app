@@ -447,8 +447,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
-            // Используем публичный URL изображения с вашего Vercel
-            const imageUrl = `${window.location.origin}/story-bg.jpg`;
+            // GitHub raw URL (без CORS проблем)
+            const imageUrl = 'https://radio-app-drab.vercel.app/story-bg.jpg';
 
             console.log('📤 Отправляем в VK:', imageUrl);
 
@@ -458,11 +458,11 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     url: imageUrl,
                 },
                 url: 'https://vk.com/app54729099',
-            } as any); // ✅ Добавляем as any для обхода типизации
+            } as any);
 
             triggerHapticNotification('success');
         } catch (err) {
-            console.error('❌ Ошибка при публикации в историю:', err);
+            console.error('❌ Ошибка:', err);
             triggerHapticNotification('error');
         }
     };
