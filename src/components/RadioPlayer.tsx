@@ -855,7 +855,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </div>
                 </Div>
 
-                {/* Красивые иконки кнопок */}
+                {/* Красивые картинки вместо кнопок с подписями */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', padding: '12px 16px' }}>
                     {/* Поделиться */}
                     <div
@@ -865,6 +865,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             overflow: 'hidden',
+                            position: 'relative',
                             aspectRatio: '1/1',
                         }}
                         onMouseEnter={(e) => {
@@ -875,6 +876,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         }}
                     >
                         <img src="/icons/share-icon.png" alt="Поделиться" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            textAlign: 'center',
+                            width: '100%',
+                            padding: '0 4px',
+                        }}>
+                            Поделиться
+                        </div>
                     </div>
 
                     {/* Общий чат */}
@@ -885,6 +901,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             overflow: 'hidden',
+                            position: 'relative',
                             aspectRatio: '1/1',
                         }}
                         onMouseEnter={(e) => {
@@ -895,6 +912,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         }}
                     >
                         <img src="/icons/chat-icon.png" alt="Общий чат" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            textAlign: 'center',
+                            width: '100%',
+                            padding: '0 4px',
+                        }}>
+                            Общий чат
+                        </div>
                     </div>
 
                     {/* Эквалайзер */}
@@ -905,6 +937,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             overflow: 'hidden',
+                            position: 'relative',
                             aspectRatio: '1/1',
                         }}
                         onMouseEnter={(e) => {
@@ -915,6 +948,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         }}
                     >
                         <img src="/icons/equalizer-icon.png" alt="Эквалайзер" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            textAlign: 'center',
+                            width: '100%',
+                            padding: '0 4px',
+                        }}>
+                            Эквалайзер
+                        </div>
                     </div>
 
                     {/* История */}
@@ -925,6 +973,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             overflow: 'hidden',
+                            position: 'relative',
                             aspectRatio: '1/1',
                         }}
                         onMouseEnter={(e) => {
@@ -935,6 +984,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         }}
                     >
                         <img src="/icons/history-icon.png" alt="История" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            textAlign: 'center',
+                            width: '100%',
+                            padding: '0 4px',
+                        }}>
+                            История
+                        </div>
                     </div>
 
                     {/* Рейтинг станций */}
@@ -945,6 +1009,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             overflow: 'hidden',
+                            position: 'relative',
                             aspectRatio: '1/1',
                         }}
                         onMouseEnter={(e) => {
@@ -955,6 +1020,21 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         }}
                     >
                         <img src="/icons/rating-icon.png" alt="Рейтинг" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            textAlign: 'center',
+                            width: '100%',
+                            padding: '0 4px',
+                        }}>
+                            Рейтинг
+                        </div>
                     </div>
                 </div>
 
