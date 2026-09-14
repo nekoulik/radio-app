@@ -448,7 +448,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const shareToStory = async () => {
         try {
             // GitHub raw URL (без CORS проблем)
-            const imageUrl = 'https://radio-app-drab.vercel.app/story-bg.jpg';
+            const imageUrl = 'https://raw.githubusercontent.com/nekoulik/radio-app//main/public/story-bg.jpg';
 
             console.log('📤 Отправляем в VK:', imageUrl);
 
