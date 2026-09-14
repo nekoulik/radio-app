@@ -447,8 +447,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
-            // GitHub raw URL (без CORS проблем)
-            const imageUrl = 'https://raw.githubusercontent.com/nekoulik/radio-app//main/public/story-bg.jpg';
+            // Используем jsDelivr CDN вместо raw GitHub (добавляет CORS заголовки)
+            const imageUrl = 'https://cdn.jsdelivr.net/gh/nekoulik/radio-app@main/public/story-bg.jpg';
 
             console.log('📤 Отправляем в VK:', imageUrl);
 
@@ -462,7 +462,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             triggerHapticNotification('success');
         } catch (err) {
-            console.error('❌ Ошибка:', err);
+            console.error('❌ Ошибка при публикации в историю:', err);
             triggerHapticNotification('error');
         }
     };
