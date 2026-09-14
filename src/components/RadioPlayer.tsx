@@ -445,33 +445,59 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
-    const createGradientImage = (): Promise<string> => {
-        return new Promise((resolve) => {
+    const shareToStory = async () => {
+        try {
+            // Создаём canvas для генерации картинки
             const canvas = document.createElement('canvas');
             canvas.width = 1080;
             canvas.height = 1920;
+            const ctx = canvas.getContext('2d');
 
-            const ctx = canvas.getContext('2d')!;
-            const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-            gradient.addColorStop(0, '#667eea');
-            gradient.addColorStop(0.5, '#764ba2');
-            gradient.addColorStop(1, '#f093fb');
+            if (!ctx) return;
 
-            ctx.fillStyle = gradient;
+            // Извлекаем первый цвет из currentStation.color (если это градиент)
+            const stationColor = currentStation?.color || '#667eea';
+            let bgColor = stationColor;
+
+            if (stationColor.includes('gradient')) {
+                const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
+                bgColor = match ? `#${match[1]}` : '#667eea';
+            }
+
+            // Рисуем фон
+            ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 1080, 1920);
 
-            resolve(canvas.toDataURL('image/png'));
-        });
-    };
+            // Текст
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
 
-    const shareToStory = async () => {
-        try {
-            const gradientImageUrl = await createGradientImage();
+            ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(' Сейчас играет:', 540, 400);
 
+            ctx.font = 'bold 100px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(currentStation?.name || 'AniWave Radio', 540, 600);
+
+            ctx.font = '60px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillText(currentStation?.genre || '', 540, 720);
+
+            // Логотип внизу
+            ctx.font = 'bold 50px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fillText('AniWave Radio', 540, 1700);
+
+            // Конвертируем canvas в base64 (data URL)
+            const imageData = canvas.toDataURL('image/png');
+
+            // Для VK нужно убрать префикс "data:image/png;base64,"
+            const base64Image = imageData.split(',')[1];
+
+            // Отправляем в VK с base64 изображением
             await bridge.send('VKWebAppShowStoryBox', {
                 background_type: 'image',
                 background: {
-                    url: gradientImageUrl,
+                    url: base64Image, // Используем сгенерированное base64 изображение
                 },
                 url: 'https://vk.com/app54729099',
             } as any);
