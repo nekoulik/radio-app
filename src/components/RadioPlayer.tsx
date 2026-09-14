@@ -449,8 +449,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         try {
             // Создаём canvas для генерации картинки
             const canvas = document.createElement('canvas');
-            canvas.width = 1080;
-            canvas.height = 1920;
+            canvas.width = 720;
+            canvas.height = 1280;
             const ctx = canvas.getContext('2d');
 
             if (!ctx) {
