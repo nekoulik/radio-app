@@ -455,15 +455,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             if (!ctx) return;
 
-            // Извлекаем первый цвет из currentStation.color (если это градиент)
-            const stationColor = currentStation?.color || '#667eea';
-            let bgColor = stationColor;
-
-            // Если это CSS-градиент, извлекаем первый hex-цвет
-            if (stationColor.includes('gradient')) {
-                const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
-                bgColor = match ? `#${match[1]}` : '#667eea';
-            }
+            // Просто используем цвет станции (без обработки градиентов)
+            const bgColor = currentStation?.color || '#667eea';
 
             // Рисуем простой цветной фон
             ctx.fillStyle = bgColor;
