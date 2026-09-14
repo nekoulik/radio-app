@@ -448,8 +448,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const shareToStory = async () => {
         try {
             const canvas = document.createElement('canvas');
-            canvas.width = 720;   // ✅ Правильное разрешение VK
-            canvas.height = 1280; // ✅ Правильное разрешение VK
+            canvas.width = 720;
+            canvas.height = 1280;
             const ctx = canvas.getContext('2d');
 
             if (!ctx) {
@@ -457,68 +457,62 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 return;
             }
 
-            // Получаем цвет станции
+            // Получаем цвет
             const stationColor = currentStation?.color || '#667eea';
             let bgColor = stationColor;
 
-            // Если градиент - берем первый цвет
             if (stationColor.includes('gradient')) {
                 const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
                 bgColor = match ? `#${match[1]}` : '#667eea';
             }
 
-            // 🔥 Рисуем фон ЦЕЛИКОМ
+            // Рисуем фон
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 720, 1280);
 
-            // 🔥 Рисуем текст с правильными координатами
+            // Текст
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle'; // ✅ Добавляем baseline
+            ctx.textBaseline = 'middle';
 
-            // Заголовок
             ctx.font = 'bold 60px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText('Сейчас играет:', 360, 200);
 
-            // Название станции
             ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText(currentStation?.name || 'AniWave Radio', 360, 400);
 
-            // Жанр
             ctx.font = '50px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fillText(currentStation?.genre || '', 360, 500);
 
-            // Логотип внизу
             ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 360, 1150);
 
-            // 🎨 Добавляем декоративный элемент (круг)
-            ctx.beginPath();
-            ctx.arc(360, 800, 100, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            ctx.fill();
+            //  КОНВЕРТИРУЕМ ЧЕРЕЗ BLOB
+            const blob = await new Promise<Blob>((resolve) => {
+                canvas.toBlob((blob) => {
+                    if (blob) resolve(blob);
+                }, 'image/jpeg', 0.9);
+            });
 
-            // Конвертируем в JPEG с качеством 0.9 (выше качество = больше данных)
-            const imageData = canvas.toDataURL('image/jpeg', 0.9);
+            // Создаем временный URL
+            const imageUrl = URL.createObjectURL(blob);
 
-            // 🔍 Проверяем размер
-            console.log('📊 Base64 длина:', imageData.length);
-            console.log(' Размер в KB:', Math.round(imageData.length / 1024));
-
-            if (imageData.length < 50000) {
-                console.warn('⚠️ Изображение слишком маленькое! Возможно canvas пустой.');
-            }
+            console.log('📊 Blob size:', blob.size, 'bytes');
+            console.log(' URL:', imageUrl);
 
             // Отправляем в VK
             await bridge.send('VKWebAppShowStoryBox', {
                 background_type: 'image',
                 background: {
-                    url: imageData,
+                    url: imageUrl,
                 },
                 url: 'https://vk.com/app54729099',
             } as any);
+
+            // Очищаем URL после отправки
+            setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
 
             triggerHapticNotification('success');
         } catch (err) {
