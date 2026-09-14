@@ -453,10 +453,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             canvas.height = 1920;
             const ctx = canvas.getContext('2d');
 
-            if (!ctx) return;
+            if (!ctx) {
+                console.error('Не удалось получить контекст canvas');
+                return;
+            }
 
-            // Просто используем цвет станции (без обработки градиентов)
-            const bgColor = currentStation?.color || '#667eea';
+            // Извлекаем цвет из currentStation.color (если это градиент, берем первый hex-цвет)
+            const stationColor = currentStation?.color || '#667eea';
+            let bgColor = stationColor;
+
+            if (stationColor.includes('gradient')) {
+                const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
+                bgColor = match ? `#${match[1]}` : '#667eea';
+            }
 
             // Рисуем простой цветной фон
             ctx.fillStyle = bgColor;
@@ -481,16 +490,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 540, 1700);
 
-            // Конвертируем canvas в base64
-            const imageData = canvas.toDataURL('image/png');
+            // 🚀 ОПТИМИЗАЦИЯ: Конвертируем в JPEG с качеством 0.8
+            // Это значительно уменьшает размер base64 строки по сравнению с PNG,
+            // что решает проблемы с лимитами длины URL и производительностью.
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
 
             // Отправляем в VK с правильными параметрами API
+            // VK WebAppShowStoryBox полностью поддерживает data:image/jpeg;base64,...
             await bridge.send('VKWebAppShowStoryBox', {
                 background_type: 'image',
                 background: {
-                    url: imageData, // Передаем base64 строку внутри объекта background
+                    url: imageData,
                 },
-                url: 'https://vk.com/app54729099', // Обязательная ссылка для кликабельного стикера
+                url: 'https://vk.com/app54729099',
             } as any);
 
             triggerHapticNotification('success');
