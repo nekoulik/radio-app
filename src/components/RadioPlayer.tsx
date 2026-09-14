@@ -448,7 +448,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const shareToStory = async () => {
         try {
             // Используем jsDelivr CDN вместо raw GitHub (добавляет CORS заголовки)
-            const imageUrl = 'https://cdn.jsdelivr.net/gh/nekoulik/radio-app@main/public/story-bg.jpg';
+            const imageUrl = 'https://sun9-23.vkuserphoto.ru/s/v1/ig2/cQq9T98AW7OpD93gk_HBgaq2h2-sijf9TJCd-HmF7Z0Lqz459rlMnCd4gzyFoyVBbOGk9wseHp3AYFwH4szVXl_N.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280&from=bu&u=Z4ixH4kgII2x74hsQgm__GAIYQPNkxzYKH15ZmL99uE&cs=720x0';
 
             console.log('📤 Отправляем в VK:', imageUrl);
 
