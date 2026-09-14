@@ -445,6 +445,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     };
 
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
+    // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
             // Создаём canvas для генерации картинки
@@ -459,12 +460,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             const stationColor = currentStation?.color || '#667eea';
             let bgColor = stationColor;
 
+            // Если это CSS-градиент, извлекаем первый hex-цвет
             if (stationColor.includes('gradient')) {
                 const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
                 bgColor = match ? `#${match[1]}` : '#667eea';
             }
 
-            // Рисуем фон
+            // Рисуем простой цветной фон
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 1080, 1920);
 
@@ -487,19 +489,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 540, 1700);
 
-            // Конвертируем canvas в base64 (data URL)
+            // Конвертируем canvas в base64
             const imageData = canvas.toDataURL('image/png');
 
-            // Для VK нужно убрать префикс "data:image/png;base64,"
-            const base64Image = imageData.split(',')[1];
-
-            // Отправляем в VK с base64 изображением
+            // Отправляем в VK с правильными параметрами
             await bridge.send('VKWebAppShowStoryBox', {
-                background_type: 'image',
-                background: {
-                    url: base64Image, // Используем сгенерированное base64 изображение
-                },
-                url: 'https://vk.com/app54729099',
+                blob: imageData,
+                background_type: 'image',  // ← ДОБАВИТЬ ЭТОТ ПАРАМЕТР!
             } as any);
 
             triggerHapticNotification('success');
