@@ -325,3 +325,35 @@ input[placeholder*="Поиск"]:focus {
 .now-playing-modal .ModalPage__header {
     background: #2D81E0 !important;
 }
+
+/* === УБИРАЕМ ВСЕ ВЫДЕЛЕНИЯ (OUTLINE) И ПОДСВЕТКИ === */
+* {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+}
+
+/* Убираем стандартные обводки у всех интерактивных элементов при фокусе */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+a:focus,
+[tabindex]:focus {
+    outline: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Для мобильных устройств убираем серую подсветку при тапе */
+@media (hover: none) {
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+    }
+}
+
+/* Красивое выделение текста пользователем (опционально, в цвет вашего бренда) */
+::selection {
+    background: rgba(255, 102, 179, 0.3) !important;
+    color: #ffffff !important;
+}
