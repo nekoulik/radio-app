@@ -850,7 +850,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </div>
                 </Div>
 
-                {/* Красивые картинки вместо кнопок с подписями */}
+                {/* Красивые картинки вместо кнопок с подписями ВНУТРИ */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', padding: '12px 16px' }}>
                     {/* Поделиться */}
                     <div
@@ -862,6 +862,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             overflow: 'hidden',
                             position: 'relative',
                             aspectRatio: '1/1',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            paddingBottom: '12px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
@@ -870,19 +874,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        <img src="/icons/share-icon.png" alt="Поделиться" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src="/icons/share-icon.png" alt="Поделиться" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
                         <div style={{
-                            position: 'absolute',
-                            bottom: '4px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            position: 'relative',
+                            zIndex: 1,
                             color: '#ffffff',
                             fontWeight: 600,
-                            fontSize: '12px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            fontSize: '14px',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                             textAlign: 'center',
-                            width: '100%',
-                            padding: '0 4px',
+                            background: 'rgba(0,0,0,0.3)',
+                            padding: '4px 12px',
+                            borderRadius: '8px',
+                            backdropFilter: 'blur(4px)',
                         }}>
                             Поделиться
                         </div>
@@ -898,6 +902,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             overflow: 'hidden',
                             position: 'relative',
                             aspectRatio: '1/1',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            paddingBottom: '12px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
@@ -906,19 +914,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        <img src="/icons/chat-icon.png" alt="Общий чат" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src="/icons/chat-icon.png" alt="Общий чат" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
                         <div style={{
-                            position: 'absolute',
-                            bottom: '4px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            position: 'relative',
+                            zIndex: 1,
                             color: '#ffffff',
                             fontWeight: 600,
-                            fontSize: '12px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            fontSize: '14px',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                             textAlign: 'center',
-                            width: '100%',
-                            padding: '0 4px',
+                            background: 'rgba(0,0,0,0.3)',
+                            padding: '4px 12px',
+                            borderRadius: '8px',
+                            backdropFilter: 'blur(4px)',
                         }}>
                             Общий чат
                         </div>
@@ -934,6 +942,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             overflow: 'hidden',
                             position: 'relative',
                             aspectRatio: '1/1',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            paddingBottom: '12px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
@@ -942,19 +954,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        <img src="/icons/equalizer-icon.png" alt="Эквалайзер" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src="/icons/equalizer-icon.png" alt="Эквалайзер" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
                         <div style={{
-                            position: 'absolute',
-                            bottom: '4px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            position: 'relative',
+                            zIndex: 1,
                             color: '#ffffff',
                             fontWeight: 600,
-                            fontSize: '12px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            fontSize: '14px',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                             textAlign: 'center',
-                            width: '100%',
-                            padding: '0 4px',
+                            background: 'rgba(0,0,0,0.3)',
+                            padding: '4px 12px',
+                            borderRadius: '8px',
+                            backdropFilter: 'blur(4px)',
                         }}>
                             Эквалайзер
                         </div>
@@ -970,6 +982,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             overflow: 'hidden',
                             position: 'relative',
                             aspectRatio: '1/1',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            paddingBottom: '12px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
@@ -978,19 +994,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        <img src="/icons/history-icon.png" alt="История" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src="/icons/history-icon.png" alt="История" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
                         <div style={{
-                            position: 'absolute',
-                            bottom: '4px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            position: 'relative',
+                            zIndex: 1,
                             color: '#ffffff',
                             fontWeight: 600,
-                            fontSize: '12px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            fontSize: '14px',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                             textAlign: 'center',
-                            width: '100%',
-                            padding: '0 4px',
+                            background: 'rgba(0,0,0,0.3)',
+                            padding: '4px 12px',
+                            borderRadius: '8px',
+                            backdropFilter: 'blur(4px)',
                         }}>
                             История
                         </div>
@@ -1006,6 +1022,10 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             overflow: 'hidden',
                             position: 'relative',
                             aspectRatio: '1/1',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            paddingBottom: '12px',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
@@ -1014,19 +1034,19 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             e.currentTarget.style.transform = 'scale(1)';
                         }}
                     >
-                        <img src="/icons/rating-icon.png" alt="Рейтинг" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src="/icons/rating-icon.png" alt="Рейтинг" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
                         <div style={{
-                            position: 'absolute',
-                            bottom: '4px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
+                            position: 'relative',
+                            zIndex: 1,
                             color: '#ffffff',
                             fontWeight: 600,
-                            fontSize: '12px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            fontSize: '14px',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
                             textAlign: 'center',
-                            width: '100%',
-                            padding: '0 4px',
+                            background: 'rgba(0,0,0,0.3)',
+                            padding: '4px 12px',
+                            borderRadius: '8px',
+                            backdropFilter: 'blur(4px)',
                         }}>
                             Рейтинг
                         </div>
