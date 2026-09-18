@@ -448,7 +448,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const shareToStory = async () => {
         try {
             // Imgur - надежный хостинг с правильными CORS
-            const imageUrl = `${window.location.origin}/story-bg.jpg`;
+            const imageUrl = `${window.location.origin}/history-icon.png`;
 
             console.log('📤 Отправляем в VK:', imageUrl);
 
