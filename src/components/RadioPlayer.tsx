@@ -1278,6 +1278,31 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+                
+                /* === УБИРАЕМ ВСЕ ВЫДЕЛЕНИЯ (OUTLINE) === */
+                * {
+                    outline: none !important;
+                    -webkit-tap-highlight-color: transparent !important;
+                    -webkit-focus-ring-color: transparent !important;
+                }
+
+                button:focus,
+                input:focus,
+                select:focus,
+                textarea:focus,
+                a:focus,
+                [tabindex]:focus {
+                    outline: none !important;
+                    border-color: transparent !important;
+                    box-shadow: none !important;
+                }
+
+                /* Для мобильных устройств */
+                @media (hover: none) {
+                    * {
+                        -webkit-tap-highlight-color: transparent !important;
+                    }
+                }
             `}</style>
         </Panel>
     );
