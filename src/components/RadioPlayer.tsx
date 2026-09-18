@@ -447,52 +447,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
-            const canvas = document.createElement('canvas');
-            canvas.width = 720;
-            canvas.height = 1280;
-            const ctx = canvas.getContext('2d');
+            // Imgur - надежный хостинг с правильными CORS
+            const imageUrl = `${window.location.origin}/story-bg.jpg`;
 
-            if (!ctx) return;
+            console.log('📤 Отправляем в VK:', imageUrl);
 
-            // Получаем цвет станции
-            const stationColor = currentStation?.color || '#667eea';
-            let bgColor = stationColor;
-
-            if (stationColor.includes('gradient')) {
-                const match = stationColor.match(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/);
-                bgColor = match ? `#${match[1]}` : '#667eea';
-            }
-
-            // Рисуем фон
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, 720, 1280);
-
-            // Текст
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            ctx.font = 'bold 60px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText('Сейчас играет:', 360, 200);
-
-            ctx.font = 'bold 80px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText(currentStation?.name || 'AniWave Radio', 360, 400);
-
-            ctx.font = '50px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = 'rgba(255,255,255,0.9)';
-            ctx.fillText(currentStation?.genre || '', 360, 500);
-
-            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = 'rgba(255,255,255,0.7)';
-            ctx.fillText('AniWave Radio', 360, 1150);
-
-            // Конвертируем в base64
-            const imageData = canvas.toDataURL('image/jpeg', 0.9);
-
-            // ✅ ИСПОЛЬЗУЕМ blob ВМЕСТО background.url
             await bridge.send('VKWebAppShowStoryBox', {
-                blob: imageData,
                 background_type: 'image',
+                background: {
+                    url: imageUrl,
+                },
+                url: 'https://vk.com/app54729099',
             } as any);
 
             triggerHapticNotification('success');
