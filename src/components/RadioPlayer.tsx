@@ -73,9 +73,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         bridge.send('VKWebAppTapticImpactOccurred', { style }).catch(() => { });
     };
 
-    // Дополнительная функция для событий (успех/ошибка)
     const triggerHapticNotification = (type: 'error' | 'success' | 'warning' = 'success') => {
         bridge.send('VKWebAppTapticNotificationOccurred', { type }).catch(() => { });
+    };
+
+    // === VK CLOUD STORAGE: Синхронизация прогресса между платформами ===
+    const saveToVKStorage = async (key: string, value: any) => {
+        try {
+            const stringValue = JSON.stringify(value);
+            localStorage.setItem(key, stringValue); // Локальный фоллбэк
+            await bridge.send('VKWebAppStorageSet', { key, value: stringValue });
+        } catch (err) {
+            console.error(`Ошибка сохранения в VK Storage (${key}):`, err);
+        }
+    };
+
+    const loadFromVKStorage = async (key: string) => {
+        try {
+            const result = await bridge.send('VKWebAppStorageGet', { keys: [key] });
+            if (result.keys && result.keys[0] && result.keys[0].value) {
+                return JSON.parse(result.keys[0].value);
+            }
+        } catch (err) {
+            console.error(`Ошибка загрузки из VK Storage (${key}):`, err);
+        }
+        // Фоллбэк на localStorage, если облако пусто или ошибка
+        const local = localStorage.getItem(key);
+        return local ? JSON.parse(local) : null;
     };
 
     // === ПОЛУЧЕНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ ===
@@ -87,26 +111,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             }
         } catch (err) {
             console.error('Не удалось получить информацию о пользователе:', err);
-            setUserName(''); // Если не получилось, оставляем пустым
+            setUserName('');
         }
     };
 
-    // Вызываем сразу после инициализации
     useEffect(() => {
         fetchUserInfo();
     }, []);
 
-    // === КРИТИЧЕСКИ ВАЖНО: Инициализация VK Bridge СРАЗУ ===
     useEffect(() => {
         bridge.send('VKWebAppInit').catch(console.error);
     }, []);
 
-    // Загрузка данных (после инициализации)
+    // Загрузка данных с использованием VK Cloud Storage
     useEffect(() => {
         const loadData = async () => {
             setIsLoadingStations(true);
             try {
-                // Добавляем таймаут для защиты от долгой загрузки
                 const timeoutPromise = new Promise<never>((_, reject) =>
                     setTimeout(() => reject(new Error('Timeout')), 10000)
                 );
@@ -117,29 +138,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 ]);
 
                 setStations(loadedStations);
-                const savedStationId = localStorage.getItem('lastStationId');
+
+                // ✅ ЗАГРУЗКА ИЗ VK CLOUD STORAGE
+                const savedStationId = await loadFromVKStorage('lastStationId');
                 if (savedStationId && loadedStations.find(s => s.id === savedStationId)) {
                     setCurrentStationId(savedStationId);
                 } else if (loadedStations.length > 0) {
                     setCurrentStationId(loadedStations[0].id);
                 }
-                const savedHistory = localStorage.getItem('listeningHistory');
+
+                const savedHistory = await loadFromVKStorage('listeningHistory');
                 if (savedHistory) {
-                    try {
-                        setListeningHistory(JSON.parse(savedHistory));
-                    } catch (e) {
-                        console.error("Failed to parse listening history", e);
-                        localStorage.removeItem('listeningHistory');
-                    }
+                    setListeningHistory(savedHistory);
                 }
 
-                const savedRatings = localStorage.getItem('stationRatings');
+                const savedRatings = await loadFromVKStorage('stationRatings');
                 if (savedRatings) {
-                    try {
-                        setStationRatings(JSON.parse(savedRatings));
-                    } catch (e) {
-                        console.error("Failed to parse station ratings", e);
-                    }
+                    setStationRatings(savedRatings);
                 }
 
             } catch (err) {
@@ -369,10 +384,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             setTimeLeftSeconds(null);
             setListeningHistory(prevHistory => {
                 const newHistory = [station.id, ...prevHistory.filter(id => id !== station.id)].slice(0, 10);
-                localStorage.setItem('listeningHistory', JSON.stringify(newHistory));
+                // ✅ СОХРАНЕНИЕ В VK CLOUD STORAGE
+                saveToVKStorage('listeningHistory', newHistory);
                 return newHistory;
             });
-            localStorage.setItem('lastStationId', station.id);
+            // ✅ СОХРАНЕНИЕ В VK CLOUD STORAGE
+            saveToVKStorage('lastStationId', station.id);
+
             setTimeout(() => {
                 if (audioRef.current) {
                     setIsLoading(true);
@@ -384,16 +402,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     const handleRating = (stationId: string, rating: number) => {
         if (stationRatings[stationId]) {
-            triggerHapticNotification('error'); // Вибрация ошибки
+            triggerHapticNotification('error');
             alert('Вы уже проголосовали за эту станцию!');
             return;
         }
 
-        triggerHapticNotification('success'); // ← ДОБАВИТЬ ЭТУ СТРОКУ (приятный отклик при успехе)
+        triggerHapticNotification('success');
 
         setStationRatings(prev => {
             const newRatings = { ...prev, [stationId]: rating };
-            localStorage.setItem('stationRatings', JSON.stringify(newRatings));
+            // ✅ СОХРАНЕНИЕ В VK CLOUD STORAGE
+            saveToVKStorage('stationRatings', newRatings);
             return newRatings;
         });
     };
@@ -426,7 +445,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    // === КОПИРОВАТЬ ТЕКСТ ===
     const copyShareText = async () => {
         try {
             await navigator.clipboard.writeText(shareText);
@@ -444,7 +462,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         }
     };
 
-    // === ПОДЕЛИТЬСЯ В ИСТОРИИ VK (с готовой картинкой) ===
     const shareToStory = async () => {
         try {
             const canvas = document.createElement('canvas');
@@ -454,7 +471,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
             if (!ctx) return;
 
-            // Получаем цвет станции
             const stationColor = currentStation?.color || '#667eea';
             let bgColor = stationColor;
 
@@ -463,11 +479,9 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 bgColor = match ? `#${match[1]}` : '#667eea';
             }
 
-            // Рисуем фон
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, 720, 1280);
 
-            // Текст
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -486,10 +500,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
             ctx.fillText('AniWave Radio', 360, 1150);
 
-            // Конвертируем в base64
             const imageData = canvas.toDataURL('image/jpeg', 0.9);
 
-            // ✅ ИСПОЛЬЗУЕМ blob ВМЕСТО background.url
             await bridge.send('VKWebAppShowStoryBox', {
                 blob: imageData,
                 background_type: 'image',
@@ -513,6 +525,26 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </Panel>
         );
     }
+
+    // Общий стиль для текста внутри кнопок (ИСПРАВЛЕНИЕ ОБРЕЗАНИЯ ТЕКСТА)
+    const buttonTextStyle = {
+        position: 'relative' as const,
+        zIndex: 1,
+        color: '#ffffff',
+        fontWeight: 600,
+        fontSize: 'clamp(9px, 2.5vw, 11px)', // Адаптивный размер шрифта
+        textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+        textAlign: 'center' as const,
+        background: 'rgba(0,0,0,0.4)',
+        padding: '3px 6px',
+        borderRadius: '6px',
+        backdropFilter: 'blur(4px)',
+        maxWidth: '95%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap' as const,
+        lineHeight: '1.2'
+    };
 
     return (
         <Panel id={id}>
@@ -548,8 +580,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                 lineHeight: '1.5'
                             }}
                         />
-
-                        {/* Кнопка 1: Копировать текст */}
                         <Button
                             size="l"
                             mode={copySuccess ? 'primary' : 'secondary'}
@@ -567,8 +597,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         >
                             {copySuccess ? '✅ Скопировано!' : '📋 Скопировать текст'}
                         </Button>
-
-                        {/* Кнопка 2: Поделиться в Истории (НОВАЯ) */}
                         <Button
                             size="l"
                             mode="secondary"
@@ -588,7 +616,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         >
                             📖 Поделиться в Истории VK
                         </Button>
-
                         <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
                             Текст автоматически скопируется в буфер обмена
                         </Caption>
@@ -686,13 +713,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         </Cell>
                                     );
                                 })}
-
-                                {/* Кнопка очистки истории */}
-                                <Div style={{
-                                    marginTop: '16px',
-                                    borderTop: '1px solid var(--modal-border)',
-                                    paddingTop: '16px'
-                                }}>
+                                <Div style={{ marginTop: '16px', borderTop: '1px solid var(--modal-border)', paddingTop: '16px' }}>
                                     <Button
                                         size="l"
                                         mode="secondary"
@@ -707,7 +728,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                         }}
                                         onClick={() => {
                                             triggerHaptic('heavy');
-                                            localStorage.removeItem('listeningHistory');
+                                            saveToVKStorage('listeningHistory', []);
                                             setListeningHistory([]);
                                             setIsHistoryModalOpen(false);
                                         }}
@@ -789,10 +810,8 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 </ModalPage>
             </ModalRoot>
 
-            {/* Полноэкранный плеер */}
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
 
-            {/* Баннер */}
             <div className="gradient-banner" style={{ padding: '30px 16px', textAlign: 'center', color: '#fff' }}>
                 <div style={{ fontSize: '36px', fontWeight: 'bold', textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}> AniWave Radio</div>
                 <div style={{ fontSize: '15px', marginTop: '6px' }}>Anime • J-Pop • Lo-Fi • OST</div>
@@ -815,9 +834,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                 )}
             </div>
 
-            {/* Основной контент */}
             <Group>
-                {/* Плеер */}
                 <Div className="player-card" style={{ textAlign: 'center', padding: '32px 16px', borderRadius: '12px', margin: '12px 0', position: 'relative', overflow: 'hidden', minHeight: '400px', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={openNowPlaying}>
                     <div style={{ position: 'absolute', inset: 0, background: 'var(--player-overlay)', zIndex: 0 }} />
                     <div style={{ position: 'relative', zIndex: 1 }}>
@@ -850,210 +867,49 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </div>
                 </Div>
 
-                {/* Красивые картинки вместо кнопок с подписями ВНУТРИ */}
+                {/* Красивые картинки вместо кнопок с подписями ВНУТРИ (ИСПРАВЛЕНО ОБРЕЗАНИЕ) */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', padding: '12px 16px' }}>
                     {/* Поделиться */}
-                    <div
-                        onClick={handleShare}
-                        style={{
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                            paddingBottom: '12px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    <div onClick={handleShare} style={{ borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s ease', overflow: 'hidden', position: 'relative', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '12px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/share-icon.png" alt="Поделиться" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                            textAlign: 'center',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '4px 12px',
-                            borderRadius: '8px',
-                            backdropFilter: 'blur(4px)',
-                        }}>
-                            Поделиться
-                        </div>
+                        <div style={buttonTextStyle}>Поделиться</div>
                     </div>
 
                     {/* Общий чат */}
-                    <div
-                        onClick={() => setIsChatModalOpen(true)}
-                        style={{
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                            paddingBottom: '12px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    <div onClick={() => setIsChatModalOpen(true)} style={{ borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s ease', overflow: 'hidden', position: 'relative', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '12px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/chat-icon.png" alt="Общий чат" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                            textAlign: 'center',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '4px 12px',
-                            borderRadius: '8px',
-                            backdropFilter: 'blur(4px)',
-                        }}>
-                            Общий чат
-                        </div>
+                        <div style={buttonTextStyle}>Общий чат</div>
                     </div>
 
                     {/* Эквалайзер */}
-                    <div
-                        onClick={() => setIsEqOpen(true)}
-                        style={{
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                            paddingBottom: '12px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    <div onClick={() => setIsEqOpen(true)} style={{ borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s ease', overflow: 'hidden', position: 'relative', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '12px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/equalizer-icon.png" alt="Эквалайзер" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                            textAlign: 'center',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '4px 12px',
-                            borderRadius: '8px',
-                            backdropFilter: 'blur(4px)',
-                        }}>
-                            Эквалайзер
-                        </div>
+                        <div style={buttonTextStyle}>Эквалайзер</div>
                     </div>
 
                     {/* История */}
-                    <div
-                        onClick={() => setIsHistoryModalOpen(true)}
-                        style={{
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                            paddingBottom: '12px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    <div onClick={() => setIsHistoryModalOpen(true)} style={{ borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s ease', overflow: 'hidden', position: 'relative', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '12px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/history-icon.png" alt="История" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                            textAlign: 'center',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '4px 12px',
-                            borderRadius: '8px',
-                            backdropFilter: 'blur(4px)',
-                        }}>
-                            История
-                        </div>
+                        <div style={buttonTextStyle}>История</div>
                     </div>
 
                     {/* Рейтинг станций */}
-                    <div
-                        onClick={() => setIsRatingModalOpen(true)}
-                        style={{
-                            borderRadius: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            aspectRatio: '1/1',
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                            paddingBottom: '12px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    <div onClick={() => setIsRatingModalOpen(true)} style={{ borderRadius: '16px', cursor: 'pointer', transition: 'all 0.3s ease', overflow: 'hidden', position: 'relative', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '12px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/rating-icon.png" alt="Рейтинг" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={{
-                            position: 'relative',
-                            zIndex: 1,
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                            textAlign: 'center',
-                            background: 'rgba(0,0,0,0.3)',
-                            padding: '4px 12px',
-                            borderRadius: '8px',
-                            backdropFilter: 'blur(4px)',
-                        }}>
-                            Рейтинг
-                        </div>
+                        <div style={buttonTextStyle}>Рейтинг</div>
                     </div>
                 </div>
 
-                {/* Ошибка */}
                 {error && (
                     <Group>
                         <Div style={{ padding: '16px', textAlign: 'center', background: 'rgba(244,67,54,0.1)', borderRadius: '8px' }}>
@@ -1064,7 +920,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     </Group>
                 )}
 
-                {/* Список станций */}
                 <Group header={<Subhead style={{ padding: '12px 16px' }}>📻 Радиостанции</Subhead>}>
                     <StationSearch
                         stations={stations}
@@ -1080,7 +935,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     />
                 </Group>
 
-                {/* Ссылки и поддержка */}
                 <Separator />
                 <Group header={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px' }}>
                     <Subhead weight="2" style={{ fontWeight: 600 }}>Ссылки</Subhead>
@@ -1142,7 +996,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
             </Group>
 
             <style>{`
-                /* === ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ === */
                 :root {
                     --bg-primary: #f5f5f5;
                     --text-primary: #000000;
@@ -1158,7 +1011,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-header-bg: #2D81E0;
                     --modal-header-text: #ffffff;
                 }
-
                 #root[data-theme="dark"], #root.theme-dark {
                     --bg-primary: #0a0a1a;
                     --text-primary: #ffffff;
@@ -1173,7 +1025,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     --modal-inactive-star: #555555;
                     background: #0a0a1a !important;
                 }
-
                 @media (prefers-color-scheme: dark) {
                     :root {
                         --modal-bg: #232324;
@@ -1184,125 +1035,24 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         --modal-inactive-star: #555555;
                     }
                 }
-
-                /* === МОДАЛЬНЫЕ ОКНА === */
-                .ModalPage__in {
-                    background: var(--modal-bg) !important;
-                    border-radius: 16px !important;
-                }
-
-                .ModalPage__header {
-                    background: var(--modal-header-bg) !important;
-                    border-bottom: none !important;
-                }
-
-                .ModalPage__header *,
-                .ModalPage__header .Subhead {
-                    color: var(--modal-header-text) !important;
-                    font-weight: 600;
-                }
-
-                .ModalPage .Div,
-                .ModalPage .Group,
-                .ModalPage .Cell {
-                    background: var(--modal-bg) !important;
-                    color: var(--modal-text) !important;
-                }
-
-                .ModalPage .Subhead,
-                .ModalPage .Text {
-                    color: var(--modal-text) !important;
-                }
-
-                .ModalPage .Caption {
-                    color: var(--modal-secondary) !important;
-                }
-
-                .ModalPage .Cell:hover {
-                    background: var(--modal-cell-bg) !important;
-                }
-
-                /* === ЗАГОЛОВКИ ГРУПП === */
-                .Group__header {
-                    color: var(--text-primary) !important;
-                }
-
-                /* === ИСПРАВЛЕНИЕ ЗАГОЛОВКОВ В ТЁМНОЙ ТЕМЕ === */
-                #root[data-theme="dark"] .Group__header,
-                #root.theme-dark .Group__header,
-                #root[data-theme="dark"] .Group__header *,
-                #root.theme-dark .Group__header *,
-                #root[data-theme="dark"] .Group__header .Subhead,
-                #root.theme-dark .Group__header .Subhead,
-                #root[data-theme="dark"] .Group__header .Text,
-                #root.theme-dark .Group__header .Text {
-                    color: #ffffff !important;
-                }
-
-                #root[data-theme="dark"] .Group .Text,
-                #root.theme-dark .Group .Text,
-                #root[data-theme="dark"] .Group .Caption,
-                #root.theme-dark .Group .Caption {
-                    color: #b0b0b0 !important;
-                }
-
-                #root[data-theme="dark"] .Cell__main,
-                #root.theme-dark .Cell__main,
-                #root[data-theme="dark"] .Cell__children,
-                #root.theme-dark .Cell__children {
-                    color: #ffffff !important;
-                }
-
-                #root[data-theme="dark"] .Cell__subtitle,
-                #root.theme-dark .Cell__subtitle {
-                    color: #939393 !important;
-                }
-
-                /* === ОСТАЛЬНЫЕ СТИЛИ === */
-                @supports (height: 100dvh) {
-                    .loading-screen { height: 100dvh !important; }
-                }
-
-                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel,
-                #root[data-theme="dark"] .Group, #root.theme-dark .Group { 
-                    background: transparent !important; 
-                }
-
-                #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { 
-                    background: #1a1a2e !important; 
-                }
-
-                .player-card { 
-                    background: url(/background.png) center/cover !important; 
-                }
-
+                .ModalPage__in { background: var(--modal-bg) !important; border-radius: 16px !important; }
+                .ModalPage__header { background: var(--modal-header-bg) !important; border-bottom: none !important; }
+                .ModalPage__header *, .ModalPage__header .Subhead { color: var(--modal-header-text) !important; font-weight: 600; }
+                .ModalPage .Div, .ModalPage .Group, .ModalPage .Cell { background: var(--modal-bg) !important; color: var(--modal-text) !important; }
+                .ModalPage .Subhead, .ModalPage .Text { color: var(--modal-text) !important; }
+                .ModalPage .Caption { color: var(--modal-secondary) !important; }
+                .ModalPage .Cell:hover { background: var(--modal-cell-bg) !important; }
+                .Group__header { color: var(--text-primary) !important; }
+                #root[data-theme="dark"] .Group__header, #root.theme-dark .Group__header, #root[data-theme="dark"] .Group__header *, #root.theme-dark .Group__header *, #root[data-theme="dark"] .Group__header .Subhead, #root.theme-dark .Group__header .Subhead, #root[data-theme="dark"] .Group__header .Text, #root.theme-dark .Group__header .Text { color: #ffffff !important; }
+                #root[data-theme="dark"] .Group .Text, #root.theme-dark .Group .Text, #root[data-theme="dark"] .Group .Caption, #root.theme-dark .Group .Caption { color: #b0b0b0 !important; }
+                #root[data-theme="dark"] .Cell__main, #root.theme-dark .Cell__main, #root[data-theme="dark"] .Cell__children, #root.theme-dark .Cell__children { color: #ffffff !important; }
+                #root[data-theme="dark"] .Cell__subtitle, #root.theme-dark .Cell__subtitle { color: #939393 !important; }
+                @supports (height: 100dvh) { .loading-screen { height: 100dvh !important; } }
+                #root[data-theme="dark"] .Panel, #root.theme-dark .Panel, #root[data-theme="dark"] .Group, #root.theme-dark .Group { background: transparent !important; }
+                #root[data-theme="dark"] .Cell, #root.theme-dark .Cell { background: #1a1a2e !important; }
+                .player-card { background: url(/background.png) center/cover !important; }
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes modalGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-                
-                /* === УБИРАЕМ ВСЕ ВЫДЕЛЕНИЯ (OUTLINE) === */
-                * {
-                    outline: none !important;
-                    -webkit-tap-highlight-color: transparent !important;
-                    -webkit-focus-ring-color: transparent !important;
-                }
-
-                button:focus,
-                input:focus,
-                select:focus,
-                textarea:focus,
-                a:focus,
-                [tabindex]:focus {
-                    outline: none !important;
-                    border-color: transparent !important;
-                    box-shadow: none !important;
-                }
-
-                /* Для мобильных устройств */
-                @media (hover: none) {
-                    * {
-                        -webkit-tap-highlight-color: transparent !important;
-                    }
-                }
             `}</style>
         </Panel>
     );
