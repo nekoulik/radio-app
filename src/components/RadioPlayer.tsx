@@ -68,6 +68,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
+    // === УПРАВЛЕНИЕ МОДАЛЬНЫМИ ОКНАМИ (ОДИН MODALROOT) ===
+    const closeAllModals = () => {
+        setIsShareModalOpen(false);
+        setIsChatModalOpen(false);
+        setIsHistoryModalOpen(false);
+        setIsEqOpen(false);
+        setIsRatingModalOpen(false);
+    };
+
+    const activeModal = isShareModalOpen ? 'share' :
+        isChatModalOpen ? 'chat-invite' :
+            isHistoryModalOpen ? 'history' :
+                isEqOpen ? 'equalizer' :
+                    isRatingModalOpen ? 'rating' :
+                        undefined;
+    // ========================================================
+
     // === ФУНКЦИЯ ДЛЯ ТАКТИЛЬНОЙ ОТДАЧИ ===
     const triggerHaptic = (style: 'light' | 'medium' | 'heavy' = 'medium') => {
         bridge.send('VKWebAppTapticImpactOccurred', { style }).catch(() => { });
@@ -573,20 +590,22 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
 
     return (
         <Panel id={id}>
-            {/* 1. Модальное окно: Поделиться */}
-            <ModalRoot activeModal={isShareModalOpen ? 'share' : undefined}>
+            {/* ЕДИНЫЙ ModalRoot для всех окон */}
+            <ModalRoot activeModal={activeModal} onClose={closeAllModals}>
+
+                {/* 1. Модальное окно: Поделиться */}
                 <ModalPage
                     id="share"
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             style={{ background: '#2D81E0' }}
-                            before={<Button mode="tertiary" onClick={() => { setIsShareModalOpen(false); setCopySuccess(false); }}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
+                            before={<Button mode="tertiary" onClick={() => { closeAllModals(); setCopySuccess(false); }}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
                             <span style={{ color: '#ffffff' }}>Поделиться</span>
                         </ModalPageHeader>
                     }
-                    onClose={() => { setIsShareModalOpen(false); setCopySuccess(false); }}
+                    onClose={closeAllModals}
                 >
                     <Div style={{ padding: '20px' }}>
                         <Subhead weight="2" style={{ marginBottom: '12px', display: 'block' }}>
@@ -597,127 +616,61 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                             onChange={(e) => setShareText(e.target.value)}
                             rows={5}
                             readOnly
-                            style={{
-                                marginBottom: '16px',
-                                borderRadius: '12px',
-                                padding: '12px',
-                                fontSize: '14px',
-                                lineHeight: '1.5'
-                            }}
+                            style={{ marginBottom: '16px', borderRadius: '12px', padding: '12px', fontSize: '14px', lineHeight: '1.5' }}
                         />
-                        <Button
-                            size="l"
-                            mode={copySuccess ? 'primary' : 'secondary'}
-                            style={{
-                                width: '100%',
-                                background: copySuccess ? '#4BB34B' : '#2D81E0',
-                                color: '#ffffff',
-                                border: 'none',
-                                borderRadius: '12px',
-                                padding: '14px',
-                                fontSize: '16px',
-                                fontWeight: 600
-                            }}
-                            onClick={copyShareText}
-                        >
+                        <Button size="l" mode={copySuccess ? 'primary' : 'secondary'} style={{ width: '100%', background: copySuccess ? '#4BB34B' : '#2D81E0', color: '#ffffff', border: 'none', borderRadius: '12px', padding: '14px', fontSize: '16px', fontWeight: 600 }} onClick={copyShareText}>
                             {copySuccess ? '✅ Скопировано!' : '📋 Скопировать текст'}
                         </Button>
-                        <Button
-                            size="l"
-                            mode="secondary"
-                            style={{
-                                width: '100%',
-                                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                                color: '#ffffff',
-                                border: 'none',
-                                borderRadius: '12px',
-                                padding: '14px',
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                marginTop: '12px',
-                                boxShadow: '0 4px 12px rgba(245, 87, 108, 0.3)'
-                            }}
-                            onClick={shareToStory}
-                        >
+                        <Button size="l" mode="secondary" style={{ width: '100%', background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: '#ffffff', border: 'none', borderRadius: '12px', padding: '14px', fontSize: '16px', fontWeight: 600, marginTop: '12px', boxShadow: '0 4px 12px rgba(245, 87, 108, 0.3)' }} onClick={shareToStory}>
                             📖 Поделиться в Истории VK
                         </Button>
-                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
-                            Текст автоматически скопируется в буфер обмена
-                        </Caption>
+                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>Текст автоматически скопируется в буфер обмена</Caption>
                     </Div>
                 </ModalPage>
-            </ModalRoot>
 
-            {/* 2. Модальное окно: Общий чат */}
-            <ModalRoot activeModal={isChatModalOpen ? 'chat-invite' : undefined}>
+                {/* 2. Модальное окно: Общий чат */}
                 <ModalPage
                     id="chat-invite"
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             style={{ background: '#2D81E0' }}
-                            before={<Button mode="tertiary" onClick={() => setIsChatModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
+                            before={<Button mode="tertiary" onClick={closeAllModals}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
                             <span style={{ color: '#ffffff' }}>💬 Общий чат</span>
                         </ModalPageHeader>
                     }
-                    onClose={() => setIsChatModalOpen(false)}
+                    onClose={closeAllModals}
                 >
                     <Div style={{ padding: '20px' }}>
-                        <Subhead weight="2" style={{ marginBottom: '12px', display: 'block', fontSize: '18px' }}>
-                            Добро пожаловать в чат AniWave Radio!
-                        </Subhead>
-                        <Caption style={{ display: 'block', marginBottom: '24px', fontSize: '14px', lineHeight: '1.5' }}>
-                            Общайтесь с другими слушателями, делитесь любимыми треками и предлагайте идеи!
-                        </Caption>
-                        <Button
-                            size="l"
-                            mode="primary"
-                            style={{
-                                width: '100%',
-                                background: '#2D81E0',
-                                color: '#ffffff',
-                                border: 'none',
-                                borderRadius: '12px',
-                                padding: '14px',
-                                fontSize: '16px',
-                                fontWeight: 600
-                            }}
-                            Component="a"
-                            href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak="
-                            target="_blank"
-                        >
+                        <Subhead weight="2" style={{ marginBottom: '12px', display: 'block', fontSize: '18px' }}>Добро пожаловать в чат AniWave Radio!</Subhead>
+                        <Caption style={{ display: 'block', marginBottom: '24px', fontSize: '14px', lineHeight: '1.5' }}>Общайтесь с другими слушателями, делитесь любимыми треками и предлагайте идеи!</Caption>
+                        <Button size="l" mode="primary" style={{ width: '100%', background: '#2D81E0', color: '#ffffff', border: 'none', borderRadius: '12px', padding: '14px', fontSize: '16px', fontWeight: 600 }} Component="a" href="https://vk.me/join/FTopCT1MkUooAn7FGOJNXxV9O6bGBudBoak=" target="_blank">
                             Присоединиться к чату →
                         </Button>
-                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>
-                            Чат откроется в новом окне VK Мессенджера
-                        </Caption>
+                        <Caption style={{ display: 'block', textAlign: 'center', marginTop: '12px', fontSize: '12px' }}>Чат откроется в новом окне VK Мессенджера</Caption>
                     </Div>
                 </ModalPage>
-            </ModalRoot>
 
-            {/* 3. Модальное окно: История */}
-            <ModalRoot activeModal={isHistoryModalOpen ? 'history' : undefined}>
+                {/* 3. Модальное окно: История */}
                 <ModalPage
                     id="history"
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             style={{ background: '#2D81E0' }}
-                            before={<Button mode="tertiary" onClick={() => setIsHistoryModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
+                            before={<Button mode="tertiary" onClick={closeAllModals}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
                             <span style={{ color: '#ffffff' }}>📜 История</span>
                         </ModalPageHeader>
                     }
-                    onClose={() => setIsHistoryModalOpen(false)}
+                    onClose={closeAllModals}
                 >
                     <Div style={{ padding: '20px' }}>
                         {listeningHistory.length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
                                 <Subhead weight="2" style={{ fontSize: '16px' }}>История пуста</Subhead>
-                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>
-                                    Начните слушать радио
-                                </Caption>
+                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>Начните слушать радио</Caption>
                             </Div>
                         ) : (
                             <>
@@ -725,39 +678,13 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                                     const station = stations.find(s => s.id === stationId);
                                     if (!station) return null;
                                     return (
-                                        <Cell
-                                            key={station.id}
-                                            onClick={() => { handleStationSelect(station); setIsHistoryModalOpen(false); }}
-                                            subtitle={<span>{station.genre}</span>}
-                                            style={{ borderRadius: '12px', margin: '6px 0' }}
-                                            after={
-                                                <Button size="s" mode="primary" style={{ background: '#2D81E0', borderRadius: '8px' }}>▶</Button>
-                                            }
-                                        >
+                                        <Cell key={station.id} onClick={() => { handleStationSelect(station); closeAllModals(); }} subtitle={<span>{station.genre}</span>} style={{ borderRadius: '12px', margin: '6px 0' }} after={<Button size="s" mode="primary" style={{ background: '#2D81E0', borderRadius: '8px' }}>▶</Button>}>
                                             <div style={{ fontWeight: 600 }}>{station.name}</div>
                                         </Cell>
                                     );
                                 })}
                                 <Div style={{ marginTop: '16px', borderTop: '1px solid var(--modal-border)', paddingTop: '16px' }}>
-                                    <Button
-                                        size="l"
-                                        mode="secondary"
-                                        style={{
-                                            width: '100%',
-                                            background: 'var(--modal-cell-bg)',
-                                            color: '#F44336',
-                                            border: '1px solid rgba(244,67,54,0.3)',
-                                            borderRadius: '12px',
-                                            padding: '12px',
-                                            fontWeight: 600
-                                        }}
-                                        onClick={() => {
-                                            triggerHaptic('heavy');
-                                            saveToVKStorage('listeningHistory', []);
-                                            setListeningHistory([]);
-                                            setIsHistoryModalOpen(false);
-                                        }}
-                                    >
+                                    <Button size="l" mode="secondary" style={{ width: '100%', background: 'var(--modal-cell-bg)', color: '#F44336', border: '1px solid rgba(244,67,54,0.3)', borderRadius: '12px', padding: '12px', fontWeight: 600 }} onClick={() => { triggerHaptic('heavy'); saveToVKStorage('listeningHistory', []); setListeningHistory([]); closeAllModals(); }}>
                                         🗑️ Очистить историю
                                     </Button>
                                 </Div>
@@ -765,62 +692,52 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         )}
                     </Div>
                 </ModalPage>
-            </ModalRoot>
 
-            {/* 4. Модальное окно: Эквалайзер */}
-            <ModalRoot activeModal={isEqOpen ? 'equalizer' : undefined}>
+                {/* 4. Модальное окно: Эквалайзер */}
                 <ModalPage
                     id="equalizer"
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             style={{ background: '#2D81E0' }}
-                            before={<Button mode="tertiary" onClick={() => setIsEqOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
+                            before={<Button mode="tertiary" onClick={closeAllModals}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
                             <span style={{ color: '#ffffff' }}>️🎛️ Настройки звука</span>
                         </ModalPageHeader>
                     }
-                    onClose={() => setIsEqOpen(false)}
+                    onClose={closeAllModals}
                 >
                     <Equalizer onPresetChange={applyEqPreset} analyserNode={analyserRef.current} />
                 </ModalPage>
-            </ModalRoot>
 
-            {/* 5. Модальное окно: Рейтинг станций */}
-            <ModalRoot activeModal={isRatingModalOpen ? 'rating' : undefined}>
+                {/* 5. Модальное окно: Рейтинг станций */}
                 <ModalPage
                     id="rating"
                     hideCloseButton={true}
                     header={
                         <ModalPageHeader
                             style={{ background: '#2D81E0' }}
-                            before={<Button mode="tertiary" onClick={() => setIsRatingModalOpen(false)}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
+                            before={<Button mode="tertiary" onClick={closeAllModals}><Icon24Dismiss style={{ color: '#ffffff' }} /></Button>}
                         >
                             <span style={{ color: '#ffffff' }}>🏆 Рейтинг</span>
                         </ModalPageHeader>
                     }
-                    onClose={() => setIsRatingModalOpen(false)}
+                    onClose={closeAllModals}
                 >
                     <Div style={{ padding: '20px' }}>
                         {getStationsByRating().length === 0 ? (
                             <Div style={{ textAlign: 'center', padding: '32px 0' }}>
                                 <Subhead weight="2" style={{ fontSize: '16px' }}>Пока нет оценок</Subhead>
-                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>
-                                    Будьте первым!
-                                </Caption>
+                                <Caption style={{ display: 'block', marginTop: '8px', fontSize: '14px' }}>Будьте первым!</Caption>
                             </Div>
                         ) : (
                             getStationsByRating().map((station, index) => (
                                 <Cell
                                     key={station.id}
-                                    before={
-                                        <div style={{ fontSize: '24px', fontWeight: 'bold', minWidth: '32px', textAlign: 'center' }}>
-                                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                                        </div>
-                                    }
+                                    before={<div style={{ fontSize: '24px', fontWeight: 'bold', minWidth: '32px', textAlign: 'center' }}>{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}</div>}
                                     subtitle={<div style={{ fontSize: '12px' }}>{station.genre}</div>}
                                     style={{ borderRadius: '12px', margin: '6px 0' }}
-                                    onClick={() => { handleStationSelect(station); setIsRatingModalOpen(false); }}
+                                    onClick={() => { handleStationSelect(station); closeAllModals(); }}
                                 >
                                     <div style={{ fontWeight: 600 }}>{station.name}</div>
                                     <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
@@ -833,6 +750,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         )}
                     </Div>
                 </ModalPage>
+
             </ModalRoot>
 
             <NowPlayingScreen isOpen={isNowPlayingOpen} onClose={() => setIsNowPlayingOpen(false)} station={currentStation} isPlaying={isPlaying} onTogglePlay={togglePlay} onSwitchStation={switchStation} onRandomStation={playRandomStation} />
