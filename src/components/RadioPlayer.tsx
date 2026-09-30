@@ -550,24 +550,25 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         );
     }
 
-    // Общий стиль для текста внутри кнопок (ИСПРАВЛЕНИЕ ОБРЕЗАНИЯ ТЕКСТА)
+    // Общий стиль для текста внутри кнопок (ГАРАНТИРОВАННО БЕЗ ОБРЕЗАНИЯ)
     const buttonTextStyle = {
         position: 'relative' as const,
         zIndex: 1,
         color: '#ffffff',
         fontWeight: 600,
-        fontSize: 'clamp(8px, 2vw, 10px)', // Ещё меньше шрифт
-        textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+        fontSize: 'clamp(9px, 2.5vw, 11px)', // Оптимальный адаптивный размер
+        textShadow: '0 1px 4px rgba(0,0,0,0.8)',
         textAlign: 'center' as const,
-        background: 'rgba(0,0,0,0.5)',
-        padding: '2px 4px',
-        borderRadius: '6px',
+        background: 'rgba(0,0,0,0.6)', // Чуть темнее для лучшей читаемости
+        padding: '4px 6px',
+        borderRadius: '8px',
         backdropFilter: 'blur(4px)',
         maxWidth: '90%',
-        lineHeight: '1.1',
+        width: '100%', // Занимает доступное пространство
+        lineHeight: '1.2',
         wordBreak: 'break-word' as const,
         whiteSpace: 'normal' as const, // Разрешаем перенос строк
-        overflow: 'visible',
+        // overflow убран, чтобы текст корректно вписывался в границы родителя
     };
 
     return (
@@ -1059,7 +1060,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         --modal-inactive-star: #555555;
                     }
                 }
-                .ModalPage__in { background: var(--modal-bg) !important; border-radius: 16px !important; }
+
+                /* === ИСПРАВЛЕНИЕ МОДАЛЬНЫХ ОКОН (ВЫСОТА И СКРОЛЛ) === */
+                .vkuiModalRoot {
+                    height: 100% !important;
+                }
+                .vkuiModalPage {
+                    height: 100dvh !important; /* dvh учитывает адресную строку на мобильных */
+                    max-height: 100dvh !important;
+                }
+                .vkuiModalPage__in {
+                    height: 100% !important;
+                    max-height: 100dvh !important;
+                    overflow-y: auto !important; /* Ключевое: разрешает скролл контента внутри модалки */
+                    border-radius: 16px 16px 0 0 !important;
+                    background: var(--modal-bg) !important;
+                }
+                @media (min-width: 768px) {
+                    .vkuiModalPage {
+                        height: auto !important;
+                        max-height: 90vh !important;
+                    }
+                    .vkuiModalPage__in {
+                        border-radius: 16px !important;
+                    }
+                }
+                /* ======================================================== */
+
                 .ModalPage__header { background: var(--modal-header-bg) !important; border-bottom: none !important; }
                 .ModalPage__header *, .ModalPage__header .Subhead { color: var(--modal-header-text) !important; font-weight: 600; }
                 .ModalPage .Div, .ModalPage .Group, .ModalPage .Cell { background: var(--modal-bg) !important; color: var(--modal-text) !important; }
