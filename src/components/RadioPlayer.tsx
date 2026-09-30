@@ -556,18 +556,18 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         zIndex: 1,
         color: '#ffffff',
         fontWeight: 600,
-        fontSize: 'clamp(9px, 2.5vw, 11px)', // Адаптивный размер шрифта
+        fontSize: 'clamp(8px, 2vw, 10px)', // Ещё меньше шрифт
         textShadow: '0 2px 8px rgba(0,0,0,0.8)',
         textAlign: 'center' as const,
-        background: 'rgba(0,0,0,0.4)',
-        padding: '3px 6px',
+        background: 'rgba(0,0,0,0.5)',
+        padding: '2px 4px',
         borderRadius: '6px',
         backdropFilter: 'blur(4px)',
-        maxWidth: '95%',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap' as const,
-        lineHeight: '1.2'
+        maxWidth: '90%',
+        lineHeight: '1.1',
+        wordBreak: 'break-word' as const,
+        whiteSpace: 'normal' as const, // Разрешаем перенос строк
+        overflow: 'visible',
     };
 
     return (
@@ -906,7 +906,7 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}>
                         <img src="/icons/chat-icon.png" alt="Общий чат" style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', top: 0, left: 0 }} />
-                        <div style={buttonTextStyle}>Общий чат</div>
+                        <div style={buttonTextStyle}>Чат</div>
                     </div>
 
                     {/* Эквалайзер */}
