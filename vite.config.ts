@@ -14,15 +14,8 @@ function handleModuleDirectivesPlugin() {
   };
 }
 
-/**
- * Some chunks may be large.
- * This will not affect the loading speed of the site.
- * We collect several versions of scripts that are applied depending on the browser version.
- * This is done so that your code runs equally well on the site and in the odr.
- * The details are here: https://dev.vk.ru/mini-apps/development/on-demand-resources.
- */
 export default defineConfig({
-  base: './',
+  base: './', // Относительные пути для корректной работы в VK Mini Apps
 
   plugins: [
     react(),
@@ -33,6 +26,7 @@ export default defineConfig({
   ],
 
   build: {
-    outDir: 'build',
+    outDir: 'dist', // <-- ВАЖНО: Vercel по умолчанию ожидает папку dist
+    chunkSizeWarningLimit: 1000, // <-- Игнорируем предупреждения о больших файлах
   },
 });
