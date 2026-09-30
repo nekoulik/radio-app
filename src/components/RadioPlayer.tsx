@@ -81,23 +81,33 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const saveToVKStorage = async (key: string, value: any) => {
         try {
             const stringValue = JSON.stringify(value);
-            localStorage.setItem(key, stringValue); // Локальный фоллбэк
-            await bridge.send('VKWebAppStorageSet', { key, value: stringValue });
+            localStorage.setItem(key, stringValue); // Локальное сохранение всегда работает
+
+            // Отправляем в облако без await, чтобы не блокировать UI, или с таймаутом
+            bridge.send('VKWebAppStorageSet', { key, value: stringValue }).catch(err => {
+                console.warn(`Ошибка сохранения в VK Storage (${key}):`, err);
+            });
         } catch (err) {
-            console.error(`Ошибка сохранения в VK Storage (${key}):`, err);
+            console.error(`Ошибка локального сохранения (${key}):`, err);
         }
     };
 
     const loadFromVKStorage = async (key: string) => {
         try {
-            const result = await bridge.send('VKWebAppStorageGet', { keys: [key] });
-            if (result.keys && result.keys[0] && result.keys[0].value) {
+            const storagePromise = bridge.send('VKWebAppStorageGet', { keys: [key] });
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('VK Storage timeout')), 3000)
+            );
+
+            const result = await Promise.race([storagePromise, timeoutPromise]) as any;
+
+            if (result && result.keys && result.keys[0] && result.keys[0].value) {
                 return JSON.parse(result.keys[0].value);
             }
         } catch (err) {
-            console.error(`Ошибка загрузки из VK Storage (${key}):`, err);
+            console.warn(`Таймаут или ошибка VK Storage (${key}), используем localStorage:`, err);
         }
-        // Фоллбэк на localStorage, если облако пусто или ошибка
+        // Фоллбэк на localStorage, если облако не ответило
         const local = localStorage.getItem(key);
         return local ? JSON.parse(local) : null;
     };
@@ -105,12 +115,16 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     // === ПОЛУЧЕНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ ===
     const fetchUserInfo = async () => {
         try {
-            const result = await bridge.send('VKWebAppGetUserInfo');
-            if (result.first_name) {
+            const userInfoPromise = bridge.send('VKWebAppGetUserInfo');
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('UserInfo timeout')), 3000)
+            );
+            const result = await Promise.race([userInfoPromise, timeoutPromise]) as any;
+            if (result && result.first_name) {
                 setUserName(result.first_name);
             }
         } catch (err) {
-            console.error('Не удалось получить информацию о пользователе:', err);
+            console.warn('Не удалось получить имя (открыто вне VK?):', err);
             setUserName('');
         }
     };
@@ -120,7 +134,17 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     }, []);
 
     useEffect(() => {
-        bridge.send('VKWebAppInit').catch(console.error);
+        const initBridge = async () => {
+            try {
+                await Promise.race([
+                    bridge.send('VKWebAppInit'),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Init timeout')), 3000))
+                ]);
+            } catch (err) {
+                console.warn('VK Bridge не инициализирован (возможно, открыто вне VK):', err);
+            }
+        };
+        initBridge();
     }, []);
 
     // Загрузка данных с использованием VK Cloud Storage
