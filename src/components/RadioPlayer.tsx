@@ -68,23 +68,6 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
     const [hoveredRating, setHoveredRating] = useState<{ stationId: string, rating: number } | null>(null);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
-    // === УПРАВЛЕНИЕ МОДАЛЬНЫМИ ОКНАМИ (ОДИН MODALROOT) ===
-    const closeAllModals = () => {
-        setIsShareModalOpen(false);
-        setIsChatModalOpen(false);
-        setIsHistoryModalOpen(false);
-        setIsEqOpen(false);
-        setIsRatingModalOpen(false);
-    };
-
-    const activeModal = isShareModalOpen ? 'share' :
-        isChatModalOpen ? 'chat-invite' :
-            isHistoryModalOpen ? 'history' :
-                isEqOpen ? 'equalizer' :
-                    isRatingModalOpen ? 'rating' :
-                        undefined;
-    // ========================================================
-
     // === ФУНКЦИЯ ДЛЯ ТАКТИЛЬНОЙ ОТДАЧИ ===
     const triggerHaptic = (style: 'light' | 'medium' | 'heavy' = 'medium') => {
         bridge.send('VKWebAppTapticImpactOccurred', { style }).catch(() => { });
@@ -128,6 +111,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
         const local = localStorage.getItem(key);
         return local ? JSON.parse(local) : null;
     };
+
+    // === УПРАВЛЕНИЕ МОДАЛЬНЫМИ ОКНАМИ (ОДИН MODALROOT) ===
+    const closeAllModals = () => {
+        setIsShareModalOpen(false);
+        setIsChatModalOpen(false);
+        setIsHistoryModalOpen(false);
+        setIsEqOpen(false);
+        setIsRatingModalOpen(false);
+    };
+
+    const activeModal = isShareModalOpen ? 'share' :
+        isChatModalOpen ? 'chat-invite' :
+            isHistoryModalOpen ? 'history' :
+                isEqOpen ? 'equalizer' :
+                    isRatingModalOpen ? 'rating' :
+                        undefined;
+    // ========================================================
 
     // === ПОЛУЧЕНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ ===
     const fetchUserInfo = async () => {
