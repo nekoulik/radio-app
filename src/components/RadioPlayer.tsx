@@ -979,20 +979,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                     }
                 }
 
-                /* === ИСПРАВЛЕНИЕ МОДАЛЬНЫХ ОКОН (ВЫСОТА И СКРОЛЛ) === */
+                /* === ГАРАНТИРОВАННАЯ ВИДИМОСТЬ И СКРОЛЛ МОДАЛЬНЫХ ОКОН === */
                 .vkuiModalRoot {
                     height: 100% !important;
+                    z-index: 9999 !important; /* Гарантированно поверх всего */
                 }
                 .vkuiModalPage {
-                    height: 100dvh !important; /* dvh учитывает адресную строку на мобильных */
+                    height: 100dvh !important;
                     max-height: 100dvh !important;
+                    z-index: 10000 !important;
                 }
                 .vkuiModalPage__in {
                     height: 100% !important;
                     max-height: 100dvh !important;
-                    overflow-y: auto !important; /* Ключевое: разрешает скролл контента внутри модалки */
+                    overflow-y: auto !important;
                     border-radius: 16px 16px 0 0 !important;
-                    background: var(--modal-bg) !important;
+                    background: #ffffff !important; /* ЯВНЫЙ белый фон */
+                    color: #000000 !important;
                 }
                 @media (min-width: 768px) {
                     .vkuiModalPage {
@@ -1003,14 +1006,23 @@ export const RadioPlayer: React.FC<RadioPlayerProps> = ({ id }) => {
                         border-radius: 16px !important;
                     }
                 }
+                /* Явный темный фон для модалок в темной теме */
+                #root[data-theme="dark"] .vkuiModalPage__in,
+                #root.theme-dark .vkuiModalPage__in {
+                    background: #232324 !important;
+                    color: #ffffff !important;
+                }
                 /* ======================================================== */
 
                 .ModalPage__header { background: var(--modal-header-bg) !important; border-bottom: none !important; }
                 .ModalPage__header *, .ModalPage__header .Subhead { color: var(--modal-header-text) !important; font-weight: 600; }
-                .ModalPage .Div, .ModalPage .Group, .ModalPage .Cell { background: var(--modal-bg) !important; color: var(--modal-text) !important; }
+                
+                /* Элементы внутри модалки наследуют прозрачный фон, чтобы виден был основной фон .vkuiModalPage__in */
+                .ModalPage .Div, .ModalPage .Group, .ModalPage .Cell { background: transparent !important; color: var(--modal-text) !important; }
                 .ModalPage .Subhead, .ModalPage .Text { color: var(--modal-text) !important; }
                 .ModalPage .Caption { color: var(--modal-secondary) !important; }
                 .ModalPage .Cell:hover { background: var(--modal-cell-bg) !important; }
+                
                 .Group__header { color: var(--text-primary) !important; }
                 #root[data-theme="dark"] .Group__header, #root.theme-dark .Group__header, #root[data-theme="dark"] .Group__header *, #root.theme-dark .Group__header *, #root[data-theme="dark"] .Group__header .Subhead, #root.theme-dark .Group__header .Subhead, #root[data-theme="dark"] .Group__header .Text, #root.theme-dark .Group__header .Text { color: #ffffff !important; }
                 #root[data-theme="dark"] .Group .Text, #root.theme-dark .Group .Text, #root[data-theme="dark"] .Group .Caption, #root.theme-dark .Group .Caption { color: #b0b0b0 !important; }
