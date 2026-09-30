@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import legacy from '@vitejs/plugin-legacy';
 
 function handleModuleDirectivesPlugin() {
   return {
@@ -15,18 +14,15 @@ function handleModuleDirectivesPlugin() {
 }
 
 export default defineConfig({
-  base: './', // Относительные пути для корректной работы в VK Mini Apps
+  base: '/',
 
   plugins: [
     react(),
     handleModuleDirectivesPlugin(),
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-    }),
   ],
 
   build: {
-    outDir: 'dist', // <-- ВАЖНО: Vercel по умолчанию ожидает папку dist
-    chunkSizeWarningLimit: 1000, // <-- Игнорируем предупреждения о больших файлах
+    outDir: 'dist',
+    chunkSizeWarningLimit: 1000,
   },
 });

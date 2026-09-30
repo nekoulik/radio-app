@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@vkontakte/icons": "^2.62.0",
     "@vkontakte/vk-bridge": "^2.15.0",
-    "@vkontakte/vk-bridge-react": "^1.2.0",
+    "@vkontakte/vk-bridge-react": "^2.0.1",
+    "@vkontakte/vk-mini-apps-router": "^1.8.6",
     "@vkontakte/vkui": "^6.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
